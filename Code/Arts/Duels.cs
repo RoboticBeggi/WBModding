@@ -34,7 +34,6 @@ namespace TeyvatChronicle.Arts
             public Cast C;
             public MoveSet Set;
             public Actor Me => C.A;
-            public float Score;
         }
 
         private static IEnumerator Run(Actor a, Actor b, MoveSet sa, MoveSet sb)
