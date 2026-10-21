@@ -22,14 +22,21 @@ namespace TeyvatChronicle.Combat
 
         public static bool Decide(Actor caster, Actor target)
         {
-            if (!Settings.Moves || !ChronicleReady()) return false;
-            if (!caster.isAlive() || !target.isAlive()) return false;
+            if (!ChronicleReady() || !caster.isAlive()) return false;
+            // The normal attack that triggered this may already have killed the target.
+            if (!target.isAlive())
+            {
+                Progression.Resonance.OnKill(caster, target);
+                return false;
+            }
+            if (!Settings.Moves) return false;
 
             CombatData data = CombatCore.Data(caster);
             if (data.InDuel || CombatCore.Now < data.NextCast) return false;
 
             MoveSet set = CombatCore.ResolveSet(caster, out _);
             if (set == null) return false;
+            Progression.Resonance.EnsureInit(caster);
             data.Energy += 4f * set.Tier;
 
             if (Duel.TryStart(caster, target, set)) return true;
@@ -38,9 +45,11 @@ namespace TeyvatChronicle.Combat
             if (move == null) return false;
 
             data.NextCast = CombatCore.Now + CastGap;
-            data.ReadyAt[move_id] = CombatCore.Now + move.Cooldown / Mathf.Max(0.1f, Settings.CooldownScale);
+            float cooldown = move.Cooldown * Progression.Resonance.CooldownFactor(caster, move);
+            data.ReadyAt[move_id] = CombatCore.Now + cooldown / Mathf.Max(0.1f, Settings.CooldownScale);
             if (move.Energy > 0f) data.Energy = Mathf.Max(0f, data.Energy - move.Energy);
-            MoveExecutor.Cast(caster, target, move, set);
+            MoveExecutor.Cast(caster, target, Progression.Resonance.Boosted(caster, move), set);
+            Progression.Resonance.AddXp(caster, 1.5f, false);
             return true;
         }
 

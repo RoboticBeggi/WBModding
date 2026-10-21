@@ -17,6 +17,7 @@ namespace TeyvatChronicle.Powers
         public const string GroupDivine = "gi_divine";
         public const string GroupPrimordial = "gi_primordial";
         public const string GroupCurses = "gi_curses";
+        public const string GroupProgress = "gi_progress";
 
         public static readonly string[] Elements = { "anemo", "geo", "electro", "dendro", "hydro", "pyro", "cryo" };
 
@@ -43,6 +44,7 @@ namespace TeyvatChronicle.Powers
             AddGroup(GroupDivine, "#FFE58A");
             AddGroup(GroupPrimordial, "#FFF6D5");
             AddGroup(GroupCurses, "#B04BFF");
+            AddGroup(GroupProgress, "#FFE58A");
 
             // Tier 1: Vision holders, Delusion users and Allogenes
             foreach (string element in Elements)
@@ -144,6 +146,25 @@ namespace TeyvatChronicle.Powers
             {
                 [S.lifespan] = 5000, [S.health] = 50, [S.diplomacy] = -3
             });
+
+            // Progress markers: Ascension phases and Constellations (set by the Resonance system)
+            for (int i = 1; i <= 6; i++)
+            {
+                Add("gi_ascension_" + i, GroupProgress, TraitType.Positive, new Dictionary<string, float>
+                {
+                    [S.health] = 30 * i, [S.damage] = 4 * i, [S.armor] = i, [S.speed] = i, [S.mana] = 10 * i
+                });
+                Add("gi_constellation_" + i, GroupProgress, TraitType.Positive, new Dictionary<string, float>
+                {
+                    [S.critical_chance] = 0.02f * i, [S.damage] = 3 * i, [S.health] = 15 * i
+                });
+            }
+
+            // When an Archon dies, the Gnosis passes to an heir.
+            foreach (string element in Elements)
+            {
+                AssetManager.traits.get("gi_gnosis_" + element).action_death = Progression.Ascension.OnArchonDeath;
+            }
         }
 
         /// <summary>
@@ -211,7 +232,7 @@ namespace TeyvatChronicle.Powers
                 rate_inherit = 0
             };
             // Every power can use moves; curses can't.
-            if (pGroup != GroupCurses) trait.action_attack_target = CombatAI.OnAttack;
+            if (pGroup != GroupCurses && pGroup != GroupProgress) trait.action_attack_target = CombatAI.OnAttack;
             if (pGroup == GroupDivine || pGroup == GroupPrimordial)
             {
                 trait.special_effect_interval = 3f;

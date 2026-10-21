@@ -3,6 +3,7 @@ using TeyvatChronicle.Chronicle;
 using TeyvatChronicle.Cinematics;
 using TeyvatChronicle.Combat;
 using TeyvatChronicle.Powers;
+using TeyvatChronicle.Progression;
 using TeyvatChronicle.UI;
 using UnityEngine;
 
@@ -12,6 +13,7 @@ namespace TeyvatChronicle
     {
         private const float TickInterval = 0.25f;
         private float _tick_timer;
+        private bool _train_tick;
 
         protected override void OnModLoad()
         {
@@ -23,6 +25,7 @@ namespace TeyvatChronicle
 
             TeyvatTraits.Init();
             Duel.Init();
+            TeyvatPowers.Init();
             Announcer.Init();
             TeyvatTab.Init();
         }
@@ -37,6 +40,9 @@ namespace TeyvatChronicle
             _tick_timer = TickInterval;
             ChronicleState.Tick();
             if (World.world != null) CombatCore.Cleanup();
+            // Training runs every other tick (twice a second)
+            _train_tick = !_train_tick;
+            if (_train_tick) Training.Tick();
         }
     }
 }

@@ -250,5 +250,63 @@
             "Type": "SWITCH",
             "BoolVal": true
         }
+    ],
+    "Resonance": [
+        {
+            "Id": "Resonance",
+            "Type": "SWITCH",
+            "BoolVal": true
+        },
+        {
+            "Id": "TrainingXp",
+            "Type": "SLIDER",
+            "FloatVal": 1.0,
+            "MinFloatVal": 0.1,
+            "MaxFloatVal": 10.0
+        },
+        {
+            "Id": "CombatXp",
+            "Type": "SLIDER",
+            "FloatVal": 1.0,
+            "MinFloatVal": 0.1,
+            "MaxFloatVal": 10.0
+        },
+        {
+            "Id": "Sparring",
+            "Type": "SWITCH",
+            "BoolVal": true
+        },
+        {
+            "Id": "VisionAwakening",
+            "Type": "SWITCH",
+            "BoolVal": true
+        },
+        {
+            "Id": "AwakeningRate",
+            "Type": "SLIDER",
+            "FloatVal": 1.0,
+            "MinFloatVal": 0.0,
+            "MaxFloatVal": 10.0
+        },
+        {
+            "Id": "Succession",
+            "Type": "SWITCH",
+            "BoolVal": true
+        },
+        {
+            "Id": "Exaltation",
+            "Type": "SWITCH",
+            "BoolVal": true
+        },
+        {
+            "Id": "Godhood",
+            "Type": "SWITCH",
+            "BoolVal": true
+        },
+        {
+            "Id": "LegendAnnouncements",
+            "Type": "SWITCH",
+            "BoolVal": true
+        }
     ]
 }

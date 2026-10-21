@@ -11,12 +11,13 @@ namespace TeyvatChronicle.UI
     public static class TeyvatTab
     {
         private const string GroupChronicle = "chronicle";
+        private const string GroupPowers = "powers";
 
         public static void Init()
         {
             PowersTab tab = TabManager.CreateTab("Teyvat", "gi_tab_title", "gi_tab_desc",
                 SpriteTextureLoader.getSprite("gi/icons/tab"));
-            tab.SetLayout(new List<string> { GroupChronicle });
+            tab.SetLayout(new List<string> { GroupChronicle, GroupPowers });
 
             AddButton(tab, "gi_btn_begin", "gi/icons/btn_begin", () => ChronicleState.StartAtEra(Settings.StartEra));
             AddButton(tab, "gi_btn_timeline", "gi/icons/btn_timeline", ChronicleWindow.Show);
@@ -25,13 +26,21 @@ namespace TeyvatChronicle.UI
             AddButton(tab, "gi_btn_status", "gi/icons/btn_status", ShowStatus);
             AddButton(tab, "gi_btn_stop", "gi/icons/btn_stop", ChronicleState.Stop);
 
+            AddButton(tab, "gi_btn_legends", "gi/icons/btn_legends", ResonanceWindows.ShowLegends, GroupPowers);
+            foreach (string id in Powers.TeyvatPowers.Ids)
+            {
+                PowerButton power = PowerButtonCreator.CreateGodPowerButton(id, SpriteTextureLoader.getSprite("gi/icons/" + id));
+                tab.AddPowerButton(GroupPowers, power);
+            }
+
             tab.UpdateLayout();
         }
 
-        private static void AddButton(PowersTab pTab, string pId, string pIcon, UnityAction pAction)
+        private static void AddButton(PowersTab pTab, string pId, string pIcon, UnityAction pAction,
+            string pGroup = GroupChronicle)
         {
             PowerButton button = PowerButtonCreator.CreateSimpleButton(pId, pAction, SpriteTextureLoader.getSprite(pIcon));
-            pTab.AddPowerButton(GroupChronicle, button);
+            pTab.AddPowerButton(pGroup, button);
         }
 
         private static void TogglePause()

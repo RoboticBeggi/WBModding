@@ -277,6 +277,65 @@ def button(kind):
     return outlined(img)
 
 
+def stars_icon(count, color, ring=False):
+    """Ascension phases (★ rows) and Constellations (a star chart with lit stars)."""
+    img = canvas()
+    d = ImageDraw.Draw(img)
+    if ring:
+        d.ellipse((2, 2, 29, 29), fill=hex_rgb("#1E2340"), outline=hex_rgb(GOLD))
+        pts = [(16, 6), (24, 11), (24, 21), (16, 26), (8, 21), (8, 11)]
+        d.line(pts + [pts[0]], fill=hex_rgb("#5A6AA8"), width=1)
+        for i, (x, y) in enumerate(pts):
+            lit = i < count
+            d.polygon(star_points(x, y, 4 if lit else 2, 1.6 if lit else 0.8, 5 if lit else 4),
+                      fill=hex_rgb(color if lit else "#5A6AA8"))
+    else:
+        glow(d, color, 14)
+        positions = [(16, 16)] if count == 1 else [(16 + 8 * math.cos(math.radians(-90 + i * 360 / count)),
+                                                     16 + 8 * math.sin(math.radians(-90 + i * 360 / count)))
+                                                    for i in range(count)]
+        for x, y in positions:
+            d.polygon(star_points(x, y, 6 if count == 1 else 4.5, 2.4 if count == 1 else 1.8, 5), fill=hex_rgb(color))
+    return outlined(img)
+
+
+def power_icon(kind):
+    img = canvas()
+    d = ImageDraw.Draw(img)
+    if kind == "inspect":
+        d.ellipse((5, 5, 21, 21), outline=hex_rgb(GOLD), width=3)
+        d.ellipse((9, 9, 17, 17), fill=hex_rgb("#9EE6F5"))
+        d.line([(19, 19), (27, 27)], fill=hex_rgb(GOLD_DARK), width=4)
+    elif kind == "legends":
+        d.polygon([(6, 26), (6, 13), (11, 18), (16, 8), (21, 18), (26, 13), (26, 26)], fill=hex_rgb(GOLD))
+        d.rectangle((6, 24, 26, 27), fill=hex_rgb(GOLD_DARK))
+        d.polygon(star_points(16, 20, 3.5, 1.4, 5), fill=hex_rgb("#FFFFFF"))
+    elif kind == "vision":
+        return vision("#FFFFFF")
+    elif kind == "element":
+        img2 = canvas()
+        d2 = ImageDraw.Draw(img2)
+        for i, c in enumerate(ELEMENTS.values()):
+            a0 = -90 + i * 360 / 7
+            d2.pieslice((3, 3, 28, 28), a0, a0 + 360 / 7, fill=hex_rgb(c))
+        d2.ellipse((10, 10, 21, 21), fill=hex_rgb(GOLD))
+        return outlined(img2)
+    elif kind == "ascend":
+        glow(d, GOLD, 15)
+        d.polygon([(16, 3), (26, 15), (20, 15), (20, 28), (12, 28), (12, 15), (6, 15)], fill=hex_rgb(GOLD))
+    elif kind == "constellation":
+        return stars_icon(4, "#E6E0FF", ring=True)
+    elif kind == "archon":
+        glow(d, "#FFE58A", 15)
+        d.polygon([(6, 22), (6, 10), (11, 15), (16, 5), (21, 15), (26, 10), (26, 22)], fill=hex_rgb(GOLD))
+        d.ellipse((12, 18, 20, 26), fill=hex_rgb("#9EE6F5"))
+    elif kind == "ground":
+        d.ellipse((3, 8, 29, 26), outline=hex_rgb(GOLD), width=2)
+        d.line([(10, 22), (22, 12)], fill=hex_rgb("#E8E4F0"), width=2)
+        d.line([(10, 12), (22, 22)], fill=hex_rgb("#E8E4F0"), width=2)
+    return outlined(img)
+
+
 def save(img, name, scale=1):
     path = os.path.join(OUT, name + ".png")
     os.makedirs(os.path.dirname(path), exist_ok=True)
@@ -300,6 +359,14 @@ def main():
     for kind in ("delusion", "allogene", "adeptus", "harbinger", "hexenzirkel", "abyss_herald", "demon_god",
                  "abyssal", "curse_immortality"):
         save(simple(kind), f"traits/gi_{kind}")
+
+    for i in range(1, 7):
+        save(stars_icon(i, GOLD), f"traits/gi_ascension_{i}")
+        save(stars_icon(i, "#FFE58A", ring=True), f"traits/gi_constellation_{i}")
+    for kind in ("inspect", "legends", "vision", "element", "ascend", "constellation", "archon", "ground"):
+        save(power_icon(kind), f"gi_power_{kind}" if kind != "legends" else "btn_legends")
+    save(power_icon("inspect"), "btn_inspect")
+    save(simple("delusion"), "gi_power_delusion")
 
     save(chronicle(), "chronicle")
     save(chronicle(), "tab")

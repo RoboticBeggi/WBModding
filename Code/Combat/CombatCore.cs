@@ -71,6 +71,12 @@ namespace TeyvatChronicle.Combat
             return best;
         }
 
+        public static string ResolveSetTrait(Actor pActor)
+        {
+            ResolveSet(pActor, out string trait);
+            return trait;
+        }
+
         public static string ElementOf(MoveAsset pMove, MoveSet pSet)
         {
             string element = pMove.Element;
@@ -157,7 +163,12 @@ namespace TeyvatChronicle.Combat
             float damage = Mathf.Max(1f, pCaster.stats["damage"]) * pPower * Settings.MoveDamage;
             damage = Reactions.Apply(pCaster, pVictim, pElement, damage);
             pVictim.getHit(damage, true, AttackType.Other, pCaster, false);
-            if (!string.IsNullOrEmpty(pStatus) && pVictim.isAlive()) pVictim.addStatusEffect(pStatus, pStatusTime);
+            if (!pVictim.isAlive())
+            {
+                Progression.Resonance.OnKill(pCaster, pVictim);
+                return;
+            }
+            if (!string.IsNullOrEmpty(pStatus)) pVictim.addStatusEffect(pStatus, pStatusTime);
             Data(pCaster).Energy += 6f;
         }
 

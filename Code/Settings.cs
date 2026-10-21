@@ -72,6 +72,18 @@ namespace TeyvatChronicle
         public static float CutsceneCooldown => Float("Cinematics", "CutsceneCooldown", 45f);
         public static bool ChronicleCutscenes => Bool("Cinematics", "ChronicleCutscenes");
 
+        // Resonance (levelling)
+        public static bool Resonance => Bool("Resonance", "Resonance");
+        public static float TrainingXp => Float("Resonance", "TrainingXp", 1f);
+        public static float CombatXp => Float("Resonance", "CombatXp", 1f);
+        public static bool Sparring => Bool("Resonance", "Sparring");
+        public static bool VisionAwakening => Bool("Resonance", "VisionAwakening");
+        public static float AwakeningRate => Float("Resonance", "AwakeningRate", 1f);
+        public static bool Succession => Bool("Resonance", "Succession");
+        public static bool Exaltation => Bool("Resonance", "Exaltation");
+        public static bool Godhood => Bool("Resonance", "Godhood");
+        public static bool LegendAnnouncements => Bool("Resonance", "LegendAnnouncements");
+
         public static bool EraEnabled(string pEraId) => Bool("Eras", "Era_" + pEraId);
     }
 }

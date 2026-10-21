@@ -4,11 +4,11 @@ A WorldBox mod that plays out Genshin Impact's history of Teyvat on your world, 
 Seven Dragon Sovereigns of the Old World to the Snezhnaya crisis of Version 7.1. Every power is a
 trait, so you can give a Vision, a Gnosis or a Shade's Authority to anyone.
 
-> **Status: v0.2.0.** The Chronicle, 39 power traits, **202 moves with animated VFX and sound**,
-> elemental reactions, choreographed duels, impact frames, cutscenes, and element-coloured dragon
-> Sovereigns are in. Resonance levelling (training) comes next; see [DESIGN.md](DESIGN.md).
-> v0.1.0 was tested in-game. The v0.2.0 combat code compiles against the game DLL but hasn't been
-> run in-game yet.
+> **Status: v0.3.0.** The Chronicle, 39 power traits, 202 animated moves, reactions, duels, impact
+> frames, cutscenes and dragon Sovereigns, plus **Ley Line Resonance**: ranks 1–90 earned by training,
+> Breakthrough Trials, talents, Constellations, Vision awakening, Archon succession, Exaltation and
+> godhood, with 9 new god powers and a Legends leaderboard. v0.1.0 was tested in-game; v0.2.0 and
+> v0.3.0 compile against the game DLL but haven't been run in-game yet.
 
 ## Install (PC / Steam)
 
@@ -53,6 +53,16 @@ break into a **duel**: blade exchanges, barrages, parries and counters, weaving 
 ending in a finisher with an **impact frame**. Archons and above open their ultimates with a
 **cutscene**. The full list and the format for editing moves are in [MOVES.md](MOVES.md).
 
+## Levelling and training
+
+Powered units grow through **Ley Line Resonance**: ranks 1–90, earned by drilling in their city,
+hitting training dummies, sparring with each other, learning from mentors and fighting. At ranks
+20/40/50/60/70/80 they must pass a **Trial** to break through. Talents sharpen their moves and
+**Constellations** light up through fateful moments; C6 upgrades their Burst. Ordinary people who
+train can **awaken a Vision**. Legends can rise further: they become Adepti, Harbingers or Witches,
+inherit a dead Archon's Gnosis, or claim an empty throne. The Teyvat tab has god powers to inspect,
+grant, raise and crown units, and to mark Training Grounds. Details are in [PROGRESSION.md](PROGRESSION.md).
+
 ## Customising
 
 Open **Mods → Teyvat Chronicle → settings** in-game.
@@ -67,6 +77,8 @@ Open **Mods → Teyvat Chronicle → settings** in-game.
 - **Rules:** one holder per unique power (Gnosis, Shade…); destructive effects; wars.
 - **Combat:** moves on/off, move damage, cooldown speed, reactions, duels (chance and how many at
   once), combat sounds, floating labels, auras, dragon bodies.
+- **Resonance:** training and combat XP multipliers, sparring, Vision awakening (and its rate),
+  Archon succession, Exaltation, godhood, announcements.
 - **Cinematics:** impact frames on/off and their intensity, cutscenes for ultimates (with a cooldown),
   cutscenes for major Chronicle events.
 
@@ -85,7 +97,7 @@ Every field is documented in [CHRONICLE.md](CHRONICLE.md).
 | `GameResources/gi/` | Icons and sounds, loaded automatically by NML |
 | `Locales/en.json` | All in-game text |
 | `tools/art`, `tools/sfx`, `tools/data` | Scripts that generate every icon, VFX frame, sound and the move data |
-| `DESIGN.md`, `CHRONICLE.md`, `MOVES.md` | Research and design, the timeline reference, the moves reference |
+| `DESIGN.md`, `CHRONICLE.md`, `MOVES.md`, `PROGRESSION.md` | Research and design; references for the timeline, moves and levelling |
 
 ## Building (optional)
 

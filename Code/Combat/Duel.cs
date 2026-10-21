@@ -111,9 +111,20 @@ namespace TeyvatChronicle.Combat
                 if (finisher != null)
                 {
                     FloatingText.Show("FINISH!", winner.current_position, Elements.Color(ws.Element), 18);
-                    yield return MoveExecutor.Run(winner, loser, finisher, ws);
+                    yield return MoveExecutor.Run(winner, loser, Progression.Resonance.Boosted(winner, finisher), ws);
                     Director.Impact(loser.current_position, Elements.Color(ws.Element), Mathf.Clamp01(0.5f + ws.Tier * 0.1f));
                 }
+            }
+
+            // Duel results feed the Resonance Trials
+            if (CombatCore.Alive(a) != CombatCore.Alive(b))
+            {
+                Progression.Resonance.OnDuel(CombatCore.Alive(a) ? a : b, CombatCore.Alive(a) ? b : a);
+            }
+            else if (CombatCore.Alive(a))
+            {
+                bool a_wins = a.getHealth() / (float)Mathf.Max(1, a.getMaxHealth()) >= b.getHealth() / (float)Mathf.Max(1, b.getMaxHealth());
+                Progression.Resonance.OnDuel(a_wins ? a : b, a_wins ? b : a);
             }
 
             foreach (Actor fighter in new List<Actor> { a, b })

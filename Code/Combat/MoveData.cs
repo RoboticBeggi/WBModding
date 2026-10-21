@@ -64,6 +64,8 @@ namespace TeyvatChronicle.Combat
 
         /// <summary>Fraction of the caster's max health healed on allies (heal archetype).</summary>
         [JsonProperty("heal")] public float Heal;
+
+        public MoveAsset Clone() => (MoveAsset)MemberwiseClone();
     }
 
     public class MoveSet

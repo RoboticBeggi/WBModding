@@ -10,6 +10,11 @@ art and its own sound, and units grow stronger by **training**.
 > Game API names were checked against the `Assembly-CSharp-Publicized.dll` and `strings.dll`
 > that ship with NeoModLoader `master` (NML 1.2.1.1, commit dated 2026-10-19).
 
+**Changes in revision 5 (v0.3.0)**
+- **Ley Line Resonance is built** (Phase 1). Beyond the plan, it adds Vision awakening for ordinary people,
+  Archon succession, Exaltation, godhood, 9 god powers, a Resonance card and a Legends leaderboard.
+  Details in [PROGRESSION.md](PROGRESSION.md). The XP rates in 3.2 were replaced by the tuned values there.
+
 **Changes in revision 4 (v0.2.0)**
 - **Combat:** 202 moves in 37 movesets, built from 14 archetypes, with animated VFX tinted per element
   and 23 combat sounds. See [MOVES.md](MOVES.md).
@@ -17,7 +22,6 @@ art and its own sound, and units grow stronger by **training**.
 - **Impact frames:** hit-stop, white flash, a black frame with speed lines, a tinted frame, a camera punch.
 - **Cutscenes:** for ultimates of Archons and above, and for major Chronicle events.
 - **Dragon Sovereigns:** the Chronicle spawns real dragons and recolours their sprites per element.
-- Resonance levelling (Phase 1) is still to do.
 
 **Changes in revision 3**
 - The timeline was re-researched from the Genshin Impact Wiki's master timeline and its region
@@ -427,7 +431,7 @@ shake, deeper bass. Because everything comes from scripts, the art and sound are
 | Phase | Deliverable |
 |---|---|
 | 0 ✅ | Project set up; the mod loads; the Teyvat tab, trait groups and 39 power traits (stats and icons) |
-| 1 | Resonance levelling: training, Trials, talents, constellations, save data |
+| 1 ✅ | Resonance levelling: training (drills, dummies, sparring, mentors, Training Grounds), Trials, talents, Constellations, save data. Also Vision awakening, Archon succession, Exaltation, godhood, god powers and a Legends leaderboard. See [PROGRESSION.md](PROGRESSION.md) |
 | 2 ✅ | Tier 1 (7 Visions + Delusion + Allogene): 5–6 moves each, the reaction engine, element VFX/SFX |
 | 3 ✅ (moves) | Tiers 2–3: Exalted paths and Archons, with movesets. God powers for granting them are still to do; the trait editor works for now |
 | 4 ✅ (moves) | Tiers 4–7: Dragons (real recoloured dragons), Shades, Moons, Heavenly Principles, with movesets. Lunar and Stellar reactions are still to do |

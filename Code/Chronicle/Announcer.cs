@@ -86,6 +86,27 @@ namespace TeyvatChronicle.Chronicle
             if (Settings.WorldLog) Log(pText, null);
         }
 
+        private static float _last_legend = -999f;
+
+        /// <summary>
+        /// Announces a unit's rise (awakening, Exaltation, a new Archon). Major ones can play a cutscene;
+        /// minor ones show a top banner, at most one every 15 seconds, and always go to the world log.
+        /// </summary>
+        public static void AnnounceLegend(string pText, Color pColor, WorldTile pFocus, bool pMajor)
+        {
+            if (!Settings.LegendAnnouncements) return;
+            if (Settings.WorldLog) Log(pText, pFocus);
+            if (pMajor && pFocus != null && Director.CanPlayCutscene())
+            {
+                ModClass.Instance.StartCoroutine(Director.Cutscene(pText, "A legend rises", pFocus.posV3, pColor, 1.4f));
+                return;
+            }
+            if (Time.unscaledTime - _last_legend < 15f && !pMajor) return;
+            _last_legend = Time.unscaledTime;
+            WorldTip.showNowTop(pText, false);
+            if (Settings.Sound) PlaySound(pMajor ? "divine" : "hope");
+        }
+
         /// <summary>Replaces {tag} placeholders with the names of tagged kingdoms.</summary>
         public static string Format(string pText)
         {
