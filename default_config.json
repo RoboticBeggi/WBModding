@@ -176,11 +176,6 @@
             "MaxFloatVal": 4.0
         },
         {
-            "Id": "Reactions",
-            "Type": "SWITCH",
-            "BoolVal": true
-        },
-        {
             "Id": "Duels",
             "Type": "SWITCH",
             "BoolVal": true
@@ -198,6 +193,33 @@
             "IntVal": 2,
             "MinIntVal": 0,
             "MaxIntVal": 6
+        },
+        {
+            "Id": "Guard",
+            "Type": "SWITCH",
+            "BoolVal": true
+        },
+        {
+            "Id": "TeamArts",
+            "Type": "SWITCH",
+            "BoolVal": true
+        },
+        {
+            "Id": "Situations",
+            "Type": "SWITCH",
+            "BoolVal": true
+        },
+        {
+            "Id": "GodAbilities",
+            "Type": "SWITCH",
+            "BoolVal": true
+        },
+        {
+            "Id": "GodCooldown",
+            "Type": "SLIDER",
+            "FloatVal": 40.0,
+            "MinFloatVal": 5.0,
+            "MaxFloatVal": 300.0
         },
         {
             "Id": "CombatSounds",

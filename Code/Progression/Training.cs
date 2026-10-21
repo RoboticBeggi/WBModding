@@ -108,6 +108,8 @@ namespace TeyvatChronicle.Progression
                 Resonance.AddXp(a, xp, true);
                 Resonance.AddTrainingTime(a, pYears);
                 if (Randy.randomChance(0.3f)) TrainingVisual(a, dummy);
+                // Drills sharpen techniques: practice counts toward Level II and III mastery.
+                if (Resonance.IsPowered(a) && Randy.randomChance(0.25f)) Arts.Engine.Drill(a);
                 if (Settings.Sparring && Randy.randomChance(0.05f)) TrySpar(a);
             }
 
@@ -155,8 +157,8 @@ namespace TeyvatChronicle.Progression
             MoveSet set = CombatCore.ResolveSet(a, out _);
             Color color = Elements.Color(set?.Element);
             Vector3 front = p + new Vector3(a.flip ? -0.7f : 0.7f, 0.2f);
-            Fx.Play(pDummy ? "spark" : "slash", front, 1.2f, color * new Color(1f, 1f, 1f, 0.8f),
-                Random.Range(0f, 360f), 0f, false, 22f);
+            Fx.Play(pDummy ? "arts/lock_sparks" : "arts/impact", front, 1.1f, pDummy ? Color.white : color,
+                Random.Range(0f, 360f), 0f, false, 24f);
         }
 
         // ---------------------------------------------------------------- sparring
@@ -181,8 +183,8 @@ namespace TeyvatChronicle.Progression
         {
             _sparring.Add(a.getID());
             _sparring.Add(b.getID());
-            a.addStatusEffect(Duel.StatusId, 4f);
-            b.addStatusEffect(Duel.StatusId, 4f);
+            a.addStatusEffect(Arts.Engine.Held, 4f);
+            b.addStatusEffect(Arts.Engine.Held, 4f);
             Color ca = Elements.Color(CombatCore.ResolveSet(a, out _)?.Element);
             Color cb = Elements.Color(CombatCore.ResolveSet(b, out _)?.Element);
             bool visible = Director.OnScreen(a.current_position);
@@ -197,10 +199,10 @@ namespace TeyvatChronicle.Progression
                 {
                     Vector3 mid = ((Vector3)a.current_position + (Vector3)b.current_position) * 0.5f;
                     Actor striker = i % 2 == 0 ? a : b;
-                    Fx.Play("slash", (Vector3)striker.current_position + (mid - (Vector3)striker.current_position) * 0.7f,
-                        1.4f, i % 2 == 0 ? ca : cb, Random.Range(-40f, 40f), 0f, false, 26f);
-                    Fx.Play("spark", mid, 1.2f, Color.white);
-                    CombatCore.Sound(i % 3 == 0 ? "clang" : "swing", mid);
+                    Fx.Play("arts/impact", (Vector3)striker.current_position + (mid - (Vector3)striker.current_position) * 0.7f,
+                        1.2f, i % 2 == 0 ? ca : cb, Random.Range(0f, 360f), 0f, false, 26f);
+                    Fx.Play("arts/lock_sparks", mid, 1f, Color.white, Random.Range(0f, 360f), 0f, false, 26f);
+                    CombatCore.Sound(i % 3 == 0 ? "sword_clash" : "whoosh_light", mid, "gi/sfx/arts/");
                 }
                 yield return CombatCore.Wait(0.22f);
             }
@@ -213,8 +215,8 @@ namespace TeyvatChronicle.Progression
                 Actor loser = winner == a ? b : a;
                 if (visible) FloatingText.Show("WIN", winner.current_position, winner == a ? ca : cb, 10);
                 Resonance.OnSpar(winner, loser);
-                a.finishStatusEffect(Duel.StatusId);
-                b.finishStatusEffect(Duel.StatusId);
+                a.finishStatusEffect(Arts.Engine.Held);
+                b.finishStatusEffect(Arts.Engine.Held);
             }
             _sparring.Remove(a.getID());
             _sparring.Remove(b.getID());

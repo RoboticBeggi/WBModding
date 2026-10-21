@@ -30,7 +30,7 @@ World grows ─► Begin the Chronicle ─► Eras unfold (cutscenes, effects on
    (Sovereigns, Shades, Archons,                          ─► potential ─► a Vision awakens
     Harbingers, Visions...)                                           │
              │                                                        ▼
-             └──────────► Battles, moves, duels, reactions ◄── Vision bearers drill, spar,
+             └──────────► Battles: techniques, duels, team arts ◄── Vision bearers drill, spar,
                                      │                          train at dummies
                                      ▼
                      XP ─► Ranks ─► Breakthrough Trials ─► Ascension stars
@@ -96,7 +96,7 @@ A draggable window (drag its title bar) with four tabs.
 
 **Legends:** the 40 mightiest powers, ranked by tier, then rank, then Constellation. Click one to jump to them and open their window.
 
-**Powers:** the tier codex (what each tier is and how to get it) and the elemental reactions table.
+**Powers:** the tier codex (what each tier is and how to get it), how combat works, and every fighting style with its techniques.
 
 **Guide:** this guide.
 
@@ -117,8 +117,10 @@ It opens automatically beside WorldBox's unit window whenever you click a unit, 
 - **Now:** what the unit is doing. For example: Training at a dummy (mentor ×1.5, Training Ground ×2),
   Drilling, Sparring, In battle, Locked in a duel, or Wandering.
 - **Record:** foes, elites, duels won, spars won, training sessions.
-- **Moves:** every move with its category (STRIKE / SKILL / BURST) and live state: ready, seconds left
-  to recharge, or energy (for example 40/100). `*` marks a move with a cutscene, `+` a move with an impact frame.
+- **Techniques:** the style's name, then every technique with its level (I, II or III), its live state
+  (seconds left to recharge, or what it's best against: *vs crowds*, *vs lines*, *duelist*, *execute*,
+  *anti-air*, *closer*, *guard*, *support*) or the level that unlocks it. `*` marks an ultimate. From
+  Archon up, the last line is the **God ability** with the gauge (READY at 100%).
 - **Buttons:** Grant Vision, Ascend +10, + Constellation, Follow (camera follows the unit), Legends, Archive.
 
 For an ordinary person, the panel shows their **potential** toward a Vision.
@@ -173,7 +175,7 @@ the pacing, or rewrite the whole history in `data/chronicle.custom.json` (see CH
 | 6 Lunar | Moon Goddesses, Trilunar, Nibelung | Three orbiting moons |
 | 7 Heavenly Principles | The Primordial One | Turning rays of light |
 
-A unit uses the moveset of its **highest** tier. Each tier has 5–7 moves, and higher tiers hit far harder.
+A unit fights with the **style** of its highest-tier power. Every style has 6–7 techniques of its own (and a God ability from Archon up), and higher tiers hit far harder. The full list is in [ARTS.md](ARTS.md).
 
 ---
 
@@ -193,7 +195,7 @@ A unit uses the moveset of its **highest** tier. Each tier has 5–7 moves, and 
 | Drilling in their city | 400 / year |
 | Training at a dummy | 800 / year |
 | Sparring with another bearer | 35–45 per bout |
-| Using moves, kills | + |
+| Using techniques, kills | + |
 | Duels | win +80, loss +30 |
 
 Multipliers: a mentor at least 5 ranks higher in the same city gives ×1.5, a Training Ground ×2, and
@@ -228,20 +230,39 @@ defeating an elite, 50 foes, 500 renown, becoming a ruler, Ascension ★3 and �
 
 ## 7. Battle
 
-- **Moves:** strikes with smears, flurries, dashes with afterimages, teleports, projectiles, beams,
-  fields (tornadoes, ice spikes, blooms), meteor and lightning rains, shields, heals and **ultimates**.
-- **Reactions:** elements react, and a floating label names the reaction:
-  - Vaporize, Melt
-  - Overloaded, Superconduct
-  - Electro-Charged, Frozen, Burning, Bloom, Aggravate
-  - Swirl, Crystallize
-- **Duels:** when two powers meet on screen they may duel. A spotlight and a blade ring start it. Then
-  come exchanges, barrages with knockback, parries and counters, weaving dodges leaving afterimages,
-  and combos. The healthier fighter ends it with a **finisher**.
-- **Impact frames** for big hits: hit-stop, a white flash, a black frame with speed lines, an element
-  frame, a camera punch and a boom. The ground is left with a **crater**.
-- **Ultimate cutscenes** for Archons and above. The ultimate starts with a spotlight and closing rings,
-  then a barrage of strikes, a blast, a shockwave and a crater.
+Combat works like the *Combat Gods* mod: fighters read the battlefield and answer it with techniques
+from their own style.
+
+- **Techniques:** every style has 6–7, each with its own choreography, art and sounds. A Zephyr Arts
+  fighter hops in on wind rings and juggles foes in a cyclone; a Bedrock fighter raises pillars down a
+  line; a Shade of Time stops the clock. See [ARTS.md](ARTS.md) for all of them.
+- **The tactical mind** scores every ready technique against what it sees: crowds draw slams and
+  fields, enemies in a line draw fissures and beams, a lone foe draws a duelist's combo, a badly
+  wounded foe draws an execution, fliers draw leaps and launches, far foes draw dashes and blinks, and
+  a hurt fighter guards or heals (or heals allies).
+- **Levels I–III:** each technique has a level, set by rank (Level II from rank 30, III from 60;
+  Archons start at II, Shades and above at III) or by practice (12 uses for II, 35 for III; training
+  drills count). Higher levels hit harder, reach further and add beats. **Level III** burns white-hot,
+  cracks the land and freezes the world for an instant on impact. Ultimates at Level III open with a
+  cutscene.
+- **Guard:** masters wave off ordinary blows from weaker fighters (sparks and a *GUARD*), and Exalted
+  and above turn arrows and spells back at the shooter (*DEFLECT*). Techniques always land.
+- **Duels:** two powered fighters on screen may duel. A **stare-down** starts it. Then come beats:
+  **blade locks** that grind back and forth until one shoves the other away, **aerial clashes** where
+  both leap and trade blows in the sky before one spikes the other down, **chases**, **feints** that
+  strike from behind, and **technique trades**. Gods hurl each other **across the map** and give
+  chase. The mighty may end in a **catastrophe**: their beams push against each other until the land
+  explodes. Then the winner's strongest technique as a **finisher**.
+- **Team arts:** two powered allies on the same foe combine: **Sky Relay** (the foe is passed around
+  the sky, then spiked down), **Twin Meteors**, **Crossed Beams**, **Merged Aura Wave**.
+- **Situations:** a fighter under 20% health makes a **last stand** (heals a little, powers up, unleashes
+  its strongest technique). A stronger ally **protects** a wounded weaker one by blinking in between.
+  A powered unit killed nearby sparks **vengeance** in its allies. Five kills in eight seconds is a
+  **rampage**.
+- **God abilities:** Archons and every tier above fill a **God gauge** by landing and taking blows
+  (shown in the Resonance panel). When it's full the world stops: letterbox bars, a title card, and
+  their signature art plays out while everything else stands frozen.
+- **The land remembers:** craters, fissures and (with destructive effects on) burning ground.
 
 ---
 
@@ -255,8 +276,8 @@ Open them from **Archive → Chronicle → Settings**, or **Mods → Teyvat Chro
 | Announcements | Banner (and how long it stays), flash, shake, sound, camera jump, world log, lore pop-ups |
 | Eras | Turn each of the 11 eras on or off |
 | Rules | Unique holders, destructive effects, wars |
-| Combat | Moves, move damage, cooldown speed, reactions, duels (chance, how many at once), sounds, labels, tier auras, dragon designs |
-| Cinematics | Impact frames and their intensity, move cutscenes and their spacing, Chronicle cutscenes, spotlight, ceremonies, afterimages, craters |
+| Combat | Techniques on/off, technique damage, cooldown speed, duels (chance, how many at once), guard, team arts, situations, God abilities and their spacing, sounds, labels, tier auras, dragon designs |
+| Cinematics | Impact frames and their intensity, technique cutscenes and their spacing, Chronicle cutscenes, spotlight, ceremonies, afterimages, craters |
 | Resonance | On/off, training and combat XP, sparring, awakening and its rate, succession, Exaltation, Godhood, legend announcements |
 | Interface | Resonance panel, HUD, Teyvat UI size |
 
@@ -271,7 +292,7 @@ Open them from **Archive → Chronicle → Settings**, or **Mods → Teyvat Chro
 - **A world of dragons:** start at the Old World on Lore pacing and turn off the eras after the War of
   Funerary Flame.
 - **Pure hero sim:** never press Begin. Visions awaken on their own as people train and fight.
-- **Too much spectacle?** Raise "Seconds between move cutscenes", turn off move cutscenes but keep the
+- **Too much spectacle?** Raise "Seconds between technique cutscenes", turn off technique cutscenes but keep the
   Chronicle ones, or lower the impact-frame intensity.
 - **Performance on huge maps:** effects only play near the camera. If it's still heavy, turn off tier
   auras and afterimages first.
@@ -282,7 +303,7 @@ Open them from **Archive → Chronicle → Settings**, or **Mods → Teyvat Chro
 
 - **No Teyvat tab:** NeoModLoader isn't installed, or the folder name is wrong. `mod.json` must sit
   directly in `Mods/TeyvatChronicle/`.
-- **The mod doesn't load after editing a file:** check the NML log. A broken `chronicle.custom.json` or
-  `moves.custom.json` stops loading. Delete it to go back to the defaults.
+- **The mod doesn't load after editing a file:** check the NML log. A broken `chronicle.custom.json` stops
+  loading. Delete it to go back to the defaults.
 - **No Resonance panel:** check *Interface → Resonance panel*.
 - **Something looks wrong:** send the NML log and say what you clicked.

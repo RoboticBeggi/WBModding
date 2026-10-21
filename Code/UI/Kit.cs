@@ -225,6 +225,18 @@ namespace TeyvatChronicle.UI
             return rect;
         }
 
+        /// <summary>Keeps a centre-anchored window fully on screen.</summary>
+        public static void ClampToScreen(RectTransform pRect)
+        {
+            if (pRect == null || _scaler == null) return;
+            float scale = Mathf.Max(0.01f, _scaler.scaleFactor);
+            float half_w = Screen.width / scale / 2f, half_h = Screen.height / scale / 2f;
+            Vector2 size = pRect.sizeDelta;
+            Vector2 p = pRect.anchoredPosition;
+            float max_x = Mathf.Max(0f, half_w - size.x / 2f - 4f), max_y = Mathf.Max(0f, half_h - size.y / 2f - 4f);
+            pRect.anchoredPosition = new Vector2(Mathf.Clamp(p.x, -max_x, max_x), Mathf.Clamp(p.y, -max_y, max_y));
+        }
+
         /// <summary>A vertical scroll area. Returns the content transform; set its height as you fill it.</summary>
         public static RectTransform Scroll(Transform pParent, float pX, float pY, float pW, float pH)
         {
@@ -268,6 +280,7 @@ namespace TeyvatChronicle.UI
             RectTransformUtility.ScreenPointToLocalPointInRectangle((RectTransform)Target.parent, pData.position,
                 null, out Vector2 local);
             Target.anchoredPosition = local + _offset;
+            if (Target.anchorMin == new Vector2(0.5f, 0.5f)) Kit.ClampToScreen(Target);
         }
     }
 }

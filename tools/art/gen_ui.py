@@ -42,7 +42,7 @@ def panel():
     d = ImageDraw.Draw(img)
     for y in range(s):
         c = lerp(NAVY_2, NAVY, y / s)
-        d.line([(2, y), (s - 3, y)], fill=rgba(c, 244))
+        d.line([(2, y), (s - 3, y)], fill=rgba(c, 255))
     d.rectangle((1, 1, s - 2, s - 2), outline=rgba(GOLD_D))
     d.rectangle((2, 2, s - 3, s - 3), outline=rgba(GOLD))
     d.rectangle((5, 5, s - 6, s - 6), outline=rgba(GOLD_D, 170))
@@ -57,7 +57,7 @@ def panel_inner():
     s = 32
     img = Image.new("RGBA", (s, s), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
-    d.rectangle((0, 0, s - 1, s - 1), fill=rgba((16, 20, 32), 220), outline=rgba(GOLD_D, 200))
+    d.rectangle((0, 0, s - 1, s - 1), fill=rgba((16, 20, 32), 255), outline=rgba(GOLD_D, 220))
     d.line([(1, 1), (s - 2, 1)], fill=rgba((60, 70, 96), 200))
     save(img, "panel_inner")
 

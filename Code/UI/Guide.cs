@@ -33,7 +33,7 @@ namespace TeyvatChronicle.UI
             "often in a desperate battle.\n" +
             "• <b>Training:</b> Vision bearers drill in their city (400 XP/yr), train at dummies (800 XP/yr) and spar. A higher-rank " +
             "mentor in the city gives ×1.5; a Training Ground (god power) gives ×2. Above rank 60, training gives half XP.\n" +
-            "• <b>Battle:</b> kills, moves and duels give XP. Duels give the most.\n" +
+            "• <b>Battle:</b> kills, techniques and duels give XP. Duels give the most. Every use of a technique also counts toward its next level.\n" +
             "• <b>Breakthroughs</b> at ranks 20/40/50/60/70/80 need a Trial (sessions, wins, foes, elites, duels, renown). " +
             "Passing one adds an Ascension star.\n" +
             "• <b>Talents</b> (Strike/Skill/Burst) grow every 3 ranks. <b>Constellations</b> C1–C6 come from fateful moments " +
@@ -42,10 +42,17 @@ namespace TeyvatChronicle.UI
             "claim an empty Archon throne. When an Archon dies, the Gnosis passes on.\n\n" +
 
             "<b><color=#D9B56A>6. Battle</color></b>\n" +
-            "Powered units use 5–7 moves of their tier: strikes, flurries, dashes, teleports, projectiles, beams, fields, " +
-            "meteor and lightning rains, shields, heals and ultimates. Elements react (Vaporize, Melt, Swirl…). " +
-            "When two powers meet on screen they may <b>duel</b>: exchanges, barrages, parries, weaving dodges and combos, " +
-            "then a finisher with an <b>impact frame</b>. Archons and above open their ultimates with a <b>cutscene</b>.\n\n" +
+            "Every power is a <b>fighting style</b> with 6–7 techniques of its own, from the Zephyr Arts of an Anemo Vision " +
+            "to the celestial nails of the Heavenly Principles. A <b>tactical mind</b> picks them: slams for crowds, fissures " +
+            "and beams for lines, executions for the wounded, leaps for fliers, dashes for far foes, guards when hurt.\n" +
+            "• <b>Levels I–III:</b> techniques grow with rank and practice (training drills them). Level III burns white-hot, " +
+            "cracks the land and freezes the world on impact.\n" +
+            "• <b>Guard:</b> masters wave off weak blows and turn arrows back.\n" +
+            "• <b>Duels:</b> stare-downs, blade locks, aerial clashes, chases, feints, technique trades, then a finisher. " +
+            "The mighty can collide in a <b>catastrophe</b>; gods send each other across the map.\n" +
+            "• <b>Team arts:</b> allies pass enemies around the sky, drop twin meteors, cross beams, merge aura waves.\n" +
+            "• <b>Situations:</b> last stands, bodyguards, vengeance for a fallen ally, rampages.\n" +
+            "• <b>God abilities:</b> Archons and above fill a God gauge; when full, the world stops for their signature art.\n\n" +
 
             "<b><color=#D9B56A>7. Play god</color></b>\n" +
             "Teyvat tab, second row (select, then click a unit):\n" +
@@ -58,17 +65,16 @@ namespace TeyvatChronicle.UI
             "<b>Settings</b> (Archive → Chronicle → Settings, or Mods → Teyvat Chronicle):\n" +
             "• <b>Chronicle:</b> pacing, start era, catch-up, which eras, minor events\n" +
             "• <b>Announcements:</b> banner, flash, shake, sound, camera, lore pop-ups\n" +
-            "• <b>Combat:</b> move damage and speed, reactions, duels, sounds, labels, auras, dragon designs\n" +
+            "• <b>Combat:</b> technique damage and speed, duels, guard, team arts, situations, God abilities, sounds, labels, auras, dragon designs\n" +
             "• <b>Cinematics:</b> impact frames, cutscenes and their spacing\n" +
             "• <b>Resonance:</b> training and combat XP, sparring, awakening, ascension paths\n" +
             "• <b>Interface:</b> the Resonance panel, the HUD, UI size\n" +
-            "To rewrite history, copy data/chronicle.json to chronicle.custom.json. To rewrite moves, copy data/moves.json to " +
-            "moves.custom.json.\n\n" +
+            "To rewrite history, copy data/chronicle.json to chronicle.custom.json.\n\n" +
 
             "<b><color=#D9B56A>Tips</color></b>\n" +
             "• Want epic fights quickly? Start at <b>The Present Day</b> with catch-up on: the Archons already reign.\n" +
             "• Mark a Training Ground in a capital to raise a generation of champions.\n" +
-            "• Too many cutscenes? Raise \"Seconds between move cutscenes\" or turn move cutscenes off and keep the " +
+            "• Too many cutscenes? Raise \"Seconds between technique cutscenes\" or turn technique cutscenes off and keep the " +
             "Chronicle ones.";
     }
 }

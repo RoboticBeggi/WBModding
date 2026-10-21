@@ -56,10 +56,14 @@ namespace TeyvatChronicle
         public static bool Moves => Bool("Combat", "Moves");
         public static float MoveDamage => Float("Combat", "MoveDamage", 1f);
         public static float CooldownScale => Float("Combat", "CooldownScale", 1f);
-        public static bool Reactions => Bool("Combat", "Reactions");
         public static bool Duels => Bool("Combat", "Duels");
         public static float DuelChance => Float("Combat", "DuelChance", 0.25f);
         public static int MaxDuels => Int("Combat", "MaxDuels", 2);
+        public static bool Guard => Bool("Combat", "Guard");
+        public static bool TeamArts => Bool("Combat", "TeamArts");
+        public static bool Situations => Bool("Combat", "Situations");
+        public static bool GodAbilities => Bool("Combat", "GodAbilities");
+        public static float GodCooldown => Float("Combat", "GodCooldown", 40f);
         public static bool CombatSounds => Bool("Combat", "CombatSounds");
         public static bool FloatingText => Bool("Combat", "FloatingText");
         public static bool Auras => Bool("Combat", "Auras");

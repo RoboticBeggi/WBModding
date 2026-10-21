@@ -39,7 +39,9 @@ namespace TeyvatChronicle.Combat
         {
             if (string.IsNullOrEmpty(pSet)) return null;
             if (_sets.TryGetValue(pSet, out Sprite[] frames)) return frames;
-            frames = Resources.LoadAll<Sprite>("gi/fx/" + pSet).OrderBy(s => s.name).ToArray();
+            // "arts/<set>" names the bespoke technique art; plain names the older shared shapes.
+            string path = pSet.Contains("/") ? "gi/" + pSet : "gi/fx/" + pSet;
+            frames = Resources.LoadAll<Sprite>(path).OrderBy(s => s.name).ToArray();
             _sets[pSet] = frames;
             if (frames.Length == 0) ModClass.LogWarning($"[Fx] No frames for set '{pSet}'");
             return frames;
@@ -71,6 +73,9 @@ namespace TeyvatChronicle.Combat
             fx.Go.transform.localScale = Vector3.one * fx.BaseScale;
             fx.Renderer.sprite = frames[0];
             fx.Renderer.flipX = false;
+            // Sprites drawn facing right stay upright when they're turned to face left.
+            float turn = Mathf.Repeat(pRotation, 360f);
+            fx.Renderer.flipY = turn > 90f && turn < 270f;
             fx.Renderer.color = pColor;
             fx.Go.SetActive(true);
             fx.Active = true;
@@ -79,14 +84,18 @@ namespace TeyvatChronicle.Combat
         }
 
         /// <summary>Moves an effect in a straight line over time (projectiles, falling meteors).</summary>
-        public static void MoveTo(Instance pFx, Vector3 pTo, float pTime)
+        public static void MoveTo(Instance pFx, Vector3 pTo, float pTime, bool pRotate = true)
         {
             if (pFx == null) return;
             pFx.From = pFx.Go.transform.position;
             pFx.To = pTo;
             pFx.MoveTime = Mathf.Max(0.01f, pTime);
+            if (!pRotate) return;
             Vector3 dir = pTo - pFx.From;
-            pFx.Go.transform.rotation = Quaternion.Euler(0f, 0f, Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg);
+            float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+            pFx.Go.transform.rotation = Quaternion.Euler(0f, 0f, angle);
+            float turn = Mathf.Repeat(angle, 360f);
+            pFx.Renderer.flipY = turn > 90f && turn < 270f;
         }
 
         /// <summary>Stretches an effect between two points (beams, dash streaks).</summary>
@@ -117,8 +126,17 @@ namespace TeyvatChronicle.Combat
         public static Instance Ghost(Actor pActor, Color pColor, float pLife = 0.35f)
         {
             if (pActor == null || !pActor.isAlive() || _active.Count >= MaxActive) return null;
-            Sprite sprite = pActor.getLastColoredSprite();
-            if (sprite == null) return null;
+            // Units with their own avatar (dragons, UFOs…) draw through a SpriteRenderer; everyone else
+            // through the batch renderer's coloured sprite. Anything bigger than a unit frame is not a
+            // unit sprite (it would be a whole texture sheet), so it's skipped.
+            Sprite sprite = null;
+            if (pActor.avatar != null)
+            {
+                var renderer = pActor.avatar.GetComponentInChildren<SpriteRenderer>();
+                if (renderer != null) sprite = renderer.sprite;
+            }
+            if (sprite == null) sprite = pActor.getLastColoredSprite();
+            if (sprite == null || sprite.rect.width > 96f || sprite.rect.height > 96f) return null;
             Instance fx = Get("EffectsBack");
             fx.Frames = new[] { sprite };
             fx.FrameTime = pLife;
@@ -132,9 +150,10 @@ namespace TeyvatChronicle.Combat
             fx.BaseScale = 0f;
             fx.Go.transform.position = pActor.current_position;
             fx.Go.transform.rotation = Quaternion.identity;
-            fx.Go.transform.localScale = pActor.current_scale;
+            fx.Go.transform.localScale = pActor.avatar != null ? pActor.avatar.transform.lossyScale : pActor.current_scale;
             fx.Renderer.sprite = sprite;
             fx.Renderer.flipX = pActor.flip;
+            fx.Renderer.flipY = false;
             fx.Renderer.color = fx.Color;
             fx.Go.SetActive(true);
             fx.Active = true;

@@ -203,13 +203,6 @@ namespace TeyvatChronicle.Progression
 
         public enum Category { Strike, Skill, Burst }
 
-        public static Category CategoryOf(MoveAsset pMove)
-        {
-            if (pMove.Energy > 0f || pMove.Archetype == "ultimate") return Category.Burst;
-            if (pMove.Archetype == "strike" || pMove.Archetype == "barrage") return Category.Strike;
-            return Category.Skill;
-        }
-
         /// <summary>Talent level including Constellation bonuses (C3 and C5 each add 2, up to 13).</summary>
         public static int EffectiveTalent(Actor a, Category c)
         {
@@ -220,35 +213,21 @@ namespace TeyvatChronicle.Progression
             return Mathf.Min(13, level);
         }
 
-        /// <summary>Damage multiplier from rank and talent for a move.</summary>
-        public static float MoveBoost(Actor a, MoveAsset pMove)
+        /// <summary>Damage multiplier from rank, talent and the C6 Burst bonus for a technique category.</summary>
+        public static float MoveBoost(Actor a, Category pCategory)
         {
             if (!Settings.Resonance) return 1f;
             float rank = 1f + (Rank(a) - 1) / 45f;
-            float talent = 1f + 0.08f * (EffectiveTalent(a, CategoryOf(pMove)) - 1);
-            float c6 = Constellation(a) >= 6 && CategoryOf(pMove) == Category.Burst ? 1.5f : 1f;
+            float talent = 1f + 0.08f * (EffectiveTalent(a, pCategory) - 1);
+            float c6 = Constellation(a) >= 6 && pCategory == Category.Burst ? 1.5f : 1f;
             return rank * talent * c6;
         }
 
         /// <summary>Cooldown multiplier: 3% shorter per talent level.</summary>
-        public static float CooldownFactor(Actor a, MoveAsset pMove)
+        public static float CooldownFactor(Actor a, Category pCategory)
         {
             if (!Settings.Resonance) return 1f;
-            return Mathf.Max(0.5f, 1f - 0.03f * (EffectiveTalent(a, CategoryOf(pMove)) - 1));
-        }
-
-        /// <summary>A copy of the move with Resonance applied (power, and the C6 Burst upgrade).</summary>
-        public static MoveAsset Boosted(Actor a, MoveAsset pMove)
-        {
-            MoveAsset copy = pMove.Clone();
-            copy.Power *= MoveBoost(a, pMove);
-            if (Settings.Resonance && Constellation(a) >= 6 && CategoryOf(pMove) == Category.Burst)
-            {
-                copy.Scale *= 1.25f;
-                copy.Impact = "major";
-                copy.Name = pMove.Name + " (C6)";
-            }
-            return copy;
+            return Mathf.Max(0.5f, 1f - 0.03f * (EffectiveTalent(a, pCategory) - 1));
         }
 
         // ---------------------------------------------------------------- constellations

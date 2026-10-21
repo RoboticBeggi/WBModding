@@ -12,6 +12,15 @@ namespace TeyvatChronicle.Combat
         public float Energy;
         public float NextCast;
         public bool InDuel;
+
+        /// <summary>A technique is running; no other starts until it ends.</summary>
+        public bool Casting;
+
+        /// <summary>The God gauge, 0–100. Fills by landing and taking blows; Archons and above spend it on a God ability.</summary>
+        public float Gauge;
+
+        public float LastStandUsed = -999f;
+        public float LastTeam = -999f;
         public string Aura;
         public float AuraUntil;
     }
@@ -53,7 +62,7 @@ namespace TeyvatChronicle.Combat
 
         // ---------------------------------------------------------------- tiers and movesets
 
-        /// <summary>The moveset of the highest-tier Teyvat trait the unit holds, or null.</summary>
+        /// <summary>The style of the highest-tier Teyvat trait the unit holds, or null.</summary>
         public static MoveSet ResolveSet(Actor pActor, out string pTraitId)
         {
             pTraitId = null;
@@ -61,7 +70,8 @@ namespace TeyvatChronicle.Combat
             foreach (ActorTrait trait in pActor.getTraits())
             {
                 if (!trait.id.StartsWith("gi_")) continue;
-                if (!MoveData.Data.MoveSets.TryGetValue(trait.id, out MoveSet set)) continue;
+                MoveSet set = Arts.Library.StyleOf(trait.id);
+                if (set == null) continue;
                 if (best == null || set.Tier > best.Tier)
                 {
                     best = set;
@@ -77,12 +87,19 @@ namespace TeyvatChronicle.Combat
             return trait;
         }
 
-        public static string ElementOf(MoveAsset pMove, MoveSet pSet)
+        /// <summary>
+        /// The element a unit fights in. Styles that take a Vision's element (Harbingers, Adepti, Allogenes)
+        /// use the holder's Vision when it has one.
+        /// </summary>
+        public static string ElementFor(Actor pActor, MoveSet pSet)
         {
-            string element = pMove.Element;
-            if (element == "random") return Elements.All[Randy.randomInt(0, Elements.All.Length)];
-            if (string.IsNullOrEmpty(element) || element == "self") return pSet?.Element ?? "physical";
-            return element;
+            if (pSet == null) return "physical";
+            if (!pSet.TakesVisionElement) return pSet.Element;
+            foreach (string element in Elements.All)
+            {
+                if (pActor.hasTrait("gi_vision_" + element)) return element;
+            }
+            return pSet.Element;
         }
 
         // ---------------------------------------------------------------- positions and targets
@@ -155,21 +172,30 @@ namespace TeyvatChronicle.Combat
 
         // ---------------------------------------------------------------- damage
 
-        /// <summary>Deals move damage, runs elemental reactions and applies a status.</summary>
+        /// <summary>Deals technique damage (past the Guard), feeds both God gauges and applies a status.</summary>
         public static void Hit(Actor pCaster, Actor pVictim, float pPower, string pElement, string pStatus = null,
             float pStatusTime = 3f)
         {
             if (!Alive(pCaster) || !Alive(pVictim)) return;
             float damage = Mathf.Max(1f, pCaster.stats["damage"]) * pPower * Settings.MoveDamage;
-            damage = Reactions.Apply(pCaster, pVictim, pElement, damage);
-            pVictim.getHit(damage, true, AttackType.Other, pCaster, false);
+            Arts.Guard.Bypass = true;
+            try
+            {
+                pVictim.getHit(damage, true, AttackType.Other, pCaster, false);
+            }
+            finally
+            {
+                Arts.Guard.Bypass = false;
+            }
+            Data(pCaster).Gauge = Mathf.Min(100f, Data(pCaster).Gauge + 1.5f + pPower * 0.5f);
             if (!pVictim.isAlive())
             {
                 Progression.Resonance.OnKill(pCaster, pVictim);
+                Arts.Situations.OnKill(pCaster, pVictim);
                 return;
             }
+            Data(pVictim).Gauge = Mathf.Min(100f, Data(pVictim).Gauge + 1f);
             if (!string.IsNullOrEmpty(pStatus)) pVictim.addStatusEffect(pStatus, pStatusTime);
-            Data(pCaster).Energy += 6f;
         }
 
         public static void HitAll(Actor pCaster, IEnumerable<Actor> pVictims, float pPower, string pElement,
@@ -214,19 +240,21 @@ namespace TeyvatChronicle.Combat
         private static float _sound_window;
         private static int _sound_count;
 
-        /// <summary>Plays a combat sound if it's on screen, at most once per 60 ms per sound and 14 per second overall.</summary>
-        public static void Sound(string pSfx, Vector3 pPos)
+        /// <summary>Plays a combat sound if it's on screen, at most once per 50 ms per sound and 18 per second overall.</summary>
+        public static void Sound(string pSfx, Vector3 pPos) => Sound(pSfx, pPos, "gi/sfx/combat/");
+
+        public static void Sound(string pSfx, Vector3 pPos, string pFolder)
         {
             if (string.IsNullOrEmpty(pSfx) || !Settings.CombatSounds || !Director.OnScreen(pPos)) return;
-            if (_sound_last.TryGetValue(pSfx, out float last) && Now - last < 0.06f) return;
+            if (_sound_last.TryGetValue(pSfx, out float last) && Now - last < 0.05f) return;
             if (Now - _sound_window > 1f)
             {
                 _sound_window = Now;
                 _sound_count = 0;
             }
-            if (++_sound_count > 14) return;
+            if (++_sound_count > 18) return;
             _sound_last[pSfx] = Now;
-            MusicBox.playSound("gi/sfx/combat/" + pSfx, pPos.x, pPos.y);
+            MusicBox.playSound(pFolder + pSfx, pPos.x, pPos.y);
         }
     }
 }

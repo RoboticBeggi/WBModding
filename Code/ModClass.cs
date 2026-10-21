@@ -1,5 +1,6 @@
 using HarmonyLib;
 using NeoModLoader.api;
+using TeyvatChronicle.Arts;
 using TeyvatChronicle.Chronicle;
 using TeyvatChronicle.Cinematics;
 using TeyvatChronicle.Combat;
@@ -21,18 +22,16 @@ namespace TeyvatChronicle
             ChronicleData.Load(GetDeclaration().FolderPath);
             LogInfo($"Loaded {ChronicleData.Timeline.Events.Count} chronicle events from {ChronicleData.LoadedFrom}");
 
-            MoveData.Load(GetDeclaration().FolderPath);
-            LogInfo($"Loaded {MoveData.Data.Moves.Count} moves in {MoveData.Data.MoveSets.Count} movesets");
-
             Kit.Init(GetDeclaration().FolderPath);
             TeyvatTraits.Init();
-            Duel.Init();
+            Engine.Init();
             TeyvatPowers.Init();
             Announcer.Init();
             TeyvatTab.Init();
 
             var harmony = new Harmony("RoboticBeggi.TeyvatChronicle");
             CharacterPanel.Patch(harmony);
+            Guard.Patch(harmony);
         }
 
         private void Update()
@@ -41,6 +40,7 @@ namespace TeyvatChronicle
             Fx.Update(Time.unscaledDeltaTime * Director.FxTimeScale * (Config.paused ? 0f : 1f));
             Kit.SyncScale();
             AuraSystem.Update();
+            GodArts.Update();
             CharacterPanel.Update();
             ArchiveWindow.Update();
             Hud.Update();

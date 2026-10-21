@@ -267,6 +267,59 @@ namespace TeyvatChronicle.Cinematics
             FloatingText.Show(pTitle, p, pColor, 18);
         }
 
+        // ---------------------------------------------------------------- hit-stop and world-stop
+
+        /// <summary>Freezes the world and every effect for a moment (heavy blows, Level III impacts).</summary>
+        public static void HitStop(float pSeconds)
+        {
+            if (!Settings.ImpactFrames) return;
+            ModClass.Instance.StartCoroutine(HitStopRoutine(pSeconds));
+        }
+
+        private static IEnumerator HitStopRoutine(float pSeconds)
+        {
+            PushTime(0.02f, 0f);
+            yield return new WaitForSecondsRealtime(pSeconds);
+            PopTime();
+        }
+
+        public static bool WorldStopped { get; private set; }
+
+        /// <summary>
+        /// A God ability's world-stop: the world freezes and dims, letterbox bars and a title card come in,
+        /// while effects keep playing at full speed. Pair with <see cref="EndWorldStop"/>.
+        /// </summary>
+        public static void BeginWorldStop(string pTitle, string pSubtitle, Color pColor)
+        {
+            EnsureCanvas();
+            WorldStopped = true;
+            PushTime(0.0005f, 1f);
+            SetImpact(new Color(0.05f, 0.04f, 0.1f), 0.42f, false);
+            SetBars(0.8f);
+            _title.text = pTitle;
+            _subtitle.text = pSubtitle ?? "";
+            _title.color = pColor;
+            _subtitle.color = new Color(1f, 1f, 1f, 0.9f);
+            _title.transform.localScale = Vector3.one;
+        }
+
+        public static void EndWorldStop()
+        {
+            if (!WorldStopped) return;
+            WorldStopped = false;
+            SetImpact(Color.clear, 0f, false);
+            SetBars(0f);
+            _title.color = Color.clear;
+            _subtitle.color = Color.clear;
+            PopTime();
+        }
+
+        /// <summary>Starts a camera zoom punch (factor below 1 zooms in).</summary>
+        public static void Punch(float pFactor = 0.85f, float pSeconds = 0.3f)
+        {
+            ModClass.Instance.StartCoroutine(ZoomPunch(pFactor, pSeconds));
+        }
+
         // ---------------------------------------------------------------- overlay
 
         private static void SetImpact(Color pColor, float pAlpha, bool pLines)

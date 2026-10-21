@@ -12,7 +12,7 @@ namespace TeyvatChronicle.UI
 {
     /// <summary>
     /// The Teyvat Archive: one window for everything. Chronicle (status, pacing, controls, every event,
-    /// start anywhere), Legends (the mightiest powers), Powers (the tier codex and reactions) and a Guide.
+    /// start anywhere), Legends (the mightiest powers), Powers (the tier codex and every fighting style) and a Guide.
     /// </summary>
     public static class ArchiveWindow
     {
@@ -38,6 +38,7 @@ namespace TeyvatChronicle.UI
             if (_root == null) Build();
             _root.gameObject.SetActive(true);
             _root.SetAsLastSibling();
+            Kit.ClampToScreen(_root);
             Select(pTab);
         }
 
@@ -301,18 +302,32 @@ namespace TeyvatChronicle.UI
                 Kit.Divider(list, 20, y, W - 60);
                 y += 7f;
             }
-            Kit.Label(list, "Elemental reactions", 8, y, W - 40, 12, 9, Kit.Gold, TextAnchor.MiddleLeft, true);
+            Kit.Label(list, "How fighters fight", 8, y, W - 40, 12, 9, Kit.Gold, TextAnchor.MiddleLeft, true);
             y += 14f;
-            Kit.Label(list,
-                "A hit leaves its element on the target for 4 seconds. Another element on top reacts:\n" +
-                "<color=#FFD27F>Vaporize</color> Hydro+Pyro ×1.8 · <color=#FFB27F>Melt</color> Cryo+Pyro ×1.8 · " +
-                "<color=#FF8A9A>Overloaded</color> Electro+Pyro, explodes · <color=#C7B8FF>Superconduct</color> Cryo+Electro, slows · " +
-                "<color=#D49CFF>Electro-Charged</color> ×1.4 · <color=#BFEFFF>Frozen</color> Hydro+Cryo · " +
-                "<color=#FF9A3A>Burning</color> Dendro+Pyro · <color=#9BFF8A>Bloom</color> Dendro+Hydro, a seed bursts · " +
-                "<color=#C8FF6A>Aggravate</color> Dendro+Electro ×1.45 · <color=#74E5C5>Swirl</color> Anemo spreads it · " +
-                "<color=#F2D27A>Crystallize</color> Geo, the attacker gets a shield.",
-                8, y, W - 44, 80, 7, Kit.Cream, TextAnchor.UpperLeft);
-            y += 84f;
+            Text how = Kit.Label(list,
+                "Every power is a <b>fighting style</b> with its own techniques. A tactical mind picks them: crowds draw slams, " +
+                "lines draw fissures and beams, a lone wounded foe draws an execution, fliers draw leaps, far foes draw dashes.\n" +
+                "Techniques grow from <color=#FFD678>I</color> to <color=#FFD678>III</color> through rank and practice " +
+                "(training drills them too). Level III burns white-hot, cracks the land and freezes the world on impact.\n" +
+                "Masters <b>guard</b> weak blows and turn arrows back. Allies combine into <b>team arts</b>. " +
+                "<b>Duels</b> bring locks, aerial clashes, chases, feints and catastrophes. Archons and above fill a " +
+                "<b>God gauge</b> and stop the world with a <b>God ability</b>.",
+                8, y, W - 44, 10, 7, Kit.Cream, TextAnchor.UpperLeft);
+            how.rectTransform.sizeDelta = new Vector2(W - 44, how.preferredHeight + 4);
+            y += how.preferredHeight + 10f;
+            foreach (MoveSet style in Arts.Library.Styles.Values.OrderBy(st => st.Tier))
+            {
+                Color sc = Elements.Color(style.Element);
+                Kit.Label(list, $"<color={Kit.Hex(sc)}>{style.Name}</color>  <color=#A0A8BE>{NeoModLoader.General.LM.Get("trait_" + style.TraitId)} · T{style.Tier}</color>",
+                    8, y, W - 40, 11, 8, Kit.Cream, TextAnchor.MiddleLeft, true);
+                y += 12f;
+                var names = style.Moves.Select(Arts.Library.Get).Where(t => t != null).Select(t => t.Ultimate ? t.Name + "*" : t.Name).ToList();
+                Arts.Technique god = Arts.Library.Get(style.God);
+                if (god != null) names.Add($"<color=#FFD678>God: {god.Name}</color>");
+                Text line = Kit.Label(list, string.Join(" · ", names), 16, y, W - 52, 10, 6, Kit.Muted, TextAnchor.UpperLeft);
+                line.rectTransform.sizeDelta = new Vector2(W - 52, line.preferredHeight + 2);
+                y += line.preferredHeight + 6f;
+            }
             list.sizeDelta = new Vector2(W - 24, y);
         }
 

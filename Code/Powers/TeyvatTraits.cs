@@ -198,7 +198,7 @@ namespace TeyvatChronicle.Powers
                     if (d < best) { best = d; foe = unit; }
                 }
             }
-            if (foe != null) CombatAI.Decide(actor, foe);
+            if (foe != null) Arts.Engine.Decide(actor, foe);
             return true; // auras are drawn by AuraSystem for every tier
         }
 
@@ -228,8 +228,8 @@ namespace TeyvatChronicle.Powers
                 rate_birth = 0,
                 rate_inherit = 0
             };
-            // Every power can use moves; curses can't.
-            if (pGroup != GroupCurses && pGroup != GroupProgress) trait.action_attack_target = CombatAI.OnAttack;
+            // Every power fights with its style's techniques; curses don't.
+            if (pGroup != GroupCurses && pGroup != GroupProgress) trait.action_attack_target = Arts.Engine.OnAttack;
             if (pGroup == GroupDivine || pGroup == GroupPrimordial)
             {
                 trait.special_effect_interval = 3f;

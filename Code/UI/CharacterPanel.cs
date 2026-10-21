@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using HarmonyLib;
 using NeoModLoader.General;
+using TeyvatChronicle.Arts;
 using TeyvatChronicle.Combat;
 using TeyvatChronicle.Powers;
 using TeyvatChronicle.Progression;
@@ -28,6 +29,7 @@ namespace TeyvatChronicle.UI
         private static Image[] _talent_fill = new Image[3];
         private static Text[] _talent_text = new Text[3];
         private static RectTransform _moves, _powered_group, _mortal_group, _actions;
+        private static Text _style;
         private static Image _potential_fill;
         private static Text _potential_text, _wish_text;
 
@@ -55,6 +57,8 @@ namespace TeyvatChronicle.UI
             _actor = pActor;
             _root.gameObject.SetActive(true);
             if (pBesideUnitWindow) _root.anchoredPosition = new Vector2(268f, 0f);
+            _root.SetAsLastSibling();
+            Kit.ClampToScreen(_root);
             Refresh();
         }
 
@@ -129,7 +133,7 @@ namespace TeyvatChronicle.UI
             _activity = Kit.Label(p, "", 12, 123, W - 24, 10, 7);
             _record = Kit.Label(p, "", 12, 134, W - 24, 20, 6, Kit.Muted);
 
-            Kit.Label(p, "Moves", 12, 156, 80, 10, 7, Kit.GoldDim, TextAnchor.MiddleLeft, true);
+            _style = Kit.Label(p, "Techniques", 12, 156, W - 24, 10, 7, Kit.GoldDim, TextAnchor.MiddleLeft, true);
             _moves = Kit.Rect(p, "moves", 12, 167, W - 24, 90);
 
             // Mortal layout
@@ -256,27 +260,51 @@ namespace TeyvatChronicle.UI
             _ => ""
         };
 
+        private static readonly string[] Numerals = { "I", "II", "III" };
+
         private static void RefreshMoves(Actor a, MoveSet pSet)
         {
             Kit.Clear(_moves);
             CombatData data = CombatCore.Data(a);
+            _style.text = $"{pSet.Name} <color=#A0A8BE>· techniques</color>";
             float y = 0f;
             foreach (string id in pSet.Moves)
             {
-                MoveAsset move = MoveData.Get(id);
-                if (move == null) continue;
-                Resonance.Category cat = Resonance.CategoryOf(move);
-                string tag = cat == Resonance.Category.Burst ? "<color=#FFD678>BURST</color>"
-                    : cat == Resonance.Category.Skill ? "<color=#7FD8FF>SKILL</color>" : "<color=#ECE5D8>STRIKE</color>";
+                Technique t = Library.Get(id);
+                if (t == null) continue;
+                bool known = Engine.Knows(a, t);
+                int level = Engine.Level(a, t);
+                string lv = known ? $"<color=#FFD678>{Numerals[level - 1]}</color>" : "<color=#5A6278>-</color>";
+                string name = known ? t.Name : $"<color=#6A7288>{t.Name}</color>";
+                string ult = t.Ultimate ? " <color=#FFD678>*</color>" : "";
                 float left = data.ReadyAt.TryGetValue(id, out float ready) ? ready - CombatCore.Now : 0f;
-                string state = left > 0.1f ? $"<color=#A0A8BE>{left:0}s</color>"
-                    : move.Energy > 0f && data.Energy < move.Energy ? $"<color=#A0A8BE>{data.Energy:0}/{move.Energy:0}</color>"
-                    : "<color=#9BFF8A>ready</color>";
-                string extra = move.Cutscene ? " *" : move.Impact == "major" ? " +" : "";
-                Kit.Label(_moves, $"{tag}  {move.Name}{extra}", 0, y, W - 70, 11, 7);
-                Kit.Label(_moves, state, W - 70, y, 44, 11, 6, null, TextAnchor.MiddleRight);
-                y += 11f;
+                string state = !known ? $"<color=#6A7288>at {Numerals[t.Unlock - 1]}</color>"
+                    : left > 0.1f ? $"<color=#A0A8BE>{left:0}s</color>"
+                    : $"<color=#9BFF8A>{ShapeTag(t.Shape)}</color>";
+                Kit.Label(_moves, $"{lv}  {name}{ult}", 0, y, W - 80, 10.5f, 7);
+                Kit.Label(_moves, state, W - 80, y, 54, 10.5f, 6, null, TextAnchor.MiddleRight);
+                y += 10.5f;
+            }
+            Technique god = Library.Get(pSet.God);
+            if (god != null)
+            {
+                string gauge = data.Gauge >= 100f ? "<color=#FFD678>READY</color>" : $"<color=#A0A8BE>{data.Gauge:0}%</color>";
+                Kit.Label(_moves, $"<color=#FFD678>GOD</color>  {god.Name}", 0, y, W - 80, 10.5f, 7);
+                Kit.Label(_moves, gauge, W - 80, y, 54, 10.5f, 6, null, TextAnchor.MiddleRight);
             }
         }
+
+        private static string ShapeTag(Shape pShape) => pShape switch
+        {
+            Shape.Crowd => "vs crowds",
+            Shape.Line => "vs lines",
+            Shape.Lone => "duelist",
+            Shape.Execute => "execute",
+            Shape.AntiAir => "anti-air",
+            Shape.Gap => "closer",
+            Shape.Guard => "guard",
+            Shape.Support => "support",
+            _ => "ready"
+        };
     }
 }
