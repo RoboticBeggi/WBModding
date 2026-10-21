@@ -183,6 +183,7 @@ namespace TeyvatChronicle.Powers
             MoveSet set = CombatCore.ResolveSet(actor, out string trait_id);
             if (set == null) return false;
             if (trait_id.StartsWith("gi_sovereign_")) DragonBodies.Apply(actor, set.Element);
+            else if (trait_id == "gi_nibelung") DragonBodies.Apply(actor, "lunar");
 
             // Dragons (and other units that skip normal fighting) never trigger the attack hook,
             // so divine beings also look for a nearby enemy here and use a move on it.
@@ -198,11 +199,7 @@ namespace TeyvatChronicle.Powers
                 }
             }
             if (foe != null) CombatAI.Decide(actor, foe);
-            if (!Settings.Auras || !Cinematics.Director.OnScreen(actor.current_position)) return true;
-            Fx.Instance aura = Fx.Play("aura", actor.current_position, 1.6f + set.Tier * 0.3f,
-                Combat.Elements.Color(set.Element) * new Color(1f, 1f, 1f, 0.7f), 0f, 1.4f, true, 10f, "EffectsBack");
-            Fx.Attach(aura, actor);
-            return true;
+            return true; // auras are drawn by AuraSystem for every tier
         }
 
         private static void AddGroup(string pId, string pColor)

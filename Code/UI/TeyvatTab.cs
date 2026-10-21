@@ -19,14 +19,17 @@ namespace TeyvatChronicle.UI
                 SpriteTextureLoader.getSprite("gi/icons/tab"));
             tab.SetLayout(new List<string> { GroupChronicle, GroupPowers });
 
+            AddButton(tab, "gi_btn_archive", "gi/icons/chronicle", () => ArchiveWindow.Show(ArchiveWindow.Tab.Chronicle));
             AddButton(tab, "gi_btn_begin", "gi/icons/btn_begin", () => ChronicleState.StartAtEra(Settings.StartEra));
-            AddButton(tab, "gi_btn_timeline", "gi/icons/btn_timeline", ChronicleWindow.Show);
+            AddButton(tab, "gi_btn_timeline", "gi/icons/btn_timeline", () => ArchiveWindow.Show(ArchiveWindow.Tab.Chronicle));
             AddButton(tab, "gi_btn_advance", "gi/icons/btn_advance", ChronicleState.Advance);
             AddButton(tab, "gi_btn_pause", "gi/icons/btn_pause", TogglePause);
             AddButton(tab, "gi_btn_status", "gi/icons/btn_status", ShowStatus);
             AddButton(tab, "gi_btn_stop", "gi/icons/btn_stop", ChronicleState.Stop);
 
-            AddButton(tab, "gi_btn_legends", "gi/icons/btn_legends", ResonanceWindows.ShowLegends, GroupPowers);
+            AddButton(tab, "gi_btn_legends", "gi/icons/btn_legends", () => ArchiveWindow.Show(ArchiveWindow.Tab.Legends), GroupPowers);
+            AddButton(tab, "gi_btn_guide", "gi/icons/btn_status", () => ArchiveWindow.Show(ArchiveWindow.Tab.Guide), GroupPowers);
+            AddButton(tab, "gi_btn_hud", "gi/icons/btn_timeline", Hud.Toggle, GroupPowers);
             foreach (string id in Powers.TeyvatPowers.Ids)
             {
                 PowerButton power = PowerButtonCreator.CreateGodPowerButton(id, SpriteTextureLoader.getSprite("gi/icons/" + id));

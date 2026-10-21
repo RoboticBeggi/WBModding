@@ -15,6 +15,16 @@ art and its own sound, and units grow stronger by **training**.
   Archon succession, Exaltation, godhood, 9 god powers, a Resonance card and a Legends leaderboard.
   Details in [PROGRESSION.md](PROGRESSION.md). The XP rates in 3.2 were replaced by the tuned values there.
 
+**Changes in v0.4.0**
+- **Custom interface:** a Genshin-style UI kit (navy panels with gold trim), a Resonance panel beside every
+  unit window, the Teyvat Archive (Chronicle, Legends, Powers, Guide), and an on-screen HUD. The layout
+  follows Combat Gods: a combat tab in the unit window, a rankings window and an on-screen leaderboard.
+- **Dragon Sovereigns:** custom per-element designs drawn onto every animation frame (palette, pattern,
+  accents, glowing rim and eyes).
+- **Effects and sound:** tier auras, sprite afterimages, smears, craters, shockwaves, a camera spotlight,
+  ascension ceremonies, and 4 new and 2 reworked sounds.
+- **GUIDE.md:** how to play and the flow of a playthrough.
+
 **Changes in revision 4 (v0.2.0)**
 - **Combat:** 202 moves in 37 movesets, built from 14 archetypes, with animated VFX tinted per element
   and 23 combat sounds. See [MOVES.md](MOVES.md).

@@ -29,7 +29,7 @@ namespace TeyvatChronicle.Combat
             public bool Active;
         }
 
-        private const int MaxActive = 220;
+        private const int MaxActive = 360;
         private static readonly Dictionary<string, Sprite[]> _sets = new Dictionary<string, Sprite[]>();
         private static readonly List<Instance> _active = new List<Instance>();
         private static readonly Stack<Instance> _pool = new Stack<Instance>();
@@ -70,6 +70,7 @@ namespace TeyvatChronicle.Combat
             fx.Go.transform.rotation = Quaternion.Euler(0f, 0f, pRotation);
             fx.Go.transform.localScale = Vector3.one * fx.BaseScale;
             fx.Renderer.sprite = frames[0];
+            fx.Renderer.flipX = false;
             fx.Renderer.color = pColor;
             fx.Go.SetActive(true);
             fx.Active = true;
@@ -107,6 +108,38 @@ namespace TeyvatChronicle.Combat
         public static void Attach(Instance pFx, BaseSimObject pTarget)
         {
             if (pFx != null) pFx.Follow = pTarget;
+        }
+
+        /// <summary>
+        /// An afterimage: a fading, tinted copy of the unit's current sprite, left behind by dashes,
+        /// teleports, dodges and knockbacks.
+        /// </summary>
+        public static Instance Ghost(Actor pActor, Color pColor, float pLife = 0.35f)
+        {
+            if (pActor == null || !pActor.isAlive() || _active.Count >= MaxActive) return null;
+            Sprite sprite = pActor.getLastColoredSprite();
+            if (sprite == null) return null;
+            Instance fx = Get("EffectsBack");
+            fx.Frames = new[] { sprite };
+            fx.FrameTime = pLife;
+            fx.Age = 0f;
+            fx.Loop = false;
+            fx.Life = pLife;
+            fx.Color = new Color(pColor.r, pColor.g, pColor.b, 0.65f);
+            fx.GrowTo = 1f;
+            fx.MoveTime = 0f;
+            fx.Follow = null;
+            fx.BaseScale = 0f;
+            fx.Go.transform.position = pActor.current_position;
+            fx.Go.transform.rotation = Quaternion.identity;
+            fx.Go.transform.localScale = pActor.current_scale;
+            fx.Renderer.sprite = sprite;
+            fx.Renderer.flipX = pActor.flip;
+            fx.Renderer.color = fx.Color;
+            fx.Go.SetActive(true);
+            fx.Active = true;
+            _active.Add(fx);
+            return fx;
         }
 
         public static void Grow(Instance pFx, float pFactor)

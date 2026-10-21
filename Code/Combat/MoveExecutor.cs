@@ -46,7 +46,11 @@ namespace TeyvatChronicle.Combat
                 case "ultimate": yield return Ultimate(pCaster, pTarget, pMove, pSet, element, color, scale); break;
             }
 
-            if (pMove.Impact == "major") Director.Impact(target_pos, color, 1f);
+            if (pMove.Impact == "major")
+            {
+                Director.Impact(target_pos, color, 1f);
+                if (pMove.Archetype != "ultimate" && pMove.Archetype != "pillar") Crater(target_pos, 2.5f * scale);
+            }
             else if (pMove.Impact == "minor" && pSet != null && pSet.Tier >= 2) Director.Impact(target_pos, color, 0.45f);
         }
 
@@ -57,7 +61,9 @@ namespace TeyvatChronicle.Combat
             if (!CombatCore.Alive(t)) yield break;
             Vector3 p = CombatCore.Pos(t);
             CombatCore.Sound(m.Sfx, p);
-            Fx.Play(m.Fx ?? "slash", p, 2.2f * s, col, Angle(c, t) + Random.Range(-25f, 25f));
+            float angle = Angle(c, t) + Random.Range(-25f, 25f);
+            Fx.Play("smear", p, 2.6f * s, new Color(col.r, col.g, col.b, 0.6f), angle, 0f, false, 26f, "EffectsBack");
+            Fx.Play(m.Fx ?? "slash", p, 2.2f * s, col, angle);
             yield return CombatCore.Wait(0.06f);
             Fx.Play(m.Fx2 ?? "hit", p, 1.4f * s, Color.white);
             CombatCore.Sound(m.Sfx2, p);
@@ -86,9 +92,10 @@ namespace TeyvatChronicle.Combat
             Vector3 dir = ((Vector3)CombatCore.Pos(t) - from).normalized;
             Vector3 to = CombatCore.Pos(t) - dir * 0.9f;
             CombatCore.Sound(m.Sfx, from);
+            CombatCore.Sound("whoosh", from);
             Fx.Line(m.Fx ?? "streak", from, to, 0.9f * s, col, 0.3f);
             Fx.Play("vanish", from, 1.6f, col);
-            yield return CombatCore.Slide(c, to, 0.12f);
+            yield return CombatCore.Slide(c, to, 0.12f, Settings.Afterimages ? col : (Color?)null);
             if (!CombatCore.Alive(t)) yield break;
             Vector3 p = CombatCore.Pos(t);
             Fx.Play(m.Fx2 ?? "slash_big", p, 3f * s, col, Angle(c, t));
@@ -105,6 +112,7 @@ namespace TeyvatChronicle.Combat
             Vector3 tp = CombatCore.Pos(t);
             Vector3 behind = tp + (tp - from).normalized * 1f;
             Fx.Play(m.Fx ?? "vanish", from, 2f * s, col);
+            if (Settings.Afterimages) Fx.Ghost(c, col, 0.5f);
             CombatCore.Sound(m.Sfx, from);
             yield return CombatCore.Wait(0.08f);
             c.setCurrentTilePosition(CombatCore.TileAt(behind));
@@ -234,6 +242,7 @@ namespace TeyvatChronicle.Combat
             Fx.Instance ring = Fx.Play(m.Fx2 ?? "nova", p, m.Radius * 1.4f, col);
             Fx.Grow(ring, 1.6f);
             CombatCore.Sound(m.Sfx2, p);
+            Crater(p, m.Radius * 1.4f);
             CombatCore.HitAll(c, CombatCore.EnemiesNear(c, p, m.Radius), m.Power, e, m.Status, m.StatusTime);
         }
 
@@ -273,8 +282,17 @@ namespace TeyvatChronicle.Combat
                 if (CombatCore.Alive(t)) p = CombatCore.Pos(t);
             }
 
-            // Charge: a magic circle under the caster and a gathering aura
+            // Charge: a magic circle under the caster, a gathering aura, and the spotlight
             CombatCore.Sound(m.Sfx, CombatCore.Pos(c));
+            if (set != null && set.Tier >= 2 && Director.OnScreen(CombatCore.Pos(c)))
+            {
+                ModClass.Instance.StartCoroutine(Director.Spotlight(CombatCore.Pos(c), 1.1f));
+            }
+            for (int i = 0; i < 2; i++)
+            {
+                Fx.Instance gather = Fx.Play("nova", CombatCore.Pos(c), 4.5f * s, col, 0f, 0.5f);
+                Fx.Grow(gather, 0.2f);
+            }
             Fx.Play("circle", CombatCore.Pos(c), 3.2f * s, col, 0f, 0.7f, true, 14f, "EffectsBack");
             Fx.Instance aura = Fx.Play("aura", CombatCore.Pos(c), 2.6f * s, col, 0f, 0.7f, true, 16f);
             Fx.Attach(aura, c);
@@ -295,11 +313,22 @@ namespace TeyvatChronicle.Combat
             Fx.Instance blast = Fx.Play(m.Fx2 ?? "nova", p, m.Radius * 1.2f, col);
             Fx.Grow(blast, 2f);
             Fx.Play("burst", p, m.Radius * 1.1f, Color.white);
+            Fx.Instance shock = Fx.Play("nova", p, m.Radius * 0.8f, Color.white, 0f, 0.6f);
+            Fx.Grow(shock, 3f);
+            Crater(p, m.Radius * 1.6f);
             CombatCore.Sound(m.Sfx2, p);
             CombatCore.HitAll(c, CombatCore.EnemiesNear(c, p, m.Radius), m.Power, e, m.Status, m.StatusTime);
         }
 
         // ---------------------------------------------------------------- helpers
+
+        /// <summary>A scorched crater that lingers on the ground after heavy blows.</summary>
+        public static void Crater(Vector3 pPos, float pSize)
+        {
+            if (!Settings.Craters) return;
+            Fx.Play("crater", pPos, Mathf.Clamp(pSize, 1.5f, 10f), new Color(0.16f, 0.12f, 0.1f, 0.85f), 0f, 4.5f,
+                false, 1f, "EffectsBack");
+        }
 
         private static void HitArea(Actor c, Actor t, Vector3 p, MoveAsset m, string e)
         {

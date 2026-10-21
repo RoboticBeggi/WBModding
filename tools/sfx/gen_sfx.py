@@ -375,6 +375,65 @@ def sfx_time():
     return reverb(out, 1.0, 0.5)
 
 
+def click(seconds=0.01):
+    """A sharp transient that makes hits feel crisp."""
+    return noise(seconds) * np.linspace(1, 0, int(seconds * RATE)) ** 3
+
+
+def sfx_hit():
+    s = 0.2
+    out = drum(s, 150) * 0.7 + lowpass(noise(s), 3000) * decay(int(s * RATE), 45) * 0.5
+    place(out, click() * 1.2, 0)
+    return out
+
+
+def sfx_hit_heavy():
+    s = 0.55
+    out = drum(s, 62) * 1.1 + np.tanh(lowpass(noise(s), 1200) * 3) * decay(int(s * RATE), 14) * 0.6
+    place(out, click(0.015) * 1.4, 0)
+    return reverb(out, 0.5, 0.2)
+
+
+def sfx_ascend():
+    """Choir swell and a rising bell: ascension ceremonies."""
+    s = 2.4
+    choir = pad([note("C4"), note("G4"), note("C5"), note("E5"), note("G5")], s, 0.5, 1.2, 3200) * 0.9
+    out = choir + sweep(200, 1200, s) * np.linspace(0, 1, int(s * RATE)) ** 2 * 0.15
+    for i, n in enumerate(("G5", "C6", "E6", "G6", "C7")):
+        place(out, bell(note(n), 1.4) * 0.35, 0.9 + i * 0.09)
+    return reverb(out, 2.4, 0.45)
+
+
+def sfx_impact():
+    """The impact-frame boom: sub drop, crack and a long tail."""
+    s = 1.6
+    t = t_axis(s)
+    sub = sweep(90, 30, s) * np.exp(-t * 2.2) * 1.4
+    crack = noise(s) * np.exp(-t * 35)
+    out = sub + crack + np.tanh(lowpass(noise(s), 500) * 4) * np.exp(-t * 3) * 0.6
+    place(out, click(0.02) * 2, 0)
+    return reverb(out, 1.6, 0.35)
+
+
+def sfx_whoosh():
+    s = 0.4
+    sig = bandnoise(s, 600, 5000)
+    env_ = np.sin(np.linspace(0, np.pi, len(sig))) ** 1.5
+    return sig * env_ + sweep(1200, 300, s) * env_ * 0.15
+
+
+def sfx_shing():
+    """A blade ring: duel starts and parries."""
+    s = 0.9
+    t = t_axis(s)
+    ring = sum(np.sin(2 * np.pi * f * t) * a * np.exp(-t * d)
+               for f, a, d in ((2200, 1, 4), (3310, 0.6, 5), (4890, 0.35, 7), (6400, 0.2, 9)))
+    scrape = bandnoise(0.15, 2000, 9000) * np.linspace(1, 0, int(0.15 * RATE))
+    out = ring * 0.7
+    place(out, scrape * 0.6, 0)
+    return reverb(out, 1.0, 0.3)
+
+
 COMBAT = {name[4:]: fn for name, fn in globals().items() if name.startswith("sfx_")}
 
 

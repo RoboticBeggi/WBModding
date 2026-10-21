@@ -115,6 +115,23 @@ namespace TeyvatChronicle.Progression
             Ascension.YearlyChecks(a, pYears);
         }
 
+        /// <summary>What the unit is doing for its Resonance right now, for the character panel.</summary>
+        public static string Activity(Actor a)
+        {
+            if (CombatCore.Data(a).InDuel) return "<color=#FF8A6A>Locked in a duel</color>";
+            if (_sparring.Contains(a.getID())) return "<color=#FFD27F>Sparring</color>";
+            if (a.has_attack_target) return "<color=#FF8A6A>In battle</color>";
+            if (!Resonance.IsPowered(a)) return a.isSapient() ? "Living an ordinary life" : "—";
+            if (!a.isSapient() || !CanTrain(a)) return "Wandering (not training)";
+            string what = a.isTask("warrior_train_with_dummy") ? "Training at a dummy" : "Drilling";
+            int rank = Resonance.Rank(a);
+            var bonus = new List<string>();
+            if (a.city != null && _city_best_rank.TryGetValue(a.city, out int best) && best > rank + 5) bonus.Add("mentor ×1.5");
+            if (TrainingGrounds.Contains(a.current_position)) bonus.Add("Training Ground ×2");
+            if (rank > 60) bonus.Add("rank 60+ ×0.5");
+            return bonus.Count > 0 ? $"{what} ({string.Join(", ", bonus)})" : what;
+        }
+
         private static bool CanTrain(Actor a)
         {
             if (a.has_attack_target || a.city == null || a.is_inside_boat) return false;

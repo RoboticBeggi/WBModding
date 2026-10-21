@@ -76,7 +76,7 @@ namespace TeyvatChronicle.Chronicle
         public static void AnnounceCountdown(ChronicleEvent pEvent, int pYearsLeft)
         {
             string years = pYearsLeft == 1 ? "1 year" : $"{pYearsLeft} years";
-            WorldTip.showNowTop($"⏳ {Format(pEvent.Title)} draws near… ({years})", false);
+            WorldTip.showNowTop($"{Format(pEvent.Title)} draws near… ({years})", false);
             if (Settings.Sound) PlaySound("warning");
         }
 

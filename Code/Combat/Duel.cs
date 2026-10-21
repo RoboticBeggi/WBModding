@@ -60,7 +60,8 @@ namespace TeyvatChronicle.Combat
             Color ca = Elements.Color(sa.Element), cb = Elements.Color(sb.Element);
             Vector3 mid = ((Vector3)a.current_position + (Vector3)b.current_position) * 0.5f;
             FloatingText.Show("DUEL!", mid, Color.white, 16);
-            CombatCore.Sound("clang", mid);
+            CombatCore.Sound("shing", mid);
+            ModClass.Instance.StartCoroutine(Director.Spotlight(mid, 1.2f));
 
             // Close the distance
             if (Vector2.Distance(a.current_position, b.current_position) > 1.6f)
@@ -68,7 +69,8 @@ namespace TeyvatChronicle.Combat
                 Vector3 dir = ((Vector3)b.current_position - (Vector3)a.current_position).normalized;
                 Vector3 to = (Vector3)b.current_position - dir * 1.2f;
                 Fx.Line("streak", a.current_position, to, 0.9f, ca, 0.25f);
-                yield return CombatCore.Slide(a, to, 0.14f);
+                CombatCore.Sound("whoosh", a.current_position);
+                yield return CombatCore.Slide(a, to, 0.14f, Settings.Afterimages ? ca : (Color?)null);
             }
 
             int beats = Random.Range(4, 7) + Mathf.Min(3, Mathf.Max(sa.Tier, sb.Tier) / 2);
@@ -179,7 +181,7 @@ namespace TeyvatChronicle.Combat
             Vector3 dir = ((Vector3)b.current_position - (Vector3)a.current_position).normalized;
             Fx.Play("slash_big", b.current_position, 2.6f, ca, Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg);
             CombatCore.Sound("hit_heavy", b.current_position);
-            yield return CombatCore.Slide(b, (Vector3)b.current_position + dir * 1.6f, 0.16f);
+            yield return CombatCore.Slide(b, (Vector3)b.current_position + dir * 1.6f, 0.16f, Settings.Afterimages ? Color.white : (Color?)null);
         }
 
         /// <summary>A heavy swing is parried with a flash of sparks, then countered.</summary>
@@ -192,7 +194,7 @@ namespace TeyvatChronicle.Combat
             Fx.Play("slash_big", mid, 2.4f, ca, Random.Range(-30f, 30f));
             Fx.Play("spark", mid, 2.6f, Color.white);
             Fx.Play("shield", b.current_position, 1.8f, cb);
-            CombatCore.Sound("clang", mid);
+            CombatCore.Sound("shing", mid);
             FloatingText.Show("PARRY!", b.current_position, cb, 14);
             yield return CombatCore.Wait(0.15f);
             if (!CombatCore.Alive(a) || !CombatCore.Alive(b)) yield break;
@@ -218,7 +220,8 @@ namespace TeyvatChronicle.Combat
                 CombatCore.Sound("swing", old_pos);
                 Fx.Play("vanish", old_pos, 1.2f, cb);
                 Fx.Line("streak", old_pos, old_pos + side, 0.6f, cb, 0.2f);
-                yield return CombatCore.Slide(b, old_pos + side, 0.08f);
+                if (Settings.Afterimages) Fx.Ghost(b, cb, 0.4f);
+                yield return CombatCore.Slide(b, old_pos + side, 0.08f, Settings.Afterimages ? cb : (Color?)null);
                 FloatingText.Show("MISS", old_pos, Color.white, 9);
                 yield return CombatCore.Wait(0.08f);
             }

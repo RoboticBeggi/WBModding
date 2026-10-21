@@ -59,7 +59,7 @@ namespace TeyvatChronicle.Progression
             Color color = Elements.Color(pElement);
             string message = pMessage ?? $"{pActor.getName()} is crowned {Training.Capital(pElement)} Archon";
             Resonance.Celebrate(pActor, "A NEW ARCHON", "boom", 1.4f, message);
-            Announcer.AnnounceLegend("⚡ " + message, color, pActor.current_tile, true);
+            Announcer.AnnounceLegend(message, color, pActor.current_tile, true);
         }
 
         // ---------------------------------------------------------------- yearly checks

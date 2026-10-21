@@ -28,7 +28,8 @@ namespace TeyvatChronicle.Cinematics
 
         private static Canvas _canvas;
         private static RectTransform _bar_top, _bar_bottom;
-        private static Image _impact, _lines;
+        private static Image _impact, _lines, _spot;
+        private static float _last_ceremony = -999f;
         private static Text _title, _subtitle;
 
         // ---------------------------------------------------------------- visibility
@@ -85,6 +86,7 @@ namespace TeyvatChronicle.Cinematics
             EnsureCanvas();
             PushTime(0.02f, 0f);
             PositionLines(pWorld);
+            CombatCore.Sound("impact", pWorld);
 
             // 1: white flash
             SetImpact(Color.white, 0.95f * pStrength, false);
@@ -158,6 +160,7 @@ namespace TeyvatChronicle.Cinematics
             }
 
             PushTime(0.2f, 0.35f);
+            if (pFocus.HasValue) ModClass.Instance.StartCoroutine(Spotlight(pFocus.Value, pHold + 1.3f));
             _title.text = pTitle;
             _subtitle.text = pSubtitle ?? "";
             _title.color = new Color(pColor.r, pColor.g, pColor.b, 0f);
@@ -197,6 +200,73 @@ namespace TeyvatChronicle.Cinematics
             CutscenePlaying = false;
         }
 
+        // ---------------------------------------------------------------- spotlight and ceremonies
+
+        /// <summary>Darkens the screen around a world position (the camera spotlight).</summary>
+        public static IEnumerator Spotlight(Vector3 pWorld, float pSeconds)
+        {
+            if (!Settings.Spotlight) yield break;
+            EnsureCanvas();
+            if (_spot.sprite == null) yield break;
+            float t = 0f;
+            while (t < pSeconds)
+            {
+                t += Time.unscaledDeltaTime;
+                Camera cam = Camera.main;
+                if (cam != null)
+                {
+                    Vector3 screen = cam.WorldToScreenPoint(pWorld);
+                    var rect = _spot.rectTransform;
+                    rect.position = new Vector3(screen.x, screen.y, 0f);
+                    float size = Mathf.Max(Screen.width, Screen.height) * 2.6f;
+                    rect.sizeDelta = new Vector2(size, size) / Mathf.Max(0.01f, _canvas.scaleFactor);
+                }
+                float k = Mathf.Min(1f, t / 0.3f) * Mathf.Min(1f, (pSeconds - t) / 0.4f);
+                _spot.color = new Color(1f, 1f, 1f, Mathf.Clamp01(k));
+                yield return null;
+            }
+            _spot.color = Color.clear;
+        }
+
+        /// <summary>
+        /// An ascension ceremony: the world stops, the spotlight falls on the unit, rings close in on
+        /// it, then a pillar of light and a blast outward with the title.
+        /// </summary>
+        public static void Ceremony(Actor pActor, string pTitle, Color pColor, float pSize = 1f)
+        {
+            if (pActor == null || !OnScreen(pActor.current_position)) return;
+            if (!Settings.Ceremonies || Time.unscaledTime - _last_ceremony < 2f)
+            {
+                FloatingText.Show(pTitle, pActor.current_position, pColor, 14);
+                return;
+            }
+            _last_ceremony = Time.unscaledTime;
+            ModClass.Instance.StartCoroutine(CeremonyRoutine(pActor, pTitle, pColor, pSize));
+        }
+
+        private static IEnumerator CeremonyRoutine(Actor a, string pTitle, Color pColor, float pSize)
+        {
+            Vector3 p = a.current_position;
+            PushTime(0.02f, 1f);
+            ModClass.Instance.StartCoroutine(Spotlight(p, 1.7f));
+            CombatCore.Sound("ascend", p);
+            for (int i = 0; i < 3; i++)
+            {
+                Fx.Instance ring = Fx.Play("nova", p, 6f * pSize, pColor, 0f, 0.5f);
+                Fx.Grow(ring, 0.15f);
+                yield return new WaitForSecondsRealtime(0.16f);
+            }
+            Fx.Play("circle", p, 3.2f * pSize, pColor, 0f, 1.4f, true, 14f, "EffectsBack");
+            yield return new WaitForSecondsRealtime(0.25f);
+            PopTime();
+            Fx.Play("pillar", p + new Vector3(0f, 3f * pSize), 5.5f * pSize, pColor);
+            Fx.Play("burst", p, 3f * pSize, Color.white);
+            Fx.Instance outward = Fx.Play("nova", p, 2f * pSize, pColor);
+            Fx.Grow(outward, 2.4f);
+            World.world.startShake(0.4f, 0.01f, 3f, true, true);
+            FloatingText.Show(pTitle, p, pColor, 18);
+        }
+
         // ---------------------------------------------------------------- overlay
 
         private static void SetImpact(Color pColor, float pAlpha, bool pLines)
@@ -233,6 +303,8 @@ namespace TeyvatChronicle.Cinematics
             _canvas.renderMode = RenderMode.ScreenSpaceOverlay;
             _canvas.sortingOrder = 29990;
 
+            _spot = MakeImage(root.transform, "Spotlight", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f));
+            _spot.sprite = UI.Kit.Sprite("vignette");
             _impact = MakeImage(root.transform, "Impact", Vector2.zero, Vector2.one);
             _lines = MakeImage(root.transform, "Lines", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f));
             Sprite[] lines = Fx.Frames("speedlines");

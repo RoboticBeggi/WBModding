@@ -71,6 +71,10 @@ namespace TeyvatChronicle
         public static bool Cutscenes => Bool("Cinematics", "Cutscenes");
         public static float CutsceneCooldown => Float("Cinematics", "CutsceneCooldown", 45f);
         public static bool ChronicleCutscenes => Bool("Cinematics", "ChronicleCutscenes");
+        public static bool Spotlight => Bool("Cinematics", "Spotlight");
+        public static bool Ceremonies => Bool("Cinematics", "Ceremonies");
+        public static bool Afterimages => Bool("Cinematics", "Afterimages");
+        public static bool Craters => Bool("Cinematics", "Craters");
 
         // Resonance (levelling)
         public static bool Resonance => Bool("Resonance", "Resonance");
@@ -83,6 +87,11 @@ namespace TeyvatChronicle
         public static bool Exaltation => Bool("Resonance", "Exaltation");
         public static bool Godhood => Bool("Resonance", "Godhood");
         public static bool LegendAnnouncements => Bool("Resonance", "LegendAnnouncements");
+
+        // Interface
+        public static bool CharacterPanel => Bool("Interface", "CharacterPanel");
+        public static bool Hud => Bool("Interface", "Hud");
+        public static float UiScale => Float("Interface", "UiScale", 1f);
 
         public static bool EraEnabled(string pEraId) => Bool("Eras", "Era_" + pEraId);
     }

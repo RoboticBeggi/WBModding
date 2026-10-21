@@ -338,6 +338,122 @@ def speedlines(size=256):
     return [to_image(a)]
 
 
+def motes(size=32, n=8):
+    """Small particles drifting upward (dragon trails, high-tier auras)."""
+    frames = []
+    x, y = grid(size, size)
+    pts = RNG.uniform(-size * 0.4, size * 0.4, (14, 2))
+    for i in range(n):
+        t = i / n
+        a = np.zeros((size, size), np.float32)
+        for k, (px, py) in enumerate(pts):
+            ph = (t + k / len(pts)) % 1
+            cy = size * 0.4 - ph * size * 0.85
+            cx = px + math.sin(ph * 6 + k) * 1.5
+            a = np.maximum(a, (np.hypot(x - cx, y - cy) < 0.9 + 0.5 * (1 - ph)) * (1 - ph))
+        frames.append(to_image(a))
+    return frames
+
+
+def aura_flame(size=32, n=6):
+    """Ki-style flames licking upward around the body (tier 2 and tier 5 auras)."""
+    frames = []
+    x, y = grid(size, size)
+    for i in range(n):
+        ph = i / n * 2 * math.pi
+        width = size * 0.36 * (1 + 0.1 * np.sin(y * 0.5 + ph))
+        tongue = np.sin(x * 0.9 + ph * 2) * 0.5 + 0.5
+        height = size * (0.25 + 0.2 * tongue)
+        body = (np.abs(x) < width) & (y > size * 0.38 - height * 2) & (y < size * 0.42)
+        edge = np.clip((width - np.abs(x)) / 3, 0, 1) * np.clip((y - (size * 0.38 - height * 2)) / 6, 0, 1)
+        hollow = np.clip(1 - np.hypot(x / (size * 0.22), (y - size * 0.1) / (size * 0.3)), 0, 1)
+        a = body * np.clip(edge - hollow * 0.8, 0, 1)
+        frames.append(to_image(a, np.clip(edge * 1.4, 0, 1)))
+    return frames
+
+
+def halo(size=32, n=6):
+    """A golden ring above the head with orbiting embers (Archons)."""
+    frames = []
+    x, y = grid(size, size)
+    for i in range(n):
+        ph = i / n * 2 * math.pi
+        e = np.hypot(x / (size * 0.32), (y + size * 0.3) / (size * 0.1))
+        a = np.clip(1 - np.abs(e - 1) / 0.25, 0, 1)
+        for k in range(3):
+            th = ph + k * 2 * math.pi / 3
+            cx, cy = math.cos(th) * size * 0.34, math.sin(th) * size * 0.14 + size * 0.05
+            a = np.maximum(a, np.clip(1 - np.hypot(x - cx, y - cy) / 1.6, 0, 1))
+        frames.append(to_image(a, a))
+    return frames
+
+
+def orbit(size=40, n=8):
+    """Three moons orbiting (Lunar powers)."""
+    frames = []
+    x, y = grid(size, size)
+    for i in range(n):
+        ph = i / n * 2 * math.pi
+        a = np.clip(1 - np.abs(np.hypot(x / (size * 0.42), y / (size * 0.18)) - 1) / 0.08, 0, 1) * 0.35
+        for k in range(3):
+            th = ph + k * 2 * math.pi / 3
+            cx, cy = math.cos(th) * size * 0.42, math.sin(th) * size * 0.18
+            moon = np.hypot(x - cx, y - cy) < 2.6
+            bite = np.hypot(x - cx - 1.2, y - cy - 0.8) < 2.2
+            a = np.maximum(a, (moon & ~bite).astype(np.float32))
+        frames.append(to_image(a, a))
+    return frames
+
+
+def radiance(size=48, n=6):
+    """Slowly turning rays of light (the Heavenly Principles)."""
+    frames = []
+    x, y = grid(size, size)
+    r = np.hypot(x, y)
+    ang = np.arctan2(y, x)
+    for i in range(n):
+        rot = i / n * (math.pi / 6)
+        rays = (np.cos((ang + rot) * 12) * 0.5 + 0.5) ** 8
+        a = rays * np.clip(1 - r / (size * 0.48), 0, 1) * np.clip(r / (size * 0.12), 0, 1)
+        a = np.maximum(a, np.clip(1 - np.abs(r - size * 0.18) / 1.2, 0, 1) * 0.8)
+        frames.append(to_image(a, rays))
+    return frames
+
+
+def crater(size=40, n=1):
+    """A scorched crater left on the ground by heavy impacts (tinted dark, fades slowly)."""
+    x, y = grid(size, size)
+    e = np.hypot(x / (size * 0.46), y / (size * 0.3))
+    rim = np.clip(1 - np.abs(e - 0.85) / 0.18, 0, 1)
+    pit = np.clip(1 - e / 0.8, 0, 1) * 0.75
+    cracks = np.zeros_like(e)
+    for th in RNG.uniform(0, 2 * math.pi, 7):
+        d = np.abs(-np.sin(th) * x + np.cos(th) * y)
+        along = np.cos(th) * x + np.sin(th) * y
+        cracks = np.maximum(cracks, (d < 0.7) * (along > size * 0.2) * (along < size * 0.5) * (e < 1.3))
+    a = np.maximum.reduce([rim * 0.9, pit, cracks * 0.8])
+    return [to_image(a, 1 - pit)]
+
+
+def smear(size=40, n=5):
+    """A thick motion smear: the blur of a fast swing."""
+    frames = []
+    x, y = grid(size, size)
+    r = np.hypot(x, y)
+    ang = np.arctan2(y, x)
+    for i in range(n):
+        t = i / (n - 1)
+        a0 = -2.0 + 0.6 * t
+        span = 2.8
+        within = (ang > a0) & (ang < a0 + span)
+        along = np.clip((ang - a0) / span, 0, 1)
+        inner, outer = size * 0.14, size * (0.44 - 0.06 * t)
+        band = (r > inner + (outer - inner) * (1 - along) * 0.7) & (r < outer)
+        a = within * band * along * (1 - t * 0.8)
+        frames.append(to_image(a, along))
+    return frames
+
+
 SETS = {
     "slash": slash,
     "slash_big": lambda: slash(48, 7, double=True),
@@ -358,6 +474,13 @@ SETS = {
     "circle": circle,
     "aura": aura,
     "speedlines": speedlines,
+    "motes": motes,
+    "aura_flame": aura_flame,
+    "halo": halo,
+    "orbit": orbit,
+    "radiance": radiance,
+    "crater": crater,
+    "smear": smear,
 }
 
 

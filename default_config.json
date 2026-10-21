@@ -249,6 +249,26 @@
             "Id": "ChronicleCutscenes",
             "Type": "SWITCH",
             "BoolVal": true
+        },
+        {
+            "Id": "Spotlight",
+            "Type": "SWITCH",
+            "BoolVal": true
+        },
+        {
+            "Id": "Ceremonies",
+            "Type": "SWITCH",
+            "BoolVal": true
+        },
+        {
+            "Id": "Afterimages",
+            "Type": "SWITCH",
+            "BoolVal": true
+        },
+        {
+            "Id": "Craters",
+            "Type": "SWITCH",
+            "BoolVal": true
         }
     ],
     "Resonance": [
@@ -307,6 +327,25 @@
             "Id": "LegendAnnouncements",
             "Type": "SWITCH",
             "BoolVal": true
+        }
+    ],
+    "Interface": [
+        {
+            "Id": "CharacterPanel",
+            "Type": "SWITCH",
+            "BoolVal": true
+        },
+        {
+            "Id": "Hud",
+            "Type": "SWITCH",
+            "BoolVal": true
+        },
+        {
+            "Id": "UiScale",
+            "Type": "SLIDER",
+            "FloatVal": 1.0,
+            "MinFloatVal": 0.6,
+            "MaxFloatVal": 1.6
         }
     ]
 }

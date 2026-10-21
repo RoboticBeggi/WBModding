@@ -374,6 +374,12 @@ namespace TeyvatChronicle.Progression
             Color color = Elements.Color(set?.Element ?? "divine");
             Vector3 p = a.current_position;
             if (!Director.OnScreen(p)) return;
+            if (pLabel.StartsWith("ASCEN") || pLabel.StartsWith("A NEW") || pLabel.StartsWith("EXALT") || pLabel.StartsWith("VISION"))
+            {
+                Director.Ceremony(a, pLabel, color, pSize);
+                if (pSubLabel != null) FloatingText.Show(pSubLabel, p + new Vector3(0f, -1.2f), Color.white, 9);
+                return;
+            }
             Fx.Play("pillar", p + new Vector3(0f, 2.2f * pSize), 4f * pSize, color);
             Fx.Instance ring = Fx.Play("nova", p, 3f * pSize, color);
             Fx.Grow(ring, 1.8f);

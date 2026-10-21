@@ -4,11 +4,17 @@ A WorldBox mod that plays out Genshin Impact's history of Teyvat on your world, 
 Seven Dragon Sovereigns of the Old World to the Snezhnaya crisis of Version 7.1. Every power is a
 trait, so you can give a Vision, a Gnosis or a Shade's Authority to anyone.
 
-> **Status: v0.3.0.** The Chronicle, 39 power traits, 202 animated moves, reactions, duels, impact
-> frames, cutscenes and dragon Sovereigns, plus **Ley Line Resonance**: ranks 1–90 earned by training,
-> Breakthrough Trials, talents, Constellations, Vision awakening, Archon succession, Exaltation and
-> godhood, with 9 new god powers and a Legends leaderboard. v0.1.0 was tested in-game; v0.2.0 and
-> v0.3.0 compile against the game DLL but haven't been run in-game yet.
+> **Status: v0.4.0.** Everything from before (the Chronicle, 39 powers, 202 animated moves, duels,
+> reactions, Resonance levelling and training), now with a **custom Genshin-style interface**:
+> - a Resonance panel beside every unit window
+> - the Teyvat Archive window
+> - an on-screen HUD
+>
+> It also adds **custom Dragon Sovereign designs**, **tier auras**, afterimages, craters, a camera
+> spotlight, ascension ceremonies, and refined effects and sounds.
+> v0.1.0 has been tested in-game; later versions compile against the game DLL but haven't been run in-game yet.
+>
+> **New here? Read [GUIDE.md](GUIDE.md):** how to play, the flow of a playthrough, and every button.
 
 ## Install (PC / Steam)
 
@@ -21,16 +27,23 @@ trait, so you can give a Vision, a Gnosis or a Shade's Authority to anyone.
 
 ## Playing
 
-**The Teyvat tab**
+The full walkthrough is in **[GUIDE.md](GUIDE.md)**. You can also read it in the game: **Teyvat tab → How to Play**.
 
-| Button | What it does |
-|---|---|
-| Begin the Chronicle | Starts from the era picked in the mod settings (default: the Old World) |
-| Chronicle Timeline | Lists all 45 events. Click any one to start the Chronicle **from that event** |
-| Advance | Makes the next event happen now |
-| Pause / Resume | Pauses the Chronicle (the world keeps running) |
-| Status | Shows the next event and how many years are left |
-| Stop | Ends the Chronicle on this world |
+1. Make a world and let some kingdoms grow.
+2. Open the **Teyvat** tab, then **Teyvat Archive**.
+3. In the Chronicle tab, pick a pace and press **Begin**. Or click any event, then **Start here**.
+4. Click glowing units to open their **Resonance panel**: rank, Ascension, Trial, talents,
+   Constellation, what they're doing, and their moves.
+5. Use the god powers (second row of the Teyvat tab) to raise, crown and shape your heroes.
+
+**The interface**
+- **Teyvat Archive:** a draggable window with four tabs:
+  - **Chronicle:** status, pacing, controls, and every event with its story and a *Start here* button.
+  - **Legends:** the mightiest powers.
+  - **Powers:** the tier codex and reactions.
+  - **Guide:** how to play.
+- **Resonance panel:** opens beside WorldBox's unit window and updates live.
+- **HUD** (top right): the next Chronicle event with its countdown, and the top 5 legends.
 
 Each world remembers its own place in the timeline, because progress is saved with the world.
 
@@ -51,7 +64,21 @@ projectiles, beams, fields, rains of meteors or lightning, shields, heals and ul
 has animated, element-coloured effects and sounds. When two powered units fight on screen they may
 break into a **duel**: blade exchanges, barrages, parries and counters, weaving dodges and combos,
 ending in a finisher with an **impact frame**. Archons and above open their ultimates with a
-**cutscene**. The full list and the format for editing moves are in [MOVES.md](MOVES.md).
+**cutscene**. Every tier wears its own aura, as listed below.
+
+| Tier | Aura |
+|---|---|
+| Vision | A shimmer |
+| Exalted | Ki flames |
+| Archon | A golden halo |
+| Sovereign | Element motes |
+| Shade | Crimson flames |
+| Lunar | Orbiting moons |
+| Heavenly Principles | Radiant rays |
+
+Dashes leave afterimages, heavy blows leave craters, and ascensions play a ceremony. The Dragon
+Sovereigns have their own element designs. The full list and the format for editing moves are in
+[MOVES.md](MOVES.md).
 
 ## Levelling and training
 

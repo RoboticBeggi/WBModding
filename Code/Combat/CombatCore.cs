@@ -190,14 +190,19 @@ namespace TeyvatChronicle.Combat
         }
 
         /// <summary>Slides a unit to a position over time, then settles it on that tile.</summary>
-        public static IEnumerator Slide(Actor pActor, Vector3 pTo, float pSeconds)
+        public static IEnumerator Slide(Actor pActor, Vector3 pTo, float pSeconds, Color? pGhost = null)
         {
             if (!Alive(pActor)) yield break;
             Vector3 from = pActor.current_position;
-            float t = 0f;
+            float t = 0f, next_ghost = 0f;
             while (t < pSeconds && Alive(pActor))
             {
                 t += Time.unscaledDeltaTime * Director.FxTimeScale;
+                if (pGhost.HasValue && t >= next_ghost)
+                {
+                    Fx.Ghost(pActor, pGhost.Value);
+                    next_ghost = t + 0.03f;
+                }
                 Vector3 p = Vector3.Lerp(from, pTo, Mathf.SmoothStep(0f, 1f, t / pSeconds));
                 pActor.current_position = p;
                 yield return null;
