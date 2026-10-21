@@ -1,0 +1,158 @@
+{
+    "Chronicle": [
+        {
+            "Id": "Pacing",
+            "Type": "SELECT",
+            "IntVal": 1,
+            "MinIntVal": 0,
+            "MaxIntVal": 4
+        },
+        {
+            "Id": "StartEra",
+            "Type": "SELECT",
+            "IntVal": 0,
+            "MinIntVal": 0,
+            "MaxIntVal": 11
+        },
+        {
+            "Id": "CustomTimeScale",
+            "Type": "SLIDER",
+            "FloatVal": 1.0,
+            "MinFloatVal": 0.1,
+            "MaxFloatVal": 5.0
+        },
+        {
+            "Id": "CatchUp",
+            "Type": "SWITCH",
+            "BoolVal": true
+        },
+        {
+            "Id": "CountdownWarnings",
+            "Type": "SWITCH",
+            "BoolVal": true
+        },
+        {
+            "Id": "MinorEvents",
+            "Type": "SWITCH",
+            "BoolVal": true
+        }
+    ],
+    "Announcements": [
+        {
+            "Id": "Banner",
+            "Type": "SWITCH",
+            "BoolVal": true
+        },
+        {
+            "Id": "BannerSeconds",
+            "Type": "SLIDER",
+            "FloatVal": 7.0,
+            "MinFloatVal": 3.0,
+            "MaxFloatVal": 15.0
+        },
+        {
+            "Id": "ScreenFlash",
+            "Type": "SWITCH",
+            "BoolVal": true
+        },
+        {
+            "Id": "ScreenShake",
+            "Type": "SWITCH",
+            "BoolVal": true
+        },
+        {
+            "Id": "Sound",
+            "Type": "SWITCH",
+            "BoolVal": true
+        },
+        {
+            "Id": "CameraJump",
+            "Type": "SWITCH",
+            "BoolVal": true
+        },
+        {
+            "Id": "WorldLog",
+            "Type": "SWITCH",
+            "BoolVal": true
+        },
+        {
+            "Id": "LorePopup",
+            "Type": "SWITCH",
+            "BoolVal": false
+        }
+    ],
+    "Eras": [
+        {
+            "Id": "Era_old_world",
+            "Type": "SWITCH",
+            "BoolVal": true
+        },
+        {
+            "Id": "Era_doves",
+            "Type": "SWITCH",
+            "BoolVal": true
+        },
+        {
+            "Id": "Era_unified",
+            "Type": "SWITCH",
+            "BoolVal": true
+        },
+        {
+            "Id": "Era_funerary_flame",
+            "Type": "SWITCH",
+            "BoolVal": true
+        },
+        {
+            "Id": "Era_archon_war",
+            "Type": "SWITCH",
+            "BoolVal": true
+        },
+        {
+            "Id": "Era_age_of_seven",
+            "Type": "SWITCH",
+            "BoolVal": true
+        },
+        {
+            "Id": "Era_cataclysm",
+            "Type": "SWITCH",
+            "BoolVal": true
+        },
+        {
+            "Id": "Era_post_cataclysm",
+            "Type": "SWITCH",
+            "BoolVal": true
+        },
+        {
+            "Id": "Era_present",
+            "Type": "SWITCH",
+            "BoolVal": true
+        },
+        {
+            "Id": "Era_nod_krai",
+            "Type": "SWITCH",
+            "BoolVal": true
+        },
+        {
+            "Id": "Era_snezhnaya",
+            "Type": "SWITCH",
+            "BoolVal": true
+        }
+    ],
+    "Rules": [
+        {
+            "Id": "UniqueHolders",
+            "Type": "SWITCH",
+            "BoolVal": true
+        },
+        {
+            "Id": "DestructiveEffects",
+            "Type": "SWITCH",
+            "BoolVal": true
+        },
+        {
+            "Id": "WarEffects",
+            "Type": "SWITCH",
+            "BoolVal": true
+        }
+    ]
+}

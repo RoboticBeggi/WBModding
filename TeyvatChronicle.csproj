@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  NML compiles this mod's source itself when the game starts, so building is optional.
+  This project exists for editor autocomplete and for checking the code compiles.
+
+  It expects the repo to be cloned into   <WorldBox>/Mods/TeyvatChronicle
+  To build somewhere else, pass the folder holding the game and NML DLLs:
+      dotnet build -p:RefDir=/path/to/dlls
+-->
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net48</TargetFramework>
+        <LangVersion>latest</LangVersion>
+        <ImplicitUsings>disable</ImplicitUsings>
+        <Nullable>disable</Nullable>
+        <OutputType>Library</OutputType>
+        <RootNamespace>TeyvatChronicle</RootNamespace>
+        <AssemblyName>TeyvatChronicle</AssemblyName>
+        <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+        <GameDir Condition="'$(GameDir)' == ''">$(MSBuildProjectDirectory)/../..</GameDir>
+        <Managed>$(GameDir)/worldbox_Data/Managed</Managed>
+        <NMLDir>$(GameDir)/worldbox_Data/StreamingAssets/mods</NMLDir>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Compile Include="Code/**/*.cs" />
+    </ItemGroup>
+
+    <!-- Building against a folder of DLLs (e.g. on a machine without the game) -->
+    <ItemGroup Condition="'$(RefDir)' != ''">
+        <Reference Include="$(RefDir)/*.dll" Private="false" />
+    </ItemGroup>
+
+    <!-- Building inside the game's Mods folder -->
+    <ItemGroup Condition="'$(RefDir)' == ''">
+        <Reference Include="Assembly-CSharp">
+            <HintPath>$(NMLDir)/NML/Assembly-CSharp-Publicized.dll</HintPath>
+            <Private>false</Private>
+        </Reference>
+        <Reference Include="NeoModLoader">
+            <HintPath Condition="Exists('$(NMLDir)/NeoModLoader_memload.dll')">$(NMLDir)/NeoModLoader_memload.dll</HintPath>
+            <HintPath Condition="Exists('$(NMLDir)/NeoModLoader.dll')">$(NMLDir)/NeoModLoader.dll</HintPath>
+            <Private>false</Private>
+        </Reference>
+        <Reference Include="$(Managed)/strings.dll" Private="false" />
+        <Reference Include="$(Managed)/Newtonsoft.Json.dll" Private="false" />
+        <Reference Include="$(Managed)/UnityEngine.dll" Private="false" />
+        <Reference Include="$(Managed)/UnityEngine.CoreModule.dll" Private="false" />
+        <Reference Include="$(Managed)/UnityEngine.UI.dll" Private="false" />
+        <Reference Include="$(Managed)/UnityEngine.UIModule.dll" Private="false" />
+        <Reference Include="$(Managed)/UnityEngine.TextRenderingModule.dll" Private="false" />
+        <Reference Include="$(Managed)/FMODUnity.dll" Private="false" />
+    </ItemGroup>
+</Project>

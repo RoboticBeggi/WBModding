@@ -1,13 +1,21 @@
 # Teyvat Chronicle — a Genshin Impact chronology mod for WorldBox
 
-Research notes and design plan, revision 2. The mod makes WorldBox play out Teyvat's history, from
-the reign of the Three Moons to the present-day Snezhnaya crisis. Powers are **traits only**: no new
+Research notes and design plan, revision 3. The mod makes WorldBox play out Teyvat's history, from
+the Old World of the Dragon Sovereigns to the present-day Snezhnaya crisis. Powers are **traits only**: no new
 units or races. You can give any trait to any creature. Each power tier has its own moveset, its own
 art and its own sound, and units grow stronger by **training**.
 
-> Status: design only. No mod code yet.
+> Status: v0.1.0 is built: the Chronicle engine, 39 power traits with icons, and announcements with sounds.
+> It compiles against the game DLL but hasn't been run in-game yet. Movesets and levelling are next.
 > Game API names were checked against the `Assembly-CSharp-Publicized.dll` and `strings.dll`
 > that ship with NeoModLoader `master` (NML 1.2.1.1, commit dated 2026-10-19).
+
+**Changes in revision 3**
+- The timeline was re-researched from the Genshin Impact Wiki's master timeline and its region
+  History pages. It is now 45 events in 11 eras, starting at the Old World. See [CHRONICLE.md](CHRONICLE.md).
+- The Chronicle can start from any event, can be edited completely (`data/chronicle.custom.json`), and
+  every era, effect type and announcement channel can be turned on or off.
+- Platform confirmed: PC (Steam).
 
 **Changes in revision 2**
 - Up to date with Genshin as of October 2026: Snezhnaya, Versions 7.0 and 7.1.
@@ -96,19 +104,28 @@ Constellations C0–C6 · weapon Refinement R1–R5 · artifacts.
 
 ### 1.5 Timeline used by the mod (oldest first)
 
-1. **Reign of the Three Moons.** Nibelung's moon goddesses hold the primordial laws.
-2. **Age of Dragons.** Seven Dragon Sovereigns and the Dragon King Nibelung.
-3. **The Primordial One descends.** Phanes and the Four Shades fight the dragons for 40+ years. Nibelung falls.
-   Phanes creates the Heavenly Principles, Irminsul and humans. The moons' authority passes to the Shades.
-4. **Ancient civilisations and the Second Who Came.** Remuria, Sal Vindagnyr (crushed by a Celestial Nail),
-   the Sunchildren, King Deshret.
-5. **The Third Descender.** The Abyss gateway, the Tsaritsa erased and restored, the seven Gnoses created.
-6. **The Archon War** (ends about 2,000 years ago). Demon Gods fight for the seven thrones and the Gnoses.
-7. **Khaenri'ah's height.** The godless nation, its Ruin Machines, the Crimson Moon Dynasty.
-8. **The Cataclysm** (about 500 years ago). Khaenri'ah falls, the Third Descender's curse goes off and Celestia
-   goes dormant. Hilichurls, the Curse of Immortality and the Abyss Order follow.
-9. **The present day.** The Traveler crosses the seven nations; the Fatui collect Gnoses.
-10. **The Snezhnaya crisis** (present). The Tsaritsa against Celestia, Ronova's Curse of Death, Holy Soil spreading.
+The full event list, the sources and how conflicting sources were resolved are in
+[CHRONICLE.md](CHRONICLE.md). In short, using the wiki's own era names:
+
+1. **The Old World.** The Seven Sovereigns rule under Nibelung. The Primordial Sea is the cradle of life.
+   Nibelung raises the Three Moons and leaves Teyvat. The voyager Anacharsis warns him the world will end.
+2. **When the Doves Held Branches.** The Heavenly Principles descend, take the Sovereigns' Authorities and
+   create the Four Shades. The False Sky closes. After 40 years the Sovereigns fall.
+3. **The Unified Civilization** (~6,000 years ago). Humanity is created (the "Ark's Opening"). Arcadia,
+   Sal Vindagnyr, Lang-Gan, Ys, Hyperborea and Enkanomiya flourish, until humanity's pride angers the heavens.
+4. **The War of Funerary Flame** (~6,000 years ago). Nibelung returns with the Abyss. The Eternal and
+   Iridescent Moons are shattered and the Celestial Nails fall. History is forbidden and the Angels become
+   Seelies. Khaenri'ah is founded.
+5. **The Archon War** (~6,000–2,000 years ago). The seven thrones open. Guizhong falls and Liyue Harbor is
+   founded (3,700). The Third Descender's sacrifice creates the Gnoses. Decarabian falls (2,600), King
+   Deshret falls, and Xbalanque kills Xiuhcoatl. The Seven are crowned.
+6. **The Age of the Seven** (2,000–500). Visions appear. Khaenri'ah's dynasties rule. Vennessa's rebellion.
+7. **The Cataclysm** (500). The Abyss invades and Khaenri'ah falls. Makoto and Egeria die. The curse puts
+   Celestia to sleep.
+8. **After the Cataclysm.** Hilichurls spread, the Fatui and the Abyss Order are founded.
+9. **The present day.** The Traveler crosses Mondstadt, Liyue, Inazuma, Sumeru, Fontaine and Natlan.
+10. **Song of the Welkin Moon** (Nod-Krai, Versions Luna I–VIII). Columbina takes the Trilunar Authority.
+11. **The Snezhnaya crisis** (7.0–7.1). Ronova's Curse of Death, the Tsaritsa's stand, and Holy Soil spreading.
 
 ---
 
@@ -348,39 +365,13 @@ huge damage).
 **Start:** the god power *Begin the Teyvat Chronicle*. It can run on its own, or step by step with an
 *Advance Chronicle* button.
 
-**Pacing presets** (set in config). Every preset takes **a few hundred years at most**:
+**Pacing presets** (set in config): Lore ≈ 910 years, Normal ≈ 466, Fast ≈ 159, Custom = Normal ×
+a time-scale slider (0.1–5). Each event has its own delay for each preset. The full table is in
+[CHRONICLE.md](CHRONICLE.md).
 
-| Stage | Lore (scaled) | Normal | Fast |
-|---|---|---|---|
-| 1 Reign of the Three Moons | 40 | 20 | 8 |
-| 2 Age of Dragons | 60 | 30 | 12 |
-| 3 The Primordial One descends (40-year war) | 40 | 20 | 8 |
-| 4 Ancient civilisations | 80 | 40 | 15 |
-| 5 The Third Descender | 30 | 15 | 6 |
-| 6 Archon War | 60 | 30 | 12 |
-| 7 Khaenri'ah's height | 90 | 45 | 15 |
-| 8 The Cataclysm | 20 | 10 | 5 |
-| 9 The present day | 100 | 60 | 20 |
-| 10 The Snezhnaya crisis | open-ended | open-ended | open-ended |
-| **Total** | **~520 years** | **~270 years** | **~100 years** |
-
-"Lore (scaled)" keeps the real ratios: about 2,000 years between the Archon War and today, and 500 since
-the Cataclysm, all shrunk to fit. **Custom** lets you set each stage's length (in years) in config.
-
-**What happens in each stage:**
-
-| Stage | Events |
-|---|---|
-| 1 | Three units get the Trilunar Authority. Night lasts longer; moonlight overlay on the map. |
-| 2 | Seven Dragon Sovereigns (the trait goes onto the biggest creatures). Holy Soil appears. |
-| 3 | The Primordial One descends (Tier 7) with the Four Shades and wars on the dragons. The moons fade; their authority passes to the Shades. |
-| 4 | Ancient kingdoms rise. A **Celestial Nail** destroys one city (Sal Vindagnyr). |
-| 5 | The Third Descender appears, opens a rift and dies. The **seven Gnoses** are created. |
-| 6 | Demon God traits spread and kingdoms go to war. When the stage ends, the strongest of each element is crowned Archon. |
-| 7 | One kingdom becomes **Khaenri'ah**: no Vision awakenings, strong technology. |
-| 8 | **The Cataclysm.** Khaenri'ah is destroyed. Abyss Heralds appear, some Archons can die, Celestia goes **dormant** and the Shades get weaker. |
-| 9 | Vision awakenings become common. Fatui Harbingers appear. The Tsaritsa starts collecting Gnoses. An Allogene "Traveler" can awaken. |
-| 10 | Ronova's Curse of Death on one kingdom, Holy Soil spreading, the Tsaritsa against Celestia. |
+**Starting point:** any era (from settings) or any single event (from the Timeline window). With
+catch-up on, earlier events' set-up effects (who holds which Gnosis, which kingdom is Khaenri'ah, the
+current era) are applied silently first.
 
 **Announcements**, so you never miss an event:
 1. **A big banner** across the middle of the screen (`WorldTip.showNowCenter`), with the stage title in the element's colour. Example: *"⚠ THE CATACLYSM — Khaenri'ah falls"*.
@@ -426,12 +417,12 @@ shake, deeper bass. Because everything comes from scripts, the art and sound are
 
 | Phase | Deliverable |
 |---|---|
-| 0 | Project set up from the template; the mod loads; the Teyvat tab and trait groups exist |
+| 0 ✅ | Project set up; the mod loads; the Teyvat tab, trait groups and 39 power traits (stats and icons) |
 | 1 | Resonance levelling: training, Trials, talents, constellations, save data |
 | 2 | Tier 1 (7 Visions + Delusion + Allogene): 5 moves each, the reaction engine, element VFX/SFX |
 | 3 | Tiers 2–3: Exalted paths and Archons; god powers for granting them |
 | 4 | Tiers 4–7: Dragons, Shades, Trilunar, Heavenly Principles; Lunar and Stellar reactions |
-| 5 | The Chronicle: pacing presets, the 10 stages, the announcement system |
+| 5 ✅ (core) | The Chronicle: 45 events, pacing presets, start anywhere, an editable timeline, the announcement system and 8 sound stingers. Power VFX per event come with Phases 2–4 |
 | 6 | Balance pass, all settings, translations, Steam Workshop release |
 
 Art and sound for each phase are made in that same phase.

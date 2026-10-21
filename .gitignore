@@ -1,0 +1,8 @@
+bin/
+obj/
+.vs/
+.idea/
+*.user
+*.dll
+*.pdb
+data/chronicle.custom.json
