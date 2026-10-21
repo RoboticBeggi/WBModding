@@ -5,8 +5,9 @@ the Old World of the Dragon Sovereigns to the present-day Snezhnaya crisis. Powe
 units or races. You can give any trait to any creature. Each power tier has its own moveset, its own
 art and its own sound, and units grow stronger by **training**.
 
-> Status: v0.1.0 is built: the Chronicle engine, 39 power traits with icons, and announcements with sounds.
-> It compiles against the game DLL but hasn't been run in-game yet. Movesets and levelling are next.
+> Status: v0.5.0. The Chronicle, 39 power traits, Resonance levelling, the custom interface and, since
+> v0.5, a Combat Gods-style combat system (see [ARTS.md](ARTS.md)). v0.1.0 was tested in-game; later
+> versions compile against the game DLL but haven't been run in-game yet.
 > Game API names were checked against the `Assembly-CSharp-Publicized.dll` and `strings.dll`
 > that ship with NeoModLoader `master` (NML 1.2.1.1, commit dated 2026-10-19).
 
@@ -25,9 +26,21 @@ art and its own sound, and units grow stronger by **training**.
   ascension ceremonies, and 4 new and 2 reworked sounds.
 - **GUIDE.md:** how to play and the flow of a playthrough.
 
+**Changes in revision 6 (v0.5.0): the combat rework**
+- The Genshin-style move system (archetype moves, energy and elemental reactions) is gone. Combat now
+  follows the *Combat Gods* mod.
+  - 37 fighting styles written as code, with 238 unique techniques and 23 God abilities.
+  - A tactical mind; technique levels I–III from rank and mastery.
+  - Guard; duels built from beats (lock, aerial clash, chase, feint, trade, catastrophe, map-crossing god duels).
+  - Team arts; last stand, bodyguard, vengeance and rampage.
+  - God abilities with a gauge and a world-stop.
+  - Craters and fissures.
+- 80 new hand-made effect sets (`tools/art/gen_arts.py`) and 83 new combat sounds (`tools/sfx/gen_arts_sfx.py`).
+- Sections below that mention movesets, energy, bursts or reactions describe the earlier design.
+
 **Changes in revision 4 (v0.2.0)**
 - **Combat:** 202 moves in 37 movesets, built from 14 archetypes, with animated VFX tinted per element
-  and 23 combat sounds. See [MOVES.md](MOVES.md).
+  and 23 combat sounds. *(Replaced in v0.5.0; see below.)*
 - **Duels:** exchange, barrage, parry, weave and combo beats, ending in a finisher.
 - **Impact frames:** hit-stop, white flash, a black frame with speed lines, a tinted frame, a camera punch.
 - **Cutscenes:** for ultimates of Archons and above, and for major Chronicle events.
