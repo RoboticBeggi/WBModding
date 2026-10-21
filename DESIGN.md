@@ -10,6 +10,15 @@ art and its own sound, and units grow stronger by **training**.
 > Game API names were checked against the `Assembly-CSharp-Publicized.dll` and `strings.dll`
 > that ship with NeoModLoader `master` (NML 1.2.1.1, commit dated 2026-10-19).
 
+**Changes in revision 4 (v0.2.0)**
+- **Combat:** 202 moves in 37 movesets, built from 14 archetypes, with animated VFX tinted per element
+  and 23 combat sounds. See [MOVES.md](MOVES.md).
+- **Duels:** exchange, barrage, parry, weave and combo beats, ending in a finisher.
+- **Impact frames:** hit-stop, white flash, a black frame with speed lines, a tinted frame, a camera punch.
+- **Cutscenes:** for ultimates of Archons and above, and for major Chronicle events.
+- **Dragon Sovereigns:** the Chronicle spawns real dragons and recolours their sprites per element.
+- Resonance levelling (Phase 1) is still to do.
+
 **Changes in revision 3**
 - The timeline was re-researched from the Genshin Impact Wiki's master timeline and its region
   History pages. It is now 45 events in 11 eras, starting at the Old World. See [CHRONICLE.md](CHRONICLE.md).
@@ -419,9 +428,9 @@ shake, deeper bass. Because everything comes from scripts, the art and sound are
 |---|---|
 | 0 ✅ | Project set up; the mod loads; the Teyvat tab, trait groups and 39 power traits (stats and icons) |
 | 1 | Resonance levelling: training, Trials, talents, constellations, save data |
-| 2 | Tier 1 (7 Visions + Delusion + Allogene): 5 moves each, the reaction engine, element VFX/SFX |
-| 3 | Tiers 2–3: Exalted paths and Archons; god powers for granting them |
-| 4 | Tiers 4–7: Dragons, Shades, Trilunar, Heavenly Principles; Lunar and Stellar reactions |
+| 2 ✅ | Tier 1 (7 Visions + Delusion + Allogene): 5–6 moves each, the reaction engine, element VFX/SFX |
+| 3 ✅ (moves) | Tiers 2–3: Exalted paths and Archons, with movesets. God powers for granting them are still to do; the trait editor works for now |
+| 4 ✅ (moves) | Tiers 4–7: Dragons (real recoloured dragons), Shades, Moons, Heavenly Principles, with movesets. Lunar and Stellar reactions are still to do |
 | 5 ✅ (core) | The Chronicle: 45 events, pacing presets, start anywhere, an editable timeline, the announcement system and 8 sound stingers. Power VFX per event come with Phases 2–4 |
 | 6 | Balance pass, all settings, translations, Steam Workshop release |
 

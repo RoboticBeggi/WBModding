@@ -1,5 +1,6 @@
 using System.Collections;
 using NeoModLoader.General;
+using TeyvatChronicle.Cinematics;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -40,7 +41,15 @@ namespace TeyvatChronicle.Chronicle
             string banner = Format(pEvent.Banner ?? pEvent.Title);
             string era = ChronicleData.EraTitle(pEvent.Era);
 
-            if (Settings.Banner)
+            // Major events get a full cutscene (letterbox, slow motion, title card) instead of the banner.
+            bool cutscene = pEvent.Major && Settings.ChronicleCutscenes && Director.CanPlayCutscene(true);
+            if (cutscene)
+            {
+                Vector3? focus = Settings.CameraJump && pFocus != null ? pFocus.posV3 : (Vector3?)null;
+                ModClass.Instance.StartCoroutine(Director.Cutscene(banner, $"{era} · {pEvent.When}", focus,
+                    Toolbox.makeColor(pEvent.Color), 2.2f, true));
+            }
+            else if (Settings.Banner)
             {
                 WorldTip.showNow($"{banner}\n{era} · {pEvent.When}", false, "center", Settings.BannerSeconds, pEvent.Color);
             }
@@ -51,7 +60,7 @@ namespace TeyvatChronicle.Chronicle
             }
             if (Settings.Sound) PlaySound(pEvent.Sound);
             if (Settings.WorldLog) Log($"{era}: {banner}", pFocus);
-            if (Settings.CameraJump && pFocus != null) World.world.locatePosition(pFocus.posV3);
+            if (!cutscene && Settings.CameraJump && pFocus != null) World.world.locatePosition(pFocus.posV3);
             if (Settings.LorePopup) ShowLore(pEvent);
         }
 

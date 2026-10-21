@@ -4,552 +4,1318 @@
     "delay = in-game years after the PREVIOUS event, per pacing preset (lore / normal / fast).",
     "The Custom preset uses 'normal' multiplied by the 'Custom time scale' setting.",
     "Effect types: age, grant_trait, grant_set, remove_trait, war, meteor, earthquake, destroy_city,",
-    "mark_kingdom, kingdom_traits, disaster, gather_gnosis. See CHRONICLE.md for every field."
+    "mark_kingdom, kingdom_traits, disaster, gather_gnosis, spawn_unit. See CHRONICLE.md for every field."
   ],
   "eras": [
-    { "id": "old_world",      "title": "The Old World" },
-    { "id": "doves",          "title": "When the Doves Held Branches" },
-    { "id": "unified",        "title": "The Unified Civilization" },
-    { "id": "funerary_flame", "title": "The War of Funerary Flame" },
-    { "id": "archon_war",     "title": "The Archon War" },
-    { "id": "age_of_seven",   "title": "The Age of the Seven" },
-    { "id": "cataclysm",      "title": "The Cataclysm" },
-    { "id": "post_cataclysm", "title": "After the Cataclysm" },
-    { "id": "present",        "title": "The Present Day" },
-    { "id": "nod_krai",       "title": "Song of the Welkin Moon" },
-    { "id": "snezhnaya",      "title": "The Snezhnaya Crisis" }
+    {
+      "id": "old_world",
+      "title": "The Old World"
+    },
+    {
+      "id": "doves",
+      "title": "When the Doves Held Branches"
+    },
+    {
+      "id": "unified",
+      "title": "The Unified Civilization"
+    },
+    {
+      "id": "funerary_flame",
+      "title": "The War of Funerary Flame"
+    },
+    {
+      "id": "archon_war",
+      "title": "The Archon War"
+    },
+    {
+      "id": "age_of_seven",
+      "title": "The Age of the Seven"
+    },
+    {
+      "id": "cataclysm",
+      "title": "The Cataclysm"
+    },
+    {
+      "id": "post_cataclysm",
+      "title": "After the Cataclysm"
+    },
+    {
+      "id": "present",
+      "title": "The Present Day"
+    },
+    {
+      "id": "nod_krai",
+      "title": "Song of the Welkin Moon"
+    },
+    {
+      "id": "snezhnaya",
+      "title": "The Snezhnaya Crisis"
+    }
   ],
   "events": [
     {
-      "id": "ow_sovereigns", "era": "old_world", "major": true,
+      "id": "ow_sovereigns",
+      "era": "old_world",
+      "major": true,
       "title": "The Seven Sovereigns",
       "banner": "THE OLD WORLD — Seven Dragon Sovereigns rule Teyvat",
       "when": "Before recorded time",
       "text": "Teyvat belongs to the dragons. Seven Sovereigns, each holding one elemental Authority, divide the land between them. Their king is Nibelung.",
-      "color": "#7FE3FF", "flash": "cyan", "shake": 0.3, "sound": "cosmic",
-      "delay": { "lore": 0, "normal": 0, "fast": 0 },
+      "color": "#7FE3FF",
+      "flash": "cyan",
+      "shake": 0.3,
+      "sound": "cosmic",
+      "delay": {
+        "lore": 0,
+        "normal": 0,
+        "fast": 0
+      },
       "effects": [
-        { "type": "age", "id": "age_wonders" },
-        { "type": "grant_set", "pick": "creatures",
-          "traits": ["gi_sovereign_anemo", "gi_sovereign_geo", "gi_sovereign_electro", "gi_sovereign_dendro", "gi_sovereign_hydro", "gi_sovereign_pyro", "gi_sovereign_cryo"] }
+        {
+          "type": "age",
+          "id": "age_wonders"
+        },
+        {
+          "type": "spawn_unit",
+          "actor": "dragon",
+          "traits": [
+            "gi_sovereign_anemo",
+            "gi_sovereign_geo",
+            "gi_sovereign_electro",
+            "gi_sovereign_dendro",
+            "gi_sovereign_hydro",
+            "gi_sovereign_pyro",
+            "gi_sovereign_cryo"
+          ]
+        }
       ]
     },
     {
-      "id": "ow_primordial_sea", "era": "old_world",
+      "id": "ow_primordial_sea",
+      "era": "old_world",
       "title": "The Primordial Sea",
       "banner": "Life rises from the Primordial Sea",
       "when": "Before recorded time",
       "text": "The Primordial Sea lies open on the surface of the world. The Hydro Sovereign is its beating heart, and almost every living thing in Teyvat can trace its origin back to these waters.",
-      "color": "#3FA9FF", "flash": "blue", "shake": 0.1, "sound": "hope",
-      "delay": { "lore": 15, "normal": 8, "fast": 3 },
+      "color": "#3FA9FF",
+      "flash": "blue",
+      "shake": 0.1,
+      "sound": "hope",
+      "delay": {
+        "lore": 15,
+        "normal": 8,
+        "fast": 3
+      },
       "effects": []
     },
     {
-      "id": "ow_three_moons", "era": "old_world", "major": true,
+      "id": "ow_three_moons",
+      "era": "old_world",
+      "major": true,
       "title": "The Three Moons Rise",
       "banner": "Nibelung raises the Three Moons",
       "when": "Before recorded time",
       "text": "Nibelung lifts three moons into the sky and gives three Moon Goddesses charge of the world's laws. Then the Dragon King leaves Teyvat to travel the stars.",
-      "color": "#E6E0FF", "flash": "violet", "shake": 0.4, "sound": "moon",
-      "delay": { "lore": 20, "normal": 10, "fast": 4 },
+      "color": "#E6E0FF",
+      "flash": "violet",
+      "shake": 0.4,
+      "sound": "moon",
+      "delay": {
+        "lore": 20,
+        "normal": 10,
+        "fast": 4
+      },
       "effects": [
-        { "type": "age", "id": "age_moon" },
-        { "type": "grant_trait", "trait": "gi_moon_goddess", "count": 3, "pick": "random_civ", "unique": false }
+        {
+          "type": "age",
+          "id": "age_moon"
+        },
+        {
+          "type": "grant_trait",
+          "trait": "gi_moon_goddess",
+          "count": 3,
+          "pick": "random_civ",
+          "unique": false
+        }
       ]
     },
     {
-      "id": "ow_voyager", "era": "old_world",
+      "id": "ow_voyager",
+      "era": "old_world",
       "title": "The Voyager's Warning",
       "banner": "A voyager from the stars warns of the end",
       "when": "Before recorded time",
       "text": "Anacharsis, a voyager from the sea of stars, finds Nibelung and warns him that this world will be destroyed. He will not abandon his people. The dragons begin reaching for the stars.",
-      "color": "#B8C7FF", "flash": "none", "shake": 0, "sound": "moon",
-      "delay": { "lore": 15, "normal": 8, "fast": 3 },
+      "color": "#B8C7FF",
+      "flash": "none",
+      "shake": 0,
+      "sound": "moon",
+      "delay": {
+        "lore": 15,
+        "normal": 8,
+        "fast": 3
+      },
       "effects": []
     },
     {
-      "id": "doves_descent", "era": "doves", "major": true,
+      "id": "doves_descent",
+      "era": "doves",
+      "major": true,
       "title": "The Heavenly Principles Descend",
       "banner": "⚠ THE HEAVENLY PRINCIPLES DESCEND",
       "when": "~6,400 years ago",
       "text": "An outsider comes down from beyond the sky while the Dragon King is away. It takes the Sovereigns' Authorities for itself and splits four Shades from its own light: Naberius (Life), Ronova (Death), Istaroth (Time) and Asmoday (Space).",
-      "color": "#FFF6D5", "flash": "white", "shake": 1.0, "sound": "divine",
-      "delay": { "lore": 25, "normal": 12, "fast": 5 },
+      "color": "#FFF6D5",
+      "flash": "white",
+      "shake": 1.0,
+      "sound": "divine",
+      "delay": {
+        "lore": 25,
+        "normal": 12,
+        "fast": 5
+      },
       "effects": [
-        { "type": "age", "id": "age_sun" },
-        { "type": "grant_trait", "trait": "gi_heavenly_principles", "count": 1, "pick": "strongest", "unique": true },
-        { "type": "grant_set", "pick": "strongest",
-          "traits": ["gi_shade_life", "gi_shade_death", "gi_shade_time", "gi_shade_space"] }
+        {
+          "type": "age",
+          "id": "age_sun"
+        },
+        {
+          "type": "grant_trait",
+          "trait": "gi_heavenly_principles",
+          "count": 1,
+          "pick": "strongest",
+          "unique": true
+        },
+        {
+          "type": "grant_set",
+          "pick": "strongest",
+          "traits": [
+            "gi_shade_life",
+            "gi_shade_death",
+            "gi_shade_time",
+            "gi_shade_space"
+          ]
+        }
       ]
     },
     {
-      "id": "doves_false_sky", "era": "doves",
+      "id": "doves_false_sky",
+      "era": "doves",
       "title": "The False Sky",
       "banner": "The Lunar Veil falls; a False Sky closes over Teyvat",
       "when": "~6,400 years ago",
       "text": "The dragons' Lunar Veil is torn apart before it is finished. The heavens wrap Teyvat in a False Sky and cut it off from the rest of the universe.",
-      "color": "#C9C9C9", "flash": "white", "shake": 0.3, "sound": "divine",
-      "delay": { "lore": 10, "normal": 5, "fast": 2 },
-      "effects": [ { "type": "earthquake", "count": 1 } ]
+      "color": "#C9C9C9",
+      "flash": "white",
+      "shake": 0.3,
+      "sound": "divine",
+      "delay": {
+        "lore": 10,
+        "normal": 5,
+        "fast": 2
+      },
+      "effects": [
+        {
+          "type": "earthquake",
+          "count": 1
+        }
+      ]
     },
     {
-      "id": "doves_victory", "era": "doves", "major": true,
+      "id": "doves_victory",
+      "era": "doves",
+      "major": true,
       "title": "The Sovereigns Fall",
       "banner": "After forty years of war, the Sovereigns are defeated",
       "when": "~6,360 years ago",
       "text": "Forty years after the descent, the Heavenly Principles and their Shades stand victorious. The Sovereigns' subjects flee into the oceans, and the heavens start building a world for humanity.",
-      "color": "#FFD27F", "flash": "gold", "shake": 0.8, "sound": "war",
-      "delay": { "lore": 40, "normal": 20, "fast": 6 },
+      "color": "#FFD27F",
+      "flash": "gold",
+      "shake": 0.8,
+      "sound": "war",
+      "delay": {
+        "lore": 40,
+        "normal": 20,
+        "fast": 6
+      },
       "effects": [
-        { "type": "war", "count": 2 },
-        { "type": "remove_trait", "trait": "gi_sovereign_*", "count": -1, "kill": false }
+        {
+          "type": "war",
+          "count": 2
+        },
+        {
+          "type": "remove_trait",
+          "trait": "gi_sovereign_*",
+          "count": -1,
+          "kill": true
+        }
       ]
     },
     {
-      "id": "uc_ark", "era": "unified", "major": true,
+      "id": "uc_ark",
+      "era": "unified",
+      "major": true,
       "title": "The Ark's Opening",
       "banner": "Humanity is born — the Year of Jubilee begins",
       "when": "~6,000 years ago",
       "text": "Four hundred years after the descent, the world is ready. Humanity makes a covenant with the heavens. Divine envoys walk among people, and the land flourishes.",
-      "color": "#B6FF9E", "flash": "gold", "shake": 0.2, "sound": "hope",
-      "delay": { "lore": 50, "normal": 25, "fast": 8 },
-      "effects": [ { "type": "age", "id": "age_hope" } ]
+      "color": "#B6FF9E",
+      "flash": "gold",
+      "shake": 0.2,
+      "sound": "hope",
+      "delay": {
+        "lore": 50,
+        "normal": 25,
+        "fast": 8
+      },
+      "effects": [
+        {
+          "type": "age",
+          "id": "age_hope"
+        }
+      ]
     },
     {
-      "id": "uc_cities", "era": "unified",
+      "id": "uc_cities",
+      "era": "unified",
       "title": "The Ancient Kingdoms",
       "banner": "Arcadia, Sal Vindagnyr, Lang-Gan, Ys and Hyperborea flourish",
       "when": "~6,000 years ago",
       "text": "One civilisation spans the world: Arcadia in Mondstadt's oak forests, Sal Vindagnyr on Dragonspine, Lang-Gan in the Chasm, Ys in the desert, Hyperborea in the far north, and Enkanomiya.",
-      "color": "#D8FFB0", "flash": "none", "shake": 0, "sound": "hope",
-      "delay": { "lore": 25, "normal": 12, "fast": 4 },
+      "color": "#D8FFB0",
+      "flash": "none",
+      "shake": 0,
+      "sound": "hope",
+      "delay": {
+        "lore": 25,
+        "normal": 12,
+        "fast": 4
+      },
       "effects": []
     },
     {
-      "id": "uc_pride", "era": "unified",
+      "id": "uc_pride",
+      "era": "unified",
       "title": "The Pride of Humanity",
       "banner": "Humanity reaches for the heavens",
       "when": "~6,000 years ago",
       "text": "People grow proud and ambitious and challenge the gods. They want to rule the heavens and their own fates. Celestia's envoys go silent.",
-      "color": "#FFB27F", "flash": "red", "shake": 0.3, "sound": "war",
-      "delay": { "lore": 25, "normal": 12, "fast": 4 },
-      "effects": [ { "type": "war", "count": 1 } ]
+      "color": "#FFB27F",
+      "flash": "red",
+      "shake": 0.3,
+      "sound": "war",
+      "delay": {
+        "lore": 25,
+        "normal": 12,
+        "fast": 4
+      },
+      "effects": [
+        {
+          "type": "war",
+          "count": 1
+        }
+      ]
     },
     {
-      "id": "wff_return", "era": "funerary_flame", "major": true,
+      "id": "wff_return",
+      "era": "funerary_flame",
+      "major": true,
       "title": "Nibelung Returns",
       "banner": "⚠ THE WAR OF FUNERARY FLAME — Nibelung returns with the Abyss",
       "when": "~6,000 years ago",
       "text": "The Dragon King comes home to a world taken from him. Armed with the power of the Abyss, he wages war on the heavens. He turns even the moons into weapons.",
-      "color": "#B04BFF", "flash": "violet", "shake": 1.0, "sound": "doom",
-      "delay": { "lore": 15, "normal": 8, "fast": 3 },
+      "color": "#B04BFF",
+      "flash": "violet",
+      "shake": 1.0,
+      "sound": "doom",
+      "delay": {
+        "lore": 15,
+        "normal": 8,
+        "fast": 3
+      },
       "effects": [
-        { "type": "age", "id": "age_chaos" },
-        { "type": "grant_trait", "trait": "gi_nibelung", "count": 1, "pick": "creatures", "unique": true },
-        { "type": "war", "count": 3 }
+        {
+          "type": "age",
+          "id": "age_chaos"
+        },
+        {
+          "type": "spawn_unit",
+          "actor": "dragon",
+          "traits": [
+            "gi_nibelung"
+          ]
+        },
+        {
+          "type": "war",
+          "count": 3
+        }
       ]
     },
     {
-      "id": "wff_moons_fall", "era": "funerary_flame", "major": true,
+      "id": "wff_moons_fall",
+      "era": "funerary_flame",
+      "major": true,
       "title": "The Moons Shatter",
       "banner": "The Eternal and Iridescent Moons are shattered",
       "when": "~6,000 years ago",
       "text": "The heavens break the Eternal Moon and the Iridescent Moon and fling the Frost Moon out past the False Sky. The Three Moon Goddesses die, and great floods sweep the land.",
-      "color": "#8A7DFF", "flash": "violet", "shake": 0.9, "sound": "moon",
-      "delay": { "lore": 15, "normal": 8, "fast": 3 },
+      "color": "#8A7DFF",
+      "flash": "violet",
+      "shake": 0.9,
+      "sound": "moon",
+      "delay": {
+        "lore": 15,
+        "normal": 8,
+        "fast": 3
+      },
       "effects": [
-        { "type": "remove_trait", "trait": "gi_moon_goddess", "count": -1, "kill": true },
-        { "type": "age", "id": "age_tears" }
+        {
+          "type": "remove_trait",
+          "trait": "gi_moon_goddess",
+          "count": -1,
+          "kill": true
+        },
+        {
+          "type": "age",
+          "id": "age_tears"
+        }
       ]
     },
     {
-      "id": "wff_nails", "era": "funerary_flame", "major": true,
+      "id": "wff_nails",
+      "era": "funerary_flame",
+      "major": true,
       "title": "The Celestial Nails",
       "banner": "⚠ CELESTIAL NAILS FALL FROM THE SKY",
       "when": "~6,000 years ago",
       "text": "To purge the Abyss, the heavens drive Nails into the world. Sal Vindagnyr is buried in snow, Lang-Gan and Tsurumi are wiped out, Hyperborea is destroyed, and Sumeru's rainforest turns into the Great Red Sand.",
-      "color": "#FFFFFF", "flash": "white", "shake": 1.0, "sound": "divine",
-      "delay": { "lore": 10, "normal": 5, "fast": 2 },
+      "color": "#FFFFFF",
+      "flash": "white",
+      "shake": 1.0,
+      "sound": "divine",
+      "delay": {
+        "lore": 10,
+        "normal": 5,
+        "fast": 2
+      },
       "effects": [
-        { "type": "meteor", "count": 4, "target": "cities" },
-        { "type": "destroy_city", "count": 1, "target": "random" },
-        { "type": "remove_trait", "trait": "gi_nibelung", "count": -1, "kill": true }
+        {
+          "type": "meteor",
+          "count": 4,
+          "target": "cities"
+        },
+        {
+          "type": "destroy_city",
+          "count": 1,
+          "target": "random"
+        },
+        {
+          "type": "remove_trait",
+          "trait": "gi_nibelung",
+          "count": -1,
+          "kill": true
+        }
       ]
     },
     {
-      "id": "wff_seelie", "era": "funerary_flame",
+      "id": "wff_seelie",
+      "era": "funerary_flame",
       "title": "The Forbidden History",
       "banner": "History before the war is forbidden",
       "when": "~6,000 years ago",
       "text": "The heavens ban all knowledge of the age before the war. The Angels are cursed and wither into Seelies, wandering in search of their old courts.",
-      "color": "#9EE7FF", "flash": "none", "shake": 0, "sound": "moon",
-      "delay": { "lore": 10, "normal": 5, "fast": 2 },
-      "effects": [ { "type": "age", "id": "age_dark" } ]
+      "color": "#9EE7FF",
+      "flash": "none",
+      "shake": 0,
+      "sound": "moon",
+      "delay": {
+        "lore": 10,
+        "normal": 5,
+        "fast": 2
+      },
+      "effects": [
+        {
+          "type": "age",
+          "id": "age_dark"
+        }
+      ]
     },
     {
-      "id": "wff_khaenriah", "era": "funerary_flame", "major": true,
+      "id": "wff_khaenriah",
+      "era": "funerary_flame",
+      "major": true,
       "title": "Khaenri'ah is Founded",
       "banner": "{khaenriah} is founded — a nation without a god",
       "when": "~6,000 years ago",
       "text": "Around the time Sal Vindagnyr falls, a nation is founded far below the earth that worships no god at all: Khaenri'ah.",
-      "color": "#E0B062", "flash": "gold", "shake": 0.3, "sound": "war",
-      "delay": { "lore": 15, "normal": 8, "fast": 3 },
-      "effects": [ { "type": "mark_kingdom", "tag": "khaenriah", "pick": "random" } ]
+      "color": "#E0B062",
+      "flash": "gold",
+      "shake": 0.3,
+      "sound": "war",
+      "delay": {
+        "lore": 15,
+        "normal": 8,
+        "fast": 3
+      },
+      "effects": [
+        {
+          "type": "mark_kingdom",
+          "tag": "khaenriah",
+          "pick": "random"
+        }
+      ]
     },
     {
-      "id": "aw_thrones", "era": "archon_war", "major": true,
+      "id": "aw_thrones",
+      "era": "archon_war",
+      "major": true,
       "title": "Seven Thrones Open",
       "banner": "⚠ THE ARCHON WAR BEGINS — Seven thrones await in Celestia",
       "when": "~6,000 years ago",
       "text": "Seven divine seats open in Celestia. Gods, Demon Gods and monsters fall on one another, each fighting for its own dream of humanity.",
-      "color": "#FF5A3C", "flash": "red", "shake": 0.8, "sound": "war",
-      "delay": { "lore": 30, "normal": 15, "fast": 5 },
+      "color": "#FF5A3C",
+      "flash": "red",
+      "shake": 0.8,
+      "sound": "war",
+      "delay": {
+        "lore": 30,
+        "normal": 15,
+        "fast": 5
+      },
       "effects": [
-        { "type": "age", "id": "age_chaos" },
-        { "type": "grant_trait", "trait": "gi_demon_god", "count": 10, "pick": "strongest", "unique": false },
-        { "type": "war", "count": 4 }
+        {
+          "type": "age",
+          "id": "age_chaos"
+        },
+        {
+          "type": "grant_trait",
+          "trait": "gi_demon_god",
+          "count": 10,
+          "pick": "strongest",
+          "unique": false
+        },
+        {
+          "type": "war",
+          "count": 4
+        }
       ]
     },
     {
-      "id": "aw_guizhong", "era": "archon_war",
+      "id": "aw_guizhong",
+      "era": "archon_war",
       "title": "The Fall of the Guili Assembly",
       "banner": "Guizhong falls; Morax founds Liyue Harbor",
       "when": "~3,700 years ago",
       "text": "A battle tears the Guili Assembly apart and Guizhong, the Lord of Dust, is killed. Morax leads the survivors south with the Adepti and founds Liyue Harbor.",
-      "color": "#FFD27F", "flash": "gold", "shake": 0.5, "sound": "war",
-      "delay": { "lore": 45, "normal": 22, "fast": 7 },
+      "color": "#FFD27F",
+      "flash": "gold",
+      "shake": 0.5,
+      "sound": "war",
+      "delay": {
+        "lore": 45,
+        "normal": 22,
+        "fast": 7
+      },
       "effects": [
-        { "type": "grant_trait", "trait": "gi_adeptus", "count": 3, "pick": "strongest", "unique": false },
-        { "type": "earthquake", "count": 1 }
+        {
+          "type": "grant_trait",
+          "trait": "gi_adeptus",
+          "count": 3,
+          "pick": "strongest",
+          "unique": false
+        },
+        {
+          "type": "earthquake",
+          "count": 1
+        }
       ]
     },
     {
-      "id": "aw_third_descender", "era": "archon_war", "major": true,
+      "id": "aw_third_descender",
+      "era": "archon_war",
+      "major": true,
       "title": "The Third Descender",
       "banner": "⚠ A gate to the Abyss opens; the seven Gnoses are born",
       "when": "~3,200–2,000 years ago",
       "text": "The Belyi Tsar persuades Anastasya and the Third Descender to open a gate to the Shadow Realm, and the Abyss seeps into the world. The Third Descender gives his life. His remains become the seven Gnoses, sealed by a curse that will fall on Celestia if the deal is ever broken.",
-      "color": "#7A3CFF", "flash": "violet", "shake": 0.9, "sound": "doom",
-      "delay": { "lore": 40, "normal": 20, "fast": 6 },
+      "color": "#7A3CFF",
+      "flash": "violet",
+      "shake": 0.9,
+      "sound": "doom",
+      "delay": {
+        "lore": 40,
+        "normal": 20,
+        "fast": 6
+      },
       "effects": [
-        { "type": "grant_trait", "trait": "gi_abyssal", "count": 5, "pick": "random_civ", "unique": false },
-        { "type": "disaster", "id": "hellspawn" }
+        {
+          "type": "grant_trait",
+          "trait": "gi_abyssal",
+          "count": 5,
+          "pick": "random_civ",
+          "unique": false
+        },
+        {
+          "type": "disaster",
+          "id": "hellspawn"
+        }
       ]
     },
     {
-      "id": "aw_mondstadt", "era": "archon_war",
+      "id": "aw_mondstadt",
+      "era": "archon_war",
       "title": "The Fall of Decarabian",
       "banner": "Barbatos overthrows Decarabian, the God of Storms",
       "when": "~2,600 years ago",
       "text": "Decarabian's people rise against his tower of storms, led by a nameless bard and a wind spirit. The spirit, Barbatos, blows away the ice and reshapes Mondstadt.",
-      "color": "#7FFFD4", "flash": "cyan", "shake": 0.5, "sound": "war",
-      "delay": { "lore": 40, "normal": 20, "fast": 6 },
-      "effects": [ { "type": "war", "count": 1 } ]
+      "color": "#7FFFD4",
+      "flash": "cyan",
+      "shake": 0.5,
+      "sound": "war",
+      "delay": {
+        "lore": 40,
+        "normal": 20,
+        "fast": 6
+      },
+      "effects": [
+        {
+          "type": "war",
+          "count": 1
+        }
+      ]
     },
     {
-      "id": "aw_deshret", "era": "archon_war",
+      "id": "aw_deshret",
+      "era": "archon_war",
       "title": "King Deshret's Fall",
       "banner": "King Deshret falls to forbidden knowledge",
       "when": "Thousands of years ago",
       "text": "The God-King of the desert is poisoned by forbidden knowledge. His empire breaks up into human city-states, and Rukkhadevata brings the rainforest back.",
-      "color": "#E8C46A", "flash": "gold", "shake": 0.4, "sound": "doom",
-      "delay": { "lore": 25, "normal": 12, "fast": 4 },
-      "effects": [ { "type": "earthquake", "count": 1 } ]
+      "color": "#E8C46A",
+      "flash": "gold",
+      "shake": 0.4,
+      "sound": "doom",
+      "delay": {
+        "lore": 25,
+        "normal": 12,
+        "fast": 4
+      },
+      "effects": [
+        {
+          "type": "earthquake",
+          "count": 1
+        }
+      ]
     },
     {
-      "id": "aw_natlan", "era": "archon_war",
+      "id": "aw_natlan",
+      "era": "archon_war",
       "title": "Xbalanque Slays Xiuhcoatl",
       "banner": "The Pyro Sovereign falls; Natlan gains its first Archon",
       "when": "~2,000 years ago",
       "text": "Xbalanque's army storms the Sacred City of Tollan and kills Xiuhcoatl, the Pyro Dragon Sovereign. The dragon kingdom of Natlantea ends and Xbalanque becomes the first Pyro Archon.",
-      "color": "#FF6A2A", "flash": "red", "shake": 0.6, "sound": "war",
-      "delay": { "lore": 25, "normal": 12, "fast": 4 },
-      "effects": [ { "type": "war", "count": 1 } ]
+      "color": "#FF6A2A",
+      "flash": "red",
+      "shake": 0.6,
+      "sound": "war",
+      "delay": {
+        "lore": 25,
+        "normal": 12,
+        "fast": 4
+      },
+      "effects": [
+        {
+          "type": "war",
+          "count": 1
+        }
+      ]
     },
     {
-      "id": "aw_seven", "era": "archon_war", "major": true,
+      "id": "aw_seven",
+      "era": "archon_war",
+      "major": true,
       "title": "The Seven Are Crowned",
       "banner": "⚠ THE ARCHON WAR ENDS — The Seven take their thrones",
       "when": "~2,000 years ago",
       "text": "The last seat in Celestia is claimed. Seven Archons, one for each element, now hold a Gnosis. Defeated gods who refuse their rule flee to the islands of the Dark Sea.",
-      "color": "#FFE58A", "flash": "gold", "shake": 0.8, "sound": "divine",
-      "delay": { "lore": 20, "normal": 10, "fast": 3 },
+      "color": "#FFE58A",
+      "flash": "gold",
+      "shake": 0.8,
+      "sound": "divine",
+      "delay": {
+        "lore": 20,
+        "normal": 10,
+        "fast": 3
+      },
       "effects": [
-        { "type": "age", "id": "age_hope" },
-        { "type": "grant_set", "pick": "strongest_civ",
-          "traits": ["gi_gnosis_anemo", "gi_gnosis_geo", "gi_gnosis_electro", "gi_gnosis_dendro", "gi_gnosis_hydro", "gi_gnosis_pyro", "gi_gnosis_cryo"] },
-        { "type": "remove_trait", "trait": "gi_demon_god", "count": -1, "kill": false }
+        {
+          "type": "age",
+          "id": "age_hope"
+        },
+        {
+          "type": "grant_set",
+          "pick": "strongest_civ",
+          "traits": [
+            "gi_gnosis_anemo",
+            "gi_gnosis_geo",
+            "gi_gnosis_electro",
+            "gi_gnosis_dendro",
+            "gi_gnosis_hydro",
+            "gi_gnosis_pyro",
+            "gi_gnosis_cryo"
+          ]
+        },
+        {
+          "type": "remove_trait",
+          "trait": "gi_demon_god",
+          "count": -1,
+          "kill": false
+        }
       ]
     },
     {
-      "id": "as_visions", "era": "age_of_seven",
+      "id": "as_visions",
+      "era": "age_of_seven",
       "title": "The Gods' Gaze",
       "banner": "Visions begin to answer mortal wishes",
       "when": "2,000–500 years ago",
       "text": "With the Seven on their thrones, the gods' gaze falls on mortals with strong wishes, and Visions start to appear.",
-      "color": "#9EF0FF", "flash": "cyan", "shake": 0.1, "sound": "hope",
-      "delay": { "lore": 20, "normal": 10, "fast": 3 },
+      "color": "#9EF0FF",
+      "flash": "cyan",
+      "shake": 0.1,
+      "sound": "hope",
+      "delay": {
+        "lore": 20,
+        "normal": 10,
+        "fast": 3
+      },
       "effects": [
-        { "type": "grant_set", "pick": "random_civ",
-          "traits": ["gi_vision_anemo", "gi_vision_geo", "gi_vision_electro", "gi_vision_dendro", "gi_vision_hydro", "gi_vision_pyro", "gi_vision_cryo"] }
+        {
+          "type": "grant_set",
+          "pick": "random_civ",
+          "traits": [
+            "gi_vision_anemo",
+            "gi_vision_geo",
+            "gi_vision_electro",
+            "gi_vision_dendro",
+            "gi_vision_hydro",
+            "gi_vision_pyro",
+            "gi_vision_cryo"
+          ]
+        }
       ]
     },
     {
-      "id": "as_crimson_moon", "era": "age_of_seven",
+      "id": "as_crimson_moon",
+      "era": "age_of_seven",
       "title": "Dynasties of Khaenri'ah",
       "banner": "{khaenriah}: the Crimson Moon falls, the Eclipse Dynasty rises",
       "when": "Before the Cataclysm",
       "text": "The Crimson Moon Dynasty rules Khaenri'ah until a coup puts the Eclipse Dynasty in its place. Khaenri'ah's engineers build Ruin Machines to stand against Celestia.",
-      "color": "#E0B062", "flash": "gold", "shake": 0.3, "sound": "war",
-      "delay": { "lore": 40, "normal": 20, "fast": 6 },
-      "effects": [ { "type": "kingdom_traits", "tag": "khaenriah", "trait": "strong", "fraction": 0.3 } ]
+      "color": "#E0B062",
+      "flash": "gold",
+      "shake": 0.3,
+      "sound": "war",
+      "delay": {
+        "lore": 40,
+        "normal": 20,
+        "fast": 6
+      },
+      "effects": [
+        {
+          "type": "kingdom_traits",
+          "tag": "khaenriah",
+          "trait": "strong",
+          "fraction": 0.3
+        }
+      ]
     },
     {
-      "id": "as_vennessa", "era": "age_of_seven",
+      "id": "as_vennessa",
+      "era": "age_of_seven",
       "title": "Vennessa's Rebellion",
       "banner": "Mondstadt rises against its aristocrats",
       "when": "~1,000 years ago",
       "text": "Barbatos wakes to the cries of the oppressed. Vennessa leads the rebellion that ends the age of aristocrats and founds the Knights of Favonius.",
-      "color": "#7FFFD4", "flash": "cyan", "shake": 0.3, "sound": "war",
-      "delay": { "lore": 50, "normal": 25, "fast": 8 },
-      "effects": [ { "type": "war", "count": 1 } ]
+      "color": "#7FFFD4",
+      "flash": "cyan",
+      "shake": 0.3,
+      "sound": "war",
+      "delay": {
+        "lore": 50,
+        "normal": 25,
+        "fast": 8
+      },
+      "effects": [
+        {
+          "type": "war",
+          "count": 1
+        }
+      ]
     },
     {
-      "id": "as_archons_pass", "era": "age_of_seven",
+      "id": "as_archons_pass",
+      "era": "age_of_seven",
       "title": "Thrones Change Hands",
       "banner": "Many of the original Seven pass away",
       "when": "2,000–500 years ago",
       "text": "Over fifteen centuries, the first Cryo, Dendro, Electro, Hydro and Pyro Archons all die or step down, and their Gnoses pass to successors. Only Barbatos and Morax remain of the original Seven.",
-      "color": "#FFE58A", "flash": "none", "shake": 0, "sound": "divine",
-      "delay": { "lore": 50, "normal": 25, "fast": 8 },
+      "color": "#FFE58A",
+      "flash": "none",
+      "shake": 0,
+      "sound": "divine",
+      "delay": {
+        "lore": 50,
+        "normal": 25,
+        "fast": 8
+      },
       "effects": []
     },
     {
-      "id": "cat_invasion", "era": "cataclysm", "major": true,
+      "id": "cat_invasion",
+      "era": "cataclysm",
+      "major": true,
       "title": "The Abyss Invades",
       "banner": "⚠ THE CATACLYSM — Monsters of the Abyss pour into Teyvat",
       "when": "~500 years ago",
       "text": "Monsters from the Abyss burst out across Teyvat, led by the Alfisol creations of Rhinedottir, called Gold. Nod-Krai and Natlan fall first. The Knights of Favonius march on Khaenri'ah.",
-      "color": "#FF2A2A", "flash": "red", "shake": 1.0, "sound": "doom",
-      "delay": { "lore": 30, "normal": 15, "fast": 5 },
+      "color": "#FF2A2A",
+      "flash": "red",
+      "shake": 1.0,
+      "sound": "doom",
+      "delay": {
+        "lore": 30,
+        "normal": 15,
+        "fast": 5
+      },
       "effects": [
-        { "type": "age", "id": "age_despair" },
-        { "type": "disaster", "id": "hellspawn" },
-        { "type": "grant_trait", "trait": "gi_abyssal", "count": 8, "pick": "random_civ", "unique": false },
-        { "type": "war", "count": 3 }
+        {
+          "type": "age",
+          "id": "age_despair"
+        },
+        {
+          "type": "disaster",
+          "id": "hellspawn"
+        },
+        {
+          "type": "grant_trait",
+          "trait": "gi_abyssal",
+          "count": 8,
+          "pick": "random_civ",
+          "unique": false
+        },
+        {
+          "type": "war",
+          "count": 3
+        }
       ]
     },
     {
-      "id": "cat_khaenriah_falls", "era": "cataclysm", "major": true,
+      "id": "cat_khaenriah_falls",
+      "era": "cataclysm",
+      "major": true,
       "title": "Khaenri'ah Falls",
       "banner": "⚠ {khaenriah} IS DESTROYED BY THE GODS",
       "when": "~500 years ago",
       "text": "The Heavenly Principles destroy Khaenri'ah. Ronova curses its people: those of mixed blood turn into Hilichurls, and the pure-blooded are cursed with immortality.",
-      "color": "#FF2A2A", "flash": "red", "shake": 1.0, "sound": "doom",
-      "delay": { "lore": 5, "normal": 3, "fast": 1 },
+      "color": "#FF2A2A",
+      "flash": "red",
+      "shake": 1.0,
+      "sound": "doom",
+      "delay": {
+        "lore": 5,
+        "normal": 3,
+        "fast": 1
+      },
       "effects": [
-        { "type": "meteor", "count": 3, "target": "kingdom:khaenriah" },
-        { "type": "kingdom_traits", "tag": "khaenriah", "trait": "gi_curse_immortality", "fraction": 0.2 },
-        { "type": "kingdom_traits", "tag": "khaenriah", "trait": "gi_abyssal", "fraction": 0.5 },
-        { "type": "destroy_city", "count": 2, "target": "kingdom:khaenriah" }
+        {
+          "type": "meteor",
+          "count": 3,
+          "target": "kingdom:khaenriah"
+        },
+        {
+          "type": "kingdom_traits",
+          "tag": "khaenriah",
+          "trait": "gi_curse_immortality",
+          "fraction": 0.2
+        },
+        {
+          "type": "kingdom_traits",
+          "tag": "khaenriah",
+          "trait": "gi_abyssal",
+          "fraction": 0.5
+        },
+        {
+          "type": "destroy_city",
+          "count": 2,
+          "target": "kingdom:khaenriah"
+        }
       ]
     },
     {
-      "id": "cat_archons_fall", "era": "cataclysm", "major": true,
+      "id": "cat_archons_fall",
+      "era": "cataclysm",
+      "major": true,
       "title": "The Fallen Archons",
       "banner": "Makoto and Egeria fall in the Cataclysm",
       "when": "~500 years ago",
       "text": "The Electro Archon Makoto goes to Khaenri'ah alone and is killed there. Egeria, the Hydro Archon, falls at Tunigi Hollow. Ei takes her sister's place and Focalors takes Egeria's.",
-      "color": "#B07CFF", "flash": "violet", "shake": 0.6, "sound": "doom",
-      "delay": { "lore": 5, "normal": 3, "fast": 1 },
+      "color": "#B07CFF",
+      "flash": "violet",
+      "shake": 0.6,
+      "sound": "doom",
+      "delay": {
+        "lore": 5,
+        "normal": 3,
+        "fast": 1
+      },
       "effects": [
-        { "type": "remove_trait", "trait": "gi_gnosis_electro", "count": 1, "kill": true, "pass_on": true },
-        { "type": "remove_trait", "trait": "gi_gnosis_hydro", "count": 1, "kill": true, "pass_on": true }
+        {
+          "type": "remove_trait",
+          "trait": "gi_gnosis_electro",
+          "count": 1,
+          "kill": true,
+          "pass_on": true
+        },
+        {
+          "type": "remove_trait",
+          "trait": "gi_gnosis_hydro",
+          "count": 1,
+          "kill": true,
+          "pass_on": true
+        }
       ]
     },
     {
-      "id": "cat_celestia_sleeps", "era": "cataclysm", "major": true,
+      "id": "cat_celestia_sleeps",
+      "era": "cataclysm",
+      "major": true,
       "title": "The Curse Takes Hold",
       "banner": "⚠ The Third Descender's curse falls — Celestia sleeps",
       "when": "~500 years ago",
       "text": "Destroying Khaenri'ah breaks the old deal. The Third Descender's curse takes effect and Celestia falls dormant. In that moment Asmoday seals away two travelling twins, and one of them sleeps for five hundred years.",
-      "color": "#E0E0E0", "flash": "white", "shake": 0.7, "sound": "divine",
-      "delay": { "lore": 5, "normal": 3, "fast": 1 },
+      "color": "#E0E0E0",
+      "flash": "white",
+      "shake": 0.7,
+      "sound": "divine",
+      "delay": {
+        "lore": 5,
+        "normal": 3,
+        "fast": 1
+      },
       "effects": [
-        { "type": "age", "id": "age_ash" },
-        { "type": "remove_trait", "trait": "gi_heavenly_principles", "count": -1, "kill": false, "replace_with": "gi_dormant_principles" }
+        {
+          "type": "age",
+          "id": "age_ash"
+        },
+        {
+          "type": "remove_trait",
+          "trait": "gi_heavenly_principles",
+          "count": -1,
+          "kill": false,
+          "replace_with": "gi_dormant_principles"
+        }
       ]
     },
     {
-      "id": "pc_hilichurls", "era": "post_cataclysm",
+      "id": "pc_hilichurls",
+      "era": "post_cataclysm",
       "title": "The Age of Hilichurls",
       "banner": "Hilichurls spread across the land",
       "when": "500–100 years ago",
       "text": "The Khaenri'ahns who became Hilichurls scatter into the wilds and slowly forget who they once were.",
-      "color": "#C9A26B", "flash": "none", "shake": 0, "sound": "doom",
-      "delay": { "lore": 30, "normal": 15, "fast": 5 },
+      "color": "#C9A26B",
+      "flash": "none",
+      "shake": 0,
+      "sound": "doom",
+      "delay": {
+        "lore": 30,
+        "normal": 15,
+        "fast": 5
+      },
       "effects": []
     },
     {
-      "id": "pc_fatui", "era": "post_cataclysm", "major": true,
+      "id": "pc_fatui",
+      "era": "post_cataclysm",
+      "major": true,
       "title": "The Fatui Are Founded",
       "banner": "Pierro and the Tsaritsa found the Fatui",
       "when": "After the Cataclysm",
       "text": "Pierro, a Khaenri'ahn sage bitter at how the world works, swears loyalty to the Cryo Archon. Together they found the Fatui and its Eleven Harbingers, with Delusions for their soldiers.",
-      "color": "#9ED8FF", "flash": "blue", "shake": 0.4, "sound": "frost",
-      "delay": { "lore": 30, "normal": 15, "fast": 5 },
+      "color": "#9ED8FF",
+      "flash": "blue",
+      "shake": 0.4,
+      "sound": "frost",
+      "delay": {
+        "lore": 30,
+        "normal": 15,
+        "fast": 5
+      },
       "effects": [
-        { "type": "grant_trait", "trait": "gi_harbinger", "count": 6, "pick": "strongest_civ", "unique": false },
-        { "type": "grant_trait", "trait": "gi_delusion", "count": 10, "pick": "random_civ", "unique": false }
+        {
+          "type": "grant_trait",
+          "trait": "gi_harbinger",
+          "count": 6,
+          "pick": "strongest_civ",
+          "unique": false
+        },
+        {
+          "type": "grant_trait",
+          "trait": "gi_delusion",
+          "count": 10,
+          "pick": "random_civ",
+          "unique": false
+        }
       ]
     },
     {
-      "id": "pc_abyss_order", "era": "post_cataclysm",
+      "id": "pc_abyss_order",
+      "era": "post_cataclysm",
       "title": "The Abyss Order",
       "banner": "The Abyss Order rises against Celestia",
       "when": ">100 years ago",
       "text": "Chlothar Alberich founds the Abyss Order to take revenge on Celestia and the Seven. A century later, the Traveler's sibling takes command of it.",
-      "color": "#7A3CFF", "flash": "violet", "shake": 0.4, "sound": "doom",
-      "delay": { "lore": 50, "normal": 25, "fast": 8 },
-      "effects": [ { "type": "grant_trait", "trait": "gi_abyss_herald", "count": 3, "pick": "strongest", "unique": false } ]
+      "color": "#7A3CFF",
+      "flash": "violet",
+      "shake": 0.4,
+      "sound": "doom",
+      "delay": {
+        "lore": 50,
+        "normal": 25,
+        "fast": 8
+      },
+      "effects": [
+        {
+          "type": "grant_trait",
+          "trait": "gi_abyss_herald",
+          "count": 3,
+          "pick": "strongest",
+          "unique": false
+        }
+      ]
     },
     {
-      "id": "pd_traveler", "era": "present", "major": true,
+      "id": "pd_traveler",
+      "era": "present",
+      "major": true,
       "title": "The Traveler Awakens",
       "banner": "★ The Traveler awakens",
       "when": "The present day",
       "text": "After five hundred years asleep, a traveler from another world wakes up. With Paimon at their side, they set out across the seven nations to find their lost sibling.",
-      "color": "#FFE58A", "flash": "gold", "shake": 0.5, "sound": "hope",
-      "delay": { "lore": 60, "normal": 30, "fast": 10 },
+      "color": "#FFE58A",
+      "flash": "gold",
+      "shake": 0.5,
+      "sound": "hope",
+      "delay": {
+        "lore": 60,
+        "normal": 30,
+        "fast": 10
+      },
       "effects": [
-        { "type": "age", "id": "age_hope" },
-        { "type": "grant_trait", "trait": "gi_allogene", "count": 1, "pick": "random_civ", "unique": true }
+        {
+          "type": "age",
+          "id": "age_hope"
+        },
+        {
+          "type": "grant_trait",
+          "trait": "gi_allogene",
+          "count": 1,
+          "pick": "random_civ",
+          "unique": true
+        }
       ]
     },
     {
-      "id": "pd_mondstadt", "era": "present",
+      "id": "pd_mondstadt",
+      "era": "present",
       "title": "Song of the Dragon and Freedom",
       "banner": "Mondstadt: Stormterror is freed; the Anemo Gnosis is taken",
       "when": "Version 1.0",
       "text": "The Traveler frees Dvalin from the Abyss's corruption. Then La Signora of the Fatui takes the Anemo Gnosis from Barbatos in the middle of the street.",
-      "color": "#7FFFD4", "flash": "cyan", "shake": 0.4, "sound": "frost",
-      "delay": { "lore": 2, "normal": 2, "fast": 1 },
-      "effects": [ { "type": "gather_gnosis", "from": "gi_gnosis_anemo", "to": "gi_gnosis_cryo" } ]
+      "color": "#7FFFD4",
+      "flash": "cyan",
+      "shake": 0.4,
+      "sound": "frost",
+      "delay": {
+        "lore": 2,
+        "normal": 2,
+        "fast": 1
+      },
+      "effects": [
+        {
+          "type": "gather_gnosis",
+          "from": "gi_gnosis_anemo",
+          "to": "gi_gnosis_cryo"
+        }
+      ]
     },
     {
-      "id": "pd_liyue", "era": "present",
+      "id": "pd_liyue",
+      "era": "present",
       "title": "Farewell, Archaic Lord",
       "banner": "Liyue: Osial rises; Rex Lapis gives up his Gnosis",
       "when": "Version 1.1",
       "text": "Morax stages his own death to test whether Liyue can stand without him. The ancient god Osial rises from the sea. Afterwards Zhongli hands the Geo Gnosis to the Fatui as agreed.",
-      "color": "#FFD27F", "flash": "gold", "shake": 0.6, "sound": "frost",
-      "delay": { "lore": 2, "normal": 2, "fast": 1 },
+      "color": "#FFD27F",
+      "flash": "gold",
+      "shake": 0.6,
+      "sound": "frost",
+      "delay": {
+        "lore": 2,
+        "normal": 2,
+        "fast": 1
+      },
       "effects": [
-        { "type": "earthquake", "count": 1 },
-        { "type": "gather_gnosis", "from": "gi_gnosis_geo", "to": "gi_gnosis_cryo" }
+        {
+          "type": "earthquake",
+          "count": 1
+        },
+        {
+          "type": "gather_gnosis",
+          "from": "gi_gnosis_geo",
+          "to": "gi_gnosis_cryo"
+        }
       ]
     },
     {
-      "id": "pd_inazuma", "era": "present",
+      "id": "pd_inazuma",
+      "era": "present",
       "title": "Omnipresence Over Mortals",
       "banner": "Inazuma: the Vision Hunt Decree ends",
       "when": "Version 2.0",
       "text": "The Raiden Shogun's Vision Hunt Decree ends after the Traveler challenges Eternity. The Electro Gnosis ends up with Scaramouche.",
-      "color": "#C27CFF", "flash": "violet", "shake": 0.6, "sound": "war",
-      "delay": { "lore": 2, "normal": 2, "fast": 1 },
-      "effects": [ { "type": "gather_gnosis", "from": "gi_gnosis_electro", "to": "gi_gnosis_cryo" } ]
+      "color": "#C27CFF",
+      "flash": "violet",
+      "shake": 0.6,
+      "sound": "war",
+      "delay": {
+        "lore": 2,
+        "normal": 2,
+        "fast": 1
+      },
+      "effects": [
+        {
+          "type": "gather_gnosis",
+          "from": "gi_gnosis_electro",
+          "to": "gi_gnosis_cryo"
+        }
+      ]
     },
     {
-      "id": "pd_sumeru", "era": "present",
+      "id": "pd_sumeru",
+      "era": "present",
       "title": "Akasha Pulses, the Kalpa Flame Rises",
       "banner": "Sumeru: the Lesser Lord is freed; Dottore takes the Dendro Gnosis",
       "when": "Version 3.0",
       "text": "The Sages try to build a new god. The Traveler frees Nahida, who gives up the Dendro Gnosis in exchange for Dottore erasing his segments.",
-      "color": "#8DFF6A", "flash": "green", "shake": 0.4, "sound": "frost",
-      "delay": { "lore": 2, "normal": 2, "fast": 1 },
-      "effects": [ { "type": "gather_gnosis", "from": "gi_gnosis_dendro", "to": "gi_gnosis_cryo" } ]
+      "color": "#8DFF6A",
+      "flash": "green",
+      "shake": 0.4,
+      "sound": "frost",
+      "delay": {
+        "lore": 2,
+        "normal": 2,
+        "fast": 1
+      },
+      "effects": [
+        {
+          "type": "gather_gnosis",
+          "from": "gi_gnosis_dendro",
+          "to": "gi_gnosis_cryo"
+        }
+      ]
     },
     {
-      "id": "pd_fontaine", "era": "present", "major": true,
+      "id": "pd_fontaine",
+      "era": "present",
+      "major": true,
       "title": "The Prophecy of Fontaine",
       "banner": "Fontaine: the prophecy comes due; Focalors passes judgement",
       "when": "Version 4.0",
       "text": "For five hundred years Furina plays the Archon while Focalors waits in secret. When the flood of the prophecy arrives, Focalors condemns herself and destroys the Hydro throne, giving its power back to the Hydro Sovereign.",
-      "color": "#3FA9FF", "flash": "blue", "shake": 0.8, "sound": "divine",
-      "delay": { "lore": 2, "normal": 2, "fast": 1 },
+      "color": "#3FA9FF",
+      "flash": "blue",
+      "shake": 0.8,
+      "sound": "divine",
+      "delay": {
+        "lore": 2,
+        "normal": 2,
+        "fast": 1
+      },
       "effects": [
-        { "type": "remove_trait", "trait": "gi_gnosis_hydro", "count": 1, "kill": false, "replace_with": "gi_sovereign_hydro" }
+        {
+          "type": "remove_trait",
+          "trait": "gi_gnosis_hydro",
+          "count": 1,
+          "kill": false,
+          "replace_with": "gi_sovereign_hydro"
+        }
       ]
     },
     {
-      "id": "pd_natlan", "era": "present", "major": true,
+      "id": "pd_natlan",
+      "era": "present",
+      "major": true,
       "title": "Incandescent Ode of Resurrection",
       "banner": "Natlan: the war on the Abyss; Mavuika burns the Night Kingdom",
       "when": "Version 5.0",
       "text": "Mavuika gathers the tribes' heroes for the last war against the Abyss. With Capitano's help she drives back the Night Kingdom, then gives the Pyro Gnosis to the Tsaritsa.",
-      "color": "#FF6A2A", "flash": "red", "shake": 0.8, "sound": "war",
-      "delay": { "lore": 2, "normal": 2, "fast": 1 },
+      "color": "#FF6A2A",
+      "flash": "red",
+      "shake": 0.8,
+      "sound": "war",
+      "delay": {
+        "lore": 2,
+        "normal": 2,
+        "fast": 1
+      },
       "effects": [
-        { "type": "remove_trait", "trait": "gi_abyssal", "count": -1, "kill": false },
-        { "type": "gather_gnosis", "from": "gi_gnosis_pyro", "to": "gi_gnosis_cryo" }
+        {
+          "type": "remove_trait",
+          "trait": "gi_abyssal",
+          "count": -1,
+          "kill": false
+        },
+        {
+          "type": "gather_gnosis",
+          "from": "gi_gnosis_pyro",
+          "to": "gi_gnosis_cryo"
+        }
       ]
     },
     {
-      "id": "nk_columbina", "era": "nod_krai", "major": true,
+      "id": "nk_columbina",
+      "era": "nod_krai",
+      "major": true,
       "title": "The True Moon",
       "banner": "★ Nod-Krai: Columbina rises as the Trilune Goddess",
       "when": "Versions Luna I–VIII",
       "text": "In the moonlit borderlands of Nod-Krai, Columbina meets the remnants of the three Moon sisters and inherits all of their power: the Trilunar Authority. Dottore's plans come to nothing.",
-      "color": "#E6E0FF", "flash": "violet", "shake": 0.7, "sound": "moon",
-      "delay": { "lore": 2, "normal": 2, "fast": 1 },
+      "color": "#E6E0FF",
+      "flash": "violet",
+      "shake": 0.7,
+      "sound": "moon",
+      "delay": {
+        "lore": 2,
+        "normal": 2,
+        "fast": 1
+      },
       "effects": [
-        { "type": "age", "id": "age_moon" },
-        { "type": "grant_trait", "trait": "gi_trilunar", "count": 1, "pick": "random_civ", "unique": true }
+        {
+          "type": "age",
+          "id": "age_moon"
+        },
+        {
+          "type": "grant_trait",
+          "trait": "gi_trilunar",
+          "count": 1,
+          "pick": "random_civ",
+          "unique": true
+        }
       ]
     },
     {
-      "id": "sz_everwinter", "era": "snezhnaya", "major": true,
+      "id": "sz_everwinter",
+      "era": "snezhnaya",
+      "major": true,
       "title": "Everwinter Without Mercy",
       "banner": "❄ SNEZHNAYA — The Traveler enters the Everwinter",
       "when": "Version 7.0",
       "text": "The Traveler crosses into Snezhnaya, the Cryo Archon's realm, where Pierro, the Jester, is waiting.",
-      "color": "#BFE9FF", "flash": "blue", "shake": 0.5, "sound": "frost",
-      "delay": { "lore": 2, "normal": 2, "fast": 1 },
-      "effects": [ { "type": "age", "id": "age_ice" } ]
+      "color": "#BFE9FF",
+      "flash": "blue",
+      "shake": 0.5,
+      "sound": "frost",
+      "delay": {
+        "lore": 2,
+        "normal": 2,
+        "fast": 1
+      },
+      "effects": [
+        {
+          "type": "age",
+          "id": "age_ice"
+        }
+      ]
     },
     {
-      "id": "sz_curse_of_death", "era": "snezhnaya", "major": true,
+      "id": "sz_curse_of_death",
+      "era": "snezhnaya",
+      "major": true,
       "title": "The Curse of Death",
       "banner": "⚠ Ronova lays a Curse of Death on Snezhnaya",
       "when": "Version 7.1",
       "text": "Ronova, the Ruler of Death, kills in secret, and Rhinedottir, who now holds the Life Authority, brings the dead back before Celestia can notice. Snezhnaya lives under a Curse of Death.",
-      "color": "#5A5A7A", "flash": "black", "shake": 0.8, "sound": "doom",
-      "delay": { "lore": 1, "normal": 1, "fast": 1 },
-      "effects": [ { "type": "war", "count": 2 } ]
+      "color": "#5A5A7A",
+      "flash": "black",
+      "shake": 0.8,
+      "sound": "doom",
+      "delay": {
+        "lore": 1,
+        "normal": 1,
+        "fast": 1
+      },
+      "effects": [
+        {
+          "type": "war",
+          "count": 2
+        }
+      ]
     },
     {
-      "id": "sz_tsaritsa", "era": "snezhnaya", "major": true,
+      "id": "sz_tsaritsa",
+      "era": "snezhnaya",
+      "major": true,
       "title": "A Rekviem for the Underworld",
       "banner": "★ The Tsaritsa stops time; Ronova's Authority is taken back",
       "when": "Version 7.1",
       "text": "The Tsaritsa traps Rhinedottir in slowed time with six Gnoses. The Traveler and Dainsleif fight Ronova, and Pierro pays dearly to wield the Eye of the Fatui. Celestia takes back the Death Authority, and Ronova disappears.",
-      "color": "#BFE9FF", "flash": "white", "shake": 1.0, "sound": "divine",
-      "delay": { "lore": 1, "normal": 1, "fast": 1 },
+      "color": "#BFE9FF",
+      "flash": "white",
+      "shake": 1.0,
+      "sound": "divine",
+      "delay": {
+        "lore": 1,
+        "normal": 1,
+        "fast": 1
+      },
       "effects": [
-        { "type": "remove_trait", "trait": "gi_shade_death", "count": -1, "kill": false }
+        {
+          "type": "remove_trait",
+          "trait": "gi_shade_death",
+          "count": -1,
+          "kill": false
+        }
       ]
     },
     {
-      "id": "sz_holy_soil", "era": "snezhnaya", "major": true,
+      "id": "sz_holy_soil",
+      "era": "snezhnaya",
+      "major": true,
       "title": "The Holy Soil Spreads",
       "banner": "⚠ The Celestial Nails falter — Holy Soil spreads across Teyvat",
       "when": "Present",
       "text": "Ronova fused EITR into Snezhnaya's Nail of Retribution. Now the Nails all over Teyvat are failing, and Holy Soil, the dragons' Light-Realm land, is spreading. The story continues…",
-      "color": "#FFF6D5", "flash": "gold", "shake": 0.9, "sound": "divine",
-      "delay": { "lore": 2, "normal": 2, "fast": 1 },
+      "color": "#FFF6D5",
+      "flash": "gold",
+      "shake": 0.9,
+      "sound": "divine",
+      "delay": {
+        "lore": 2,
+        "normal": 2,
+        "fast": 1
+      },
       "effects": [
-        { "type": "meteor", "count": 3, "target": "random" },
-        { "type": "earthquake", "count": 2 }
+        {
+          "type": "meteor",
+          "count": 3,
+          "target": "random"
+        },
+        {
+          "type": "earthquake",
+          "count": 2
+        }
       ]
     }
   ]

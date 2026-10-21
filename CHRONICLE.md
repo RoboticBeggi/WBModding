@@ -11,7 +11,7 @@ it has a bigger flash, countdown warnings beforehand, and can't be hidden by the
 | Event | When (in Teyvat) | Delay (L / N / F) | id | Effects |
 |---|---|---|---|---|
 | **The Old World** | | | | |
-| 1. ★ The Seven Sovereigns | Before recorded time | 0 / 0 / 0 | `ow_sovereigns` | age, grant_set |
+| 1. ★ The Seven Sovereigns | Before recorded time | 0 / 0 / 0 | `ow_sovereigns` | age, spawn_unit |
 | 2. The Primordial Sea | Before recorded time | 15 / 8 / 3 | `ow_primordial_sea` | — |
 | 3. ★ The Three Moons Rise | Before recorded time | 20 / 10 / 4 | `ow_three_moons` | age, grant_trait |
 | 4. The Voyager's Warning | Before recorded time | 15 / 8 / 3 | `ow_voyager` | — |
@@ -24,7 +24,7 @@ it has a bigger flash, countdown warnings beforehand, and can't be hidden by the
 | 9. The Ancient Kingdoms | ~6,000 years ago | 25 / 12 / 4 | `uc_cities` | — |
 | 10. The Pride of Humanity | ~6,000 years ago | 25 / 12 / 4 | `uc_pride` | war |
 | **The War of Funerary Flame** | | | | |
-| 11. ★ Nibelung Returns | ~6,000 years ago | 15 / 8 / 3 | `wff_return` | age, grant_trait, war |
+| 11. ★ Nibelung Returns | ~6,000 years ago | 15 / 8 / 3 | `wff_return` | age, spawn_unit, war |
 | 12. ★ The Moons Shatter | ~6,000 years ago | 15 / 8 / 3 | `wff_moons_fall` | age, remove_trait |
 | 13. ★ The Celestial Nails | ~6,000 years ago | 10 / 5 / 2 | `wff_nails` | destroy_city, meteor, remove_trait |
 | 14. The Forbidden History | ~6,000 years ago | 10 / 5 / 2 | `wff_seelie` | age |
@@ -154,6 +154,7 @@ with a warning in the NML log; it never stops the Chronicle.
 | `mark_kingdom` | `tag`, `pick` (`random`, `largest`, `smallest`), `rename` | Remembers a kingdom under a tag. The `khaenriah` tag also renames it Khaenri'ah |
 | `kingdom_traits` | `tag`, `trait`, `fraction` | Gives a trait to that fraction of a tagged kingdom's people |
 | `disaster` | `id` | Runs a built-in disaster: `hellspawn`, `ice_ones_awoken`, `dragon_from_farlands`, `tornado`, `heatwave`, `small_meteorite`, `small_earthquake`… |
+| `spawn_unit` | `actor` (default `dragon`), `count`, `traits` (list) | Spawns units on random land. With a trait list, unit N gets trait N. The Old World uses this to spawn seven real dragons as the Sovereigns, and Nibelung returns as a dragon |
 | `gather_gnosis` | `from`, `to` | Moves a Gnosis trait from its holder to the holder of another trait (the Fatui collecting Gnoses for the Tsaritsa) |
 
 **`pick` values** (best match first):
@@ -169,6 +170,7 @@ When a `*_civ` or `creatures` pick finds nobody, it falls back to any unit.
   is never given while someone already holds it.
 - **Destructive effects off:** skips `meteor`, `earthquake`, `destroy_city` and `disaster`.
 - **Wars off:** skips `war`.
+- **Destructive effects off** does not stop `spawn_unit`.
 - **Catch-up:** only replays the effects that set up the world's state (`age`, the trait effects,
   `mark_kingdom`, `gather_gnosis`). It never replays destruction.
 

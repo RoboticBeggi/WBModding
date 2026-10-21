@@ -154,5 +154,101 @@
             "Type": "SWITCH",
             "BoolVal": true
         }
+    ],
+    "Combat": [
+        {
+            "Id": "Moves",
+            "Type": "SWITCH",
+            "BoolVal": true
+        },
+        {
+            "Id": "MoveDamage",
+            "Type": "SLIDER",
+            "FloatVal": 1.0,
+            "MinFloatVal": 0.1,
+            "MaxFloatVal": 5.0
+        },
+        {
+            "Id": "CooldownScale",
+            "Type": "SLIDER",
+            "FloatVal": 1.0,
+            "MinFloatVal": 0.25,
+            "MaxFloatVal": 4.0
+        },
+        {
+            "Id": "Reactions",
+            "Type": "SWITCH",
+            "BoolVal": true
+        },
+        {
+            "Id": "Duels",
+            "Type": "SWITCH",
+            "BoolVal": true
+        },
+        {
+            "Id": "DuelChance",
+            "Type": "SLIDER",
+            "FloatVal": 0.25,
+            "MinFloatVal": 0.0,
+            "MaxFloatVal": 1.0
+        },
+        {
+            "Id": "MaxDuels",
+            "Type": "INT_SLIDER",
+            "IntVal": 2,
+            "MinIntVal": 0,
+            "MaxIntVal": 6
+        },
+        {
+            "Id": "CombatSounds",
+            "Type": "SWITCH",
+            "BoolVal": true
+        },
+        {
+            "Id": "FloatingText",
+            "Type": "SWITCH",
+            "BoolVal": true
+        },
+        {
+            "Id": "Auras",
+            "Type": "SWITCH",
+            "BoolVal": true
+        },
+        {
+            "Id": "DragonBodies",
+            "Type": "SWITCH",
+            "BoolVal": true
+        }
+    ],
+    "Cinematics": [
+        {
+            "Id": "ImpactFrames",
+            "Type": "SWITCH",
+            "BoolVal": true
+        },
+        {
+            "Id": "ImpactIntensity",
+            "Type": "SLIDER",
+            "FloatVal": 1.0,
+            "MinFloatVal": 0.1,
+            "MaxFloatVal": 1.5
+        },
+        {
+            "Id": "Cutscenes",
+            "Type": "SWITCH",
+            "BoolVal": true
+        },
+        {
+            "Id": "CutsceneCooldown",
+            "Type": "SLIDER",
+            "FloatVal": 45.0,
+            "MinFloatVal": 5.0,
+            "MaxFloatVal": 300.0
+        },
+        {
+            "Id": "ChronicleCutscenes",
+            "Type": "SWITCH",
+            "BoolVal": true
+        }
     ]
 }

@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using strings;
+using TeyvatChronicle.Combat;
+using UnityEngine;
 
 namespace TeyvatChronicle.Powers
 {
@@ -144,6 +146,44 @@ namespace TeyvatChronicle.Powers
             });
         }
 
+        /// <summary>
+        /// Divine and primordial beings glow with their element, and Dragon Sovereigns that are dragons
+        /// wear an element-coloured body.
+        /// </summary>
+        private static bool DivinePresence(BaseSimObject pTarget, WorldTile pTile)
+        {
+            if (pTarget is Actor actor) MainThread.Enqueue(() => Presence(actor));
+            return true;
+        }
+
+        private static bool Presence(Actor actor)
+        {
+            if (actor == null || !actor.isAlive()) return false;
+            MoveSet set = CombatCore.ResolveSet(actor, out string trait_id);
+            if (set == null) return false;
+            if (trait_id.StartsWith("gi_sovereign_")) DragonBodies.Apply(actor, set.Element);
+
+            // Dragons (and other units that skip normal fighting) never trigger the attack hook,
+            // so divine beings also look for a nearby enemy here and use a move on it.
+            Actor foe = actor.has_attack_target ? actor.attack_target as Actor : null;
+            if (foe == null && actor.asset.skip_fight_logic)
+            {
+                float best = 100f;
+                foreach (Actor unit in World.world.units.getSimpleList())
+                {
+                    if (!CombatCore.IsEnemy(actor, unit)) continue;
+                    float d = ((Vector2)unit.current_position - actor.current_position).sqrMagnitude;
+                    if (d < best) { best = d; foe = unit; }
+                }
+            }
+            if (foe != null) CombatAI.Decide(actor, foe);
+            if (!Settings.Auras || !Cinematics.Director.OnScreen(actor.current_position)) return true;
+            Fx.Instance aura = Fx.Play("aura", actor.current_position, 1.6f + set.Tier * 0.3f,
+                Combat.Elements.Color(set.Element) * new Color(1f, 1f, 1f, 0.7f), 0f, 1.4f, true, 10f, "EffectsBack");
+            Fx.Attach(aura, actor);
+            return true;
+        }
+
         private static void AddGroup(string pId, string pColor)
         {
             if (AssetManager.trait_groups.has(pId)) return;
@@ -170,6 +210,14 @@ namespace TeyvatChronicle.Powers
                 rate_birth = 0,
                 rate_inherit = 0
             };
+            // Every power can use moves; curses can't.
+            if (pGroup != GroupCurses) trait.action_attack_target = CombatAI.OnAttack;
+            if (pGroup == GroupDivine || pGroup == GroupPrimordial)
+            {
+                trait.special_effect_interval = 3f;
+                trait.action_special_effect = DivinePresence;
+            }
+
             // The trait library creates base_stats inside add(), so stats are set afterwards.
             AssetManager.traits.add(trait);
             foreach (KeyValuePair<string, float> stat in pStats)

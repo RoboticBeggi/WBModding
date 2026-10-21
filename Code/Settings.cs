@@ -52,6 +52,26 @@ namespace TeyvatChronicle
         public static bool DestructiveEffects => Bool("Rules", "DestructiveEffects");
         public static bool WarEffects => Bool("Rules", "WarEffects");
 
+        // Combat
+        public static bool Moves => Bool("Combat", "Moves");
+        public static float MoveDamage => Float("Combat", "MoveDamage", 1f);
+        public static float CooldownScale => Float("Combat", "CooldownScale", 1f);
+        public static bool Reactions => Bool("Combat", "Reactions");
+        public static bool Duels => Bool("Combat", "Duels");
+        public static float DuelChance => Float("Combat", "DuelChance", 0.25f);
+        public static int MaxDuels => Int("Combat", "MaxDuels", 2);
+        public static bool CombatSounds => Bool("Combat", "CombatSounds");
+        public static bool FloatingText => Bool("Combat", "FloatingText");
+        public static bool Auras => Bool("Combat", "Auras");
+        public static bool DragonBodies => Bool("Combat", "DragonBodies");
+
+        // Cinematics
+        public static bool ImpactFrames => Bool("Cinematics", "ImpactFrames");
+        public static float ImpactIntensity => Float("Cinematics", "ImpactIntensity", 1f);
+        public static bool Cutscenes => Bool("Cinematics", "Cutscenes");
+        public static float CutsceneCooldown => Float("Cinematics", "CutsceneCooldown", 45f);
+        public static bool ChronicleCutscenes => Bool("Cinematics", "ChronicleCutscenes");
+
         public static bool EraEnabled(string pEraId) => Bool("Eras", "Era_" + pEraId);
     }
 }

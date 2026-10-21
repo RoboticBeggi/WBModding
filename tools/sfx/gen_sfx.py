@@ -199,6 +199,185 @@ STINGERS = {
 }
 
 
+# ------------------------------------------------------------------ combat sounds (short, played often)
+
+def noise(seconds):
+    return RNG.standard_normal(int(seconds * RATE))
+
+
+def sweep(f0, f1, seconds):
+    t = t_axis(seconds)
+    freq = f0 * (f1 / f0) ** (t / seconds)
+    return np.sin(2 * np.pi * np.cumsum(freq) / RATE)
+
+
+def bandnoise(seconds, lo, hi):
+    return lowpass(noise(seconds), hi) - lowpass(noise(seconds), lo) * 0.5
+
+
+def decay(n, rate):
+    return np.exp(-np.arange(n) / RATE * rate)
+
+
+def sfx_swing():
+    s = 0.22
+    sig = bandnoise(s, 400, 3500)
+    return sig * np.sin(np.linspace(0, np.pi, len(sig))) ** 2
+
+
+def sfx_hit():
+    s = 0.18
+    return (drum(s, 140) * 0.7 + lowpass(noise(s), 2500) * decay(int(s * RATE), 40) * 0.6)
+
+
+def sfx_hit_heavy():
+    s = 0.45
+    return reverb(drum(s, 70) + lowpass(noise(s), 1500) * decay(int(s * RATE), 18) * 0.7, 0.5, 0.2)
+
+
+def sfx_clang():
+    s = 0.6
+    t = t_axis(s)
+    metal = sum(np.sin(2 * np.pi * f * t) * a for f, a in ((1840, 1), (2710, 0.6), (4120, 0.4), (5530, 0.25)))
+    return reverb(metal * np.exp(-t * 9) + noise(s) * np.exp(-t * 60) * 0.5, 0.6, 0.25)
+
+
+def sfx_cast():
+    s = 0.5
+    t = t_axis(s)
+    return reverb(sweep(500, 1600, s) * np.exp(-t * 4) * 0.6 + bell(note("E6"), s) * 0.4, 0.8, 0.35)
+
+
+def sfx_explode():
+    s = 0.8
+    t = t_axis(s)
+    return reverb(np.tanh(lowpass(noise(s), 700) * 4) * np.exp(-t * 5) + drum(s, 50) * 0.8, 0.8, 0.25)
+
+
+def sfx_thunder():
+    s = 0.9
+    t = t_axis(s)
+    crack = noise(s) * np.exp(-t * 30)
+    rumble = lowpass(noise(s), 250) * np.exp(-t * 3) * 3
+    return reverb(crack + rumble, 1.0, 0.3)
+
+
+def sfx_wind():
+    s = 0.7
+    sig = bandnoise(s, 300, 1600)
+    t = t_axis(s)
+    return sig * np.sin(np.linspace(0, np.pi, len(sig))) * (0.7 + 0.3 * np.sin(2 * np.pi * 6 * t))
+
+
+def sfx_splash():
+    s = 0.6
+    t = t_axis(s)
+    bubbles = sum(np.sin(2 * np.pi * RNG.uniform(500, 1400) * t) * np.exp(-((t - RNG.uniform(0.05, 0.4)) ** 2) / 0.0004)
+                  for _ in range(10)) * 0.25
+    return bandnoise(s, 800, 5000) * np.exp(-t * 7) + bubbles
+
+
+def sfx_fire():
+    s = 0.7
+    t = t_axis(s)
+    crackle = (RNG.random(len(t)) > 0.997) * RNG.uniform(-1, 1, len(t)) * 3
+    return lowpass(noise(s), 900) * np.sin(np.linspace(0, np.pi, len(t))) * 1.6 + lowpass(crackle, 4000)
+
+
+def sfx_ice():
+    s = 0.6
+    out = np.zeros(int(s * RATE))
+    for i, n in enumerate(("B6", "E7", "G#6")):
+        place(out, bell(note(n), 0.5) * 0.5, i * 0.05)
+    place(out, noise(0.1) * decay(int(0.1 * RATE), 40) * 0.6, 0)
+    return reverb(out, 0.7, 0.35)
+
+
+def sfx_rock():
+    s = 0.6
+    t = t_axis(s)
+    return drum(s, 55) + np.tanh(lowpass(noise(s), 400) * 5) * np.exp(-t * 8) * 0.7
+
+
+def sfx_nature():
+    s = 0.6
+    t = t_axis(s)
+    return reverb(sweep(300, 900, s) * np.exp(-t * 5) * 0.4 + bandnoise(s, 1500, 6000) * np.exp(-t * 9) * 0.4, 0.6, 0.3)
+
+
+def sfx_charge():
+    s = 0.9
+    t = t_axis(s)
+    rise = sweep(120, 900, s) * (t / s) ** 2
+    shimmer = bandnoise(s, 2000, 8000) * (t / s) * 0.3
+    return rise + shimmer
+
+
+def sfx_boom():
+    s = 1.4
+    t = t_axis(s)
+    return reverb(drum(s, 38) * 1.4 + np.tanh(lowpass(noise(s), 300) * 6) * np.exp(-t * 3), 1.4, 0.35)
+
+
+def sfx_dash():
+    s = 0.25
+    sig = bandnoise(s, 900, 6000)
+    return sig * np.linspace(1, 0, len(sig)) ** 2 + sweep(900, 300, s) * 0.2
+
+
+def sfx_heal():
+    s = 0.9
+    out = np.zeros(int(s * RATE))
+    for i, n in enumerate(("C6", "E6", "G6", "C7")):
+        place(out, bell(note(n), 0.6) * 0.35, i * 0.08)
+    return reverb(out, 1.0, 0.45)
+
+
+def sfx_dark():
+    s = 0.9
+    t = t_axis(s)
+    return reverb(sweep(220, 60, s) * np.exp(-t * 2.5) + lowpass(noise(s), 400) * np.exp(-t * 4) * 0.8, 1.0, 0.4)
+
+
+def sfx_breath():
+    s = 1.0
+    t = t_axis(s)
+    return np.tanh(lowpass(noise(s), 1200) * 3) * np.sin(np.linspace(0, np.pi, len(t))) * 0.8
+
+
+def sfx_roar():
+    s = 1.2
+    t = t_axis(s)
+    growl = saw(70, s) * (1 + 0.4 * np.sin(2 * np.pi * 23 * t))
+    return reverb(np.tanh(lowpass(growl, 900) * 3 + lowpass(noise(s), 600)) * np.sin(np.linspace(0, np.pi, len(t))), 1.2, 0.35)
+
+
+def sfx_moon():
+    s = 0.9
+    out = np.zeros(int(s * RATE))
+    for i, n in enumerate(("A6", "E6", "C6")):
+        place(out, bell(note(n), 0.7) * 0.35, i * 0.1)
+    return reverb(out, 1.4, 0.5)
+
+
+def sfx_space():
+    s = 0.6
+    t = t_axis(s)
+    return reverb(sweep(1500, 200, s) * np.exp(-t * 4) + sweep(200, 1500, s) * np.exp(-t * 4) * 0.5, 0.8, 0.4)
+
+
+def sfx_time():
+    s = 0.8
+    out = np.zeros(int(s * RATE))
+    for i in range(6):
+        place(out, drum(0.05, 2000) * 0.25, i * 0.12)
+    place(out, sweep(800, 400, 0.8) * 0.15, 0)
+    return reverb(out, 1.0, 0.5)
+
+
+COMBAT = {name[4:]: fn for name, fn in globals().items() if name.startswith("sfx_")}
+
+
 def write_wav(path, signal):
     peak = np.max(np.abs(signal)) or 1.0
     data = (signal / peak * 0.89 * 32767).astype(np.int16)
@@ -218,6 +397,16 @@ def main():
         with open(base + ".json", "w") as f:
             json.dump({"Mode": 0, "Volume": 80, "Type": 2, "LoopCount": 0, "Ramp": False}, f, indent=4)
         print("wrote", base + ".wav")
+
+    combat = os.path.join(OUT, "combat")
+    os.makedirs(combat, exist_ok=True)
+    for name, make in COMBAT.items():
+        base = os.path.join(combat, name)
+        write_wav(base + ".wav", make())
+        # Mode 0 = Basic, Type 1 = sound effects channel; quieter because these play often.
+        with open(base + ".json", "w") as f:
+            json.dump({"Mode": 0, "Volume": 38, "Type": 1, "LoopCount": 0, "Ramp": False}, f, indent=4)
+    print(f"wrote {len(COMBAT)} combat sounds")
 
 
 if __name__ == "__main__":

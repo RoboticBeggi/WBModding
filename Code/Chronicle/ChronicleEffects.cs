@@ -69,6 +69,9 @@ namespace TeyvatChronicle.Chronicle
                 case "kingdom_traits":
                     return KingdomTraits((string)pEffect["tag"], (string)pEffect["trait"], Float(pEffect, "fraction", 0.5f));
                 case "disaster": return Disaster((string)pEffect["id"]);
+                case "spawn_unit":
+                    return SpawnUnits((string)pEffect["actor"] ?? "dragon", Int(pEffect, "count", 1),
+                        pEffect["traits"]?.ToObject<List<string>>() ?? new List<string>());
                 case "gather_gnosis": return GatherGnosis((string)pEffect["from"], (string)pEffect["to"]);
                 default:
                     ModClass.LogWarning($"[Chronicle] Unknown effect type '{pType}'");
@@ -316,6 +319,33 @@ namespace TeyvatChronicle.Chronicle
             {
                 unit.addTrait(pTrait);
                 focus ??= unit.current_tile;
+            }
+            return focus;
+        }
+
+        /// <summary>
+        /// Spawns units (by default real dragons) on random land. With a trait list, unit N gets trait N,
+        /// and the count becomes the list length. Unique traits that already have a holder are skipped.
+        /// </summary>
+        private static WorldTile SpawnUnits(string pActorId, int pCount, List<string> pTraits)
+        {
+            if (AssetManager.actor_library.get(pActorId) == null)
+            {
+                ModClass.LogWarning($"[Chronicle] Unknown actor '{pActorId}'");
+                return null;
+            }
+            if (pTraits.Count > 0) pCount = pTraits.Count;
+            WorldTile focus = null;
+            for (int i = 0; i < pCount; i++)
+            {
+                string trait = i < pTraits.Count ? pTraits[i] : null;
+                if (trait != null && (!TraitExists(trait) || MustBeUnique(trait, false) && Holders(trait).Count > 0)) continue;
+                WorldTile tile = World.world.islands_calculator.getRandomIslandGround()?.getRandomTile()
+                                 ?? World.world.tiles_list.GetRandom();
+                Actor unit = World.world.units.spawnNewUnit(pActorId, tile, true, true);
+                if (unit == null) continue;
+                if (trait != null) unit.addTrait(trait);
+                focus ??= tile;
             }
             return focus;
         }
