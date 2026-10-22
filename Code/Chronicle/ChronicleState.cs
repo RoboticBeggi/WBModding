@@ -99,6 +99,44 @@ namespace TeyvatChronicle.Chronicle
             Announcer.AnnounceStart(Events[pEventIndex]);
         }
 
+        /// <summary>
+        /// Moves a running Chronicle to an event. Jumping forward plays the skipped events silently (with
+        /// catch-up on); jumping back only moves the clock, so later events will happen again.
+        /// </summary>
+        public static void JumpTo(int pEventIndex)
+        {
+            if (!Ready || Events.Count == 0) return;
+            if (!Active)
+            {
+                StartAt(pEventIndex);
+                return;
+            }
+            pEventIndex = Mathf.Clamp(pEventIndex, 0, Events.Count - 1);
+            if (Settings.CatchUp)
+            {
+                for (int i = Index; i < pEventIndex; i++)
+                {
+                    if (IsEnabled(Events[i])) ChronicleEffects.Run(Events[i], true);
+                }
+            }
+            Index = pEventIndex;
+            Paused = false;
+            NextYear = Date.getCurrentYear();
+            Warned = 0;
+            Announcer.AnnounceStart(Events[pEventIndex]);
+        }
+
+        /// <summary>Roughly how many years the whole timeline takes at the current pacing.</summary>
+        public static int TotalYears()
+        {
+            int years = 0;
+            foreach (ChronicleEvent ev in Events)
+            {
+                if (IsEnabled(ev)) years += DelayFor(ev);
+            }
+            return years;
+        }
+
         public static void StartAtEra(int pEraIndex)
         {
             var eras = ChronicleData.Timeline.Eras;

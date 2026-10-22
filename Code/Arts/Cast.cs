@@ -216,7 +216,7 @@ namespace TeyvatChronicle.Arts
         public bool Hit(Actor pVictim, float pPower, string pStatus = null, float pStatusTime = 3f)
         {
             if (!Ok || !CombatCore.Alive(pVictim)) return false;
-            CombatCore.Hit(A, pVictim, pPower * Pow, Element, pStatus, pStatusTime);
+            CombatCore.Hit(A, pVictim, pPower * Pow, Element, pStatus, pStatusTime, God);
             return !pVictim.isAlive();
         }
 

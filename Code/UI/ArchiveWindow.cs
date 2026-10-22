@@ -11,8 +11,7 @@ using UnityEngine.UI;
 namespace TeyvatChronicle.UI
 {
     /// <summary>
-    /// The Teyvat Archive: one window for everything. Chronicle (status, pacing, controls, every event,
-    /// start anywhere), Legends (the mightiest powers), Powers (the tier codex and every fighting style) and a Guide.
+    /// The Teyvat Archive: one window for everything. Chronicle (a timeline slider to start or jump anywhere), Legends (the mightiest powers), Powers (the tier codex and every fighting style) and a Guide.
     /// </summary>
     public static class ArchiveWindow
     {
@@ -27,9 +26,7 @@ namespace TeyvatChronicle.UI
         private static int _selected_event = -1;
 
         // Chronicle tab widgets that refresh live
-        private static Text _status_era, _status_next, _status_detail, _pause_label;
-        private static Image _progress;
-        private static readonly Image[] _pacing = new Image[4];
+        private static Text _status_era, _status_next, _pause_label;
 
         public static bool IsOpen => _root != null && _root.gameObject.activeSelf;
 
@@ -92,143 +89,197 @@ namespace TeyvatChronicle.UI
         }
 
         // ---------------------------------------------------------------- Chronicle
+        // One timeline slider to pick a moment, one card that tells its story, one button to go there.
+
+        private const float TrackX = 34f;
+        private static float TrackW => W - 68f;
+
+        private static NotchSlider _timeline, _pace;
+        private static RectTransform _now_marker;
+        private static Text _sel_era, _sel_count, _card_title, _card_meta, _card_text, _go_label, _pace_label;
+        private static Image _go_image;
 
         private static void BuildChronicle()
         {
             Transform b = _body;
-            Kit.Image(b, "panel_inner", 12, 0, W - 24, 62);
-            _status_era = Kit.Label(b, "", 18, 3, W - 36, 13, 9, Kit.Gold, TextAnchor.MiddleLeft, true);
-            _status_next = Kit.Label(b, "", 18, 16, W - 36, 11, 7);
-            _progress = Kit.Bar(b, 18, 29, W - 36, 6, Kit.GoldDim);
-            _status_detail = Kit.Label(b, "", 18, 36, W - 36, 10, 6, Kit.Muted);
+            List<ChronicleEvent> events = ChronicleState.Events;
+            int count = Mathf.Max(1, events.Count);
+            if (_selected_event < 0 || _selected_event >= events.Count)
+                _selected_event = ChronicleState.Ready && ChronicleState.Active ? Mathf.Min(ChronicleState.Index, count - 1) : 0;
 
-            string[] pacing = { "Lore", "Normal", "Fast", "Custom" };
-            float pw = (W - 90) / 4f;
-            Kit.Label(b, "Pacing", 18, 48, 40, 12, 7, Kit.GoldDim);
-            for (int i = 0; i < 4; i++)
-            {
-                int index = i;
-                Button button = Kit.Button(b, pacing[i], 60 + i * (pw + 2), 47, pw, 13, () => SetPacing(index), "button_dark", 6);
-                _pacing[i] = button.GetComponent<Image>();
-            }
+            // Where we are now
+            Kit.Image(b, "panel_inner", 12, 0, W - 24, 34);
+            _status_era = Kit.Label(b, "", 20, 3, W - 40, 14, 10, Kit.Gold, TextAnchor.MiddleLeft, true);
+            _status_next = Kit.Label(b, "", 20, 17, W - 40, 13, 7);
 
-            float bw = (W - 24 - 8) / 5f;
-            Kit.Button(b, "Begin", 12, 68, bw, 15, () =>
-            {
-                if (_selected_event >= 0) ChronicleState.StartAt(_selected_event);
-                else ChronicleState.StartAtEra(Settings.StartEra);
-                RefreshStatus();
-            }, "button_gold");
-            Kit.Button(b, "Advance", 14 + bw, 68, bw, 15, () => { ChronicleState.Advance(); RefreshStatus(); });
-            Button pause = Kit.Button(b, "Pause", 16 + bw * 2, 68, bw, 15, () =>
+            // The timeline
+            _sel_count = Kit.Label(b, "", W - 120, 40, 106, 10, 6, Kit.Muted, TextAnchor.MiddleRight);
+            Kit.Label(b, "TIMELINE", 14, 40, 80, 10, 6, Kit.GoldDim, TextAnchor.MiddleLeft, true);
+            DrawEraBands(b, events, 56f);
+            Kit.Button(b, "<", 12, 56, 18, 16, () => Step(-1), "button_dark", 9);
+            Kit.Button(b, ">", W - 30, 56, 18, 16, () => Step(1), "button_dark", 9);
+            _timeline = Kit.Slider(b, TrackX, 56, TrackW, count, _selected_event, OnTimeline, false);
+            _now_marker = Kit.Image(b, "bar_fill", TrackX, 73, 3, 4, new Color32(155, 255, 138, 255)).rectTransform;
+            string first = events.Count > 0 ? ChronicleData.EraTitle(events[0].Era) : "";
+            string last = events.Count > 0 ? ChronicleData.EraTitle(events[events.Count - 1].Era) : "";
+            Kit.Label(b, first, TrackX - 4, 77, 110, 10, 6, Kit.Muted);
+            Kit.Label(b, last, TrackX + TrackW - 106, 77, 110, 10, 6, Kit.Muted, TextAnchor.MiddleRight);
+            _sel_era = Kit.Label(b, "", TrackX + 60, 77, TrackW - 120, 10, 7, Kit.Gold, TextAnchor.MiddleCenter, true);
+
+            // The chosen moment
+            Kit.Image(b, "panel_inner", 12, 92, W - 24, 156);
+            _card_title = Kit.Label(b, "", 20, 96, W - 40, 15, 10, Kit.Gold, TextAnchor.MiddleLeft, true);
+            _card_meta = Kit.Label(b, "", 20, 111, W - 40, 10, 6, Kit.Muted);
+            RectTransform story = Kit.Scroll(b, 16, 124, W - 32, 120);
+            story.GetComponentInParent<Image>().color = new Color(1f, 1f, 1f, 0f);
+            _card_text = Kit.Label(story, "", 4, 2, W - 44, 10, 7, Kit.Cream, TextAnchor.UpperLeft);
+
+            // Go there
+            Button go = Kit.Button(b, "Begin here", 12, 254, W - 24, 20, GoHere, "button_gold", 9);
+            _go_image = go.GetComponent<Image>();
+            _go_label = go.GetComponentInChildren<Text>();
+            float bw = (W - 28) / 3f;
+            Button pause = Kit.Button(b, "Pause", 12, 278, bw, 15, () =>
             {
                 if (!ChronicleState.Ready || !ChronicleState.Active) return;
                 ChronicleState.Paused = !ChronicleState.Paused;
                 RefreshStatus();
-            });
+            }, "button_dark");
             _pause_label = pause.GetComponentInChildren<Text>();
-            Kit.Button(b, "Stop", 18 + bw * 3, 68, bw, 15, () => { ChronicleState.Stop(); RefreshStatus(); });
-            Kit.Button(b, "Settings", 20 + bw * 4, 68, bw, 15, OpenSettings, "button_dark");
+            Kit.Button(b, "Next event now", 14 + bw, 278, bw, 15, () => { ChronicleState.Advance(); RefreshStatus(); }, "button_dark");
+            Kit.Button(b, "Stop", 16 + bw * 2, 278, bw, 15, () => { ChronicleState.Stop(); RefreshStatus(); }, "button_dark");
 
-            // Event list
-            RectTransform list = Kit.Scroll(b, 12, 88, W - 24, 168);
-            float y = 2f;
-            string era = null;
-            List<ChronicleEvent> events = ChronicleState.Events;
-            for (int i = 0; i < events.Count; i++)
-            {
-                ChronicleEvent ev = events[i];
-                if (ev.Era != era)
-                {
-                    era = ev.Era;
-                    Kit.Label(list, ChronicleData.EraTitle(era).ToUpper(), 6, y, W - 40, 11, 7, Kit.GoldDim, TextAnchor.MiddleLeft, true);
-                    y += 12f;
-                }
-                int index = i;
-                Image row = Kit.Image(list, "panel_inner", 4, y, W - 34, 12, new Color(1f, 1f, 1f, 0.5f));
-                row.raycastTarget = true;
-                row.gameObject.AddComponent<Button>().onClick.AddListener(() => SelectEvent(index));
-                string marker = Marker(i);
-                string star = ev.Major ? "<color=#FFE58A>★</color> " : "";
-                Kit.Label(row.transform, $"{marker} {star}{Announcer.Format(ev.Title)}", 4, 0, W - 120, 12, 7);
-                Kit.Label(row.transform, ev.When, W - 120, 0, 82, 12, 6, Kit.Muted, TextAnchor.MiddleRight);
-                y += 13f;
-            }
-            list.sizeDelta = new Vector2(W - 24, y + 4);
+            // Pace
+            Kit.Divider(b, 20, 299, W - 40);
+            Kit.Label(b, "PACE", 14, 308, 40, 12, 6, Kit.GoldDim, TextAnchor.MiddleLeft, true);
+            _pace = Kit.Slider(b, 52, 306, 110, 4, (int)Settings.Pacing, SetPacing);
+            string[] stops = { "Lore", "Normal", "Fast", "Custom" };
+            for (int i = 0; i < 4; i++)
+                Kit.Label(b, stops[i], 52 + Kit.StopX(110, 4, i) - 18, 322, 36, 9, 6, Kit.Muted, TextAnchor.MiddleCenter);
+            _pace_label = Kit.Label(b, "", 170, 306, W - 186, 16, 7, Kit.Cream, TextAnchor.MiddleRight);
+            Kit.Button(b, "More settings", W - 92, 334, 80, 14, OpenSettings, "button_dark", 6);
 
-            // Details
-            Kit.Image(b, "panel_inner", 12, 260, W - 24, 96);
-            if (_selected_event >= 0 && _selected_event < events.Count) BuildDetails(b, events[_selected_event]);
-            else
-            {
-                Kit.Label(b, "Click an event to read its story. <b>Begin</b> then starts the Chronicle from it.\n" +
-                             "With no event selected, <b>Begin</b> starts from the era chosen in Settings.",
-                    18, 266, W - 36, 80, 7, Kit.Muted, TextAnchor.UpperLeft);
-            }
+            ShowEvent(_selected_event);
             RefreshStatus();
         }
 
-        private static void BuildDetails(Transform b, ChronicleEvent ev)
+        /// <summary>Era colours under the track and a tick for every event (taller for major ones).</summary>
+        private static void DrawEraBands(Transform b, List<ChronicleEvent> events, float y)
         {
-            Kit.Label(b, Announcer.Format(ev.Title), 18, 263, W - 36, 13, 9, Toolbox.makeColor(ev.Color), TextAnchor.MiddleLeft, true);
-            Kit.Label(b, $"{ChronicleData.EraTitle(ev.Era)} · {ev.When}" + (ev.Major ? " · major event" : ""),
-                18, 276, W - 36, 10, 6, Kit.Muted);
-            Kit.Label(b, Announcer.Format(ev.Text), 18, 287, W - 36, 50, 7, Kit.Cream, TextAnchor.UpperLeft);
-            string effects = string.Join(", ", ev.Effects.Select(e => (string)e["type"]).Distinct());
-            Kit.Label(b, "Effects: " + (effects.Length > 0 ? effects : "story only"), 18, 340, W - 120, 12, 6, Kit.Muted);
-            Kit.Button(b, "Start here", W - 98, 338, 80, 14, () =>
+            int n = events.Count;
+            if (n == 0) return;
+            int start = 0;
+            for (int i = 1; i <= n; i++)
             {
-                ChronicleState.StartAt(_selected_event);
-                Select(Tab.Chronicle);
-            }, "button_gold");
+                if (i < n && events[i].Era == events[start].Era) continue;
+                float x0 = Kit.StopX(TrackW, n, start), x1 = Kit.StopX(TrackW, n, i - 1);
+                Color c = Toolbox.makeColor(events[start].Color);
+                c.a = 0.55f;
+                Kit.Image(b, "bar_fill", TrackX + x0 - 2, y + 4, Mathf.Max(4f, x1 - x0 + 4), 8, c);
+                start = i;
+            }
+            for (int i = 0; i < n; i++)
+            {
+                float h = events[i].Major ? 5f : 3f;
+                Kit.Image(b, "bar_fill", TrackX + Kit.StopX(TrackW, n, i) - 0.5f, y - h + 3, 1, h,
+                    events[i].Major ? Kit.Gold : new Color(1f, 1f, 1f, 0.45f));
+            }
         }
 
-        private static void SelectEvent(int pIndex)
+        private static void Step(int pDelta)
+        {
+            if (_timeline == null) return;
+            _timeline.SetValue(_timeline.Value + pDelta, true);
+        }
+
+        private static void OnTimeline(int pIndex)
         {
             _selected_event = pIndex;
-            Select(Tab.Chronicle);
+            ShowEvent(pIndex);
+            RefreshStatus();
         }
 
-        private static string Marker(int pIndex)
+        private static void ShowEvent(int pIndex)
         {
-            if (!ChronicleState.Ready || !ChronicleState.Active) return "<color=#5A6280>-</color>";
-            if (pIndex < ChronicleState.Index) return "<color=#9BFF8A>+</color>";
-            if (pIndex == ChronicleState.Index) return "<color=#FFE58A>></color>";
-            return "<color=#5A6280>-</color>";
+            List<ChronicleEvent> events = ChronicleState.Events;
+            if (_card_title == null || pIndex < 0 || pIndex >= events.Count) return;
+            ChronicleEvent ev = events[pIndex];
+            _card_title.text = Announcer.Format(ev.Title);
+            _card_title.color = Toolbox.makeColor(ev.Color);
+            _card_meta.text = $"{ev.When}" + (ev.Major ? "  ·  <color=#FFE58A>major event</color>" : "") +
+                              (ChronicleState.IsEnabled(ev) ? "" : "  ·  <color=#FFB27F>turned off in settings</color>");
+            _card_text.text = Announcer.Format(ev.Text);
+            _card_text.rectTransform.sizeDelta = new Vector2(W - 44, _card_text.preferredHeight + 4);
+            ((RectTransform)_card_text.transform.parent).sizeDelta = new Vector2(W - 32, _card_text.preferredHeight + 8);
+            _sel_era.text = ChronicleData.EraTitle(ev.Era);
+            _sel_count.text = $"{pIndex + 1} / {events.Count}";
+        }
+
+        private static void GoHere()
+        {
+            if (!ChronicleState.Ready) return;
+            if (ChronicleState.Active && ChronicleState.Index == _selected_event) return;
+            if (ChronicleState.Active) ChronicleState.JumpTo(_selected_event);
+            else ChronicleState.StartAt(_selected_event);
+            RefreshStatus();
         }
 
         private static void RefreshStatus()
         {
             if (_status_era == null) return;
             int total = ChronicleState.Events.Count;
+            bool running = ChronicleState.Ready && ChronicleState.Active;
             if (!ChronicleState.Ready)
             {
                 _status_era.text = "No world loaded";
-                _status_next.text = "";
-                _status_detail.text = "";
-                _progress.fillAmount = 0f;
-                return;
+                _status_next.text = "Load or create a world first.";
             }
-            ChronicleEvent next = ChronicleState.NextEvent;
-            if (next == null)
+            else if (ChronicleState.NextEvent == null)
             {
-                _status_era.text = "The Chronicle is not running";
-                _status_next.text = "Press <b>Begin</b>, or pick any event below and press <b>Start here</b>.";
-                _progress.fillAmount = 0f;
+                _status_era.text = ChronicleState.Active ? "The Chronicle is complete" : "The Chronicle hasn't begun";
+                _status_next.text = ChronicleState.Active ? "Every event has played. Pick a moment to relive it."
+                    : "Slide to the moment you want history to start from, then press <b>Begin here</b>.";
             }
             else
             {
+                ChronicleEvent next = ChronicleState.NextEvent;
                 int years = Mathf.Max(0, ChronicleState.NextYear - Date.getCurrentYear());
-                _status_era.text = ChronicleData.EraTitle(next.Era);
-                _status_next.text = $"Next: <color={next.Color}>{Announcer.Format(next.Title)}</color> in {years} year{(years == 1 ? "" : "s")}" +
-                                    (ChronicleState.Paused ? "  <color=#FFB27F>(paused)</color>" : "");
-                _progress.fillAmount = total > 0 ? ChronicleState.Index / (float)total : 0f;
+                _status_era.text = ChronicleData.EraTitle(next.Era) + $"  <size=7><color=#A0A8BE>Year {Date.getCurrentYear()}</color></size>";
+                _status_next.text = ChronicleState.Paused
+                    ? $"<color=#FFB27F>Paused</color> before <color={next.Color}>{Announcer.Format(next.Title)}</color>"
+                    : $"Next: <color={next.Color}>{Announcer.Format(next.Title)}</color> in {years} year{(years == 1 ? "" : "s")}";
             }
-            _status_detail.text = $"Event {Mathf.Min(ChronicleState.Index + 1, total)} of {total} · Year {Date.getCurrentYear()} · " +
-                                  $"{(Settings.ChronicleCutscenes ? "cutscenes on" : "cutscenes off")}";
-            int pacing = (int)Settings.Pacing;
-            for (int i = 0; i < 4; i++) _pacing[i].sprite = Kit.Sprite(i == pacing ? "button_gold" : "button_dark");
+
+            if (_now_marker != null)
+            {
+                _now_marker.gameObject.SetActive(running);
+                if (running)
+                {
+                    int now = Mathf.Min(ChronicleState.Index, Mathf.Max(0, total - 1));
+                    _now_marker.anchoredPosition = new Vector2(TrackX + Kit.StopX(TrackW, Mathf.Max(1, total), now) - 1.5f,
+                        _now_marker.anchoredPosition.y);
+                }
+            }
+            if (_go_label != null)
+            {
+                bool here = running && ChronicleState.Index == _selected_event;
+                _go_label.text = !ChronicleState.Ready ? "No world loaded"
+                    : here ? "You are here"
+                    : running ? (_selected_event > ChronicleState.Index ? "Jump ahead to here" : "Go back to here")
+                    : "Begin here";
+                _go_image.sprite = Kit.Sprite(here || !ChronicleState.Ready ? "button_dark" : "button_gold");
+                _go_label.color = here || !ChronicleState.Ready ? Kit.Gold : Kit.Ink;
+            }
             if (_pause_label != null) _pause_label.text = ChronicleState.Paused ? "Resume" : "Pause";
+            if (_pace != null && _pace.Value != (int)Settings.Pacing) _pace.SetValue((int)Settings.Pacing, false);
+            if (_pace_label != null)
+            {
+                string[] names = { "Lore", "Normal", "Fast", "Custom" };
+                int pacing = Mathf.Clamp((int)Settings.Pacing, 0, 3);
+                _pace_label.text = ChronicleState.Ready
+                    ? $"{names[pacing]} · whole timeline <b>~{ChronicleState.TotalYears()} years</b>"
+                    : names[pacing];
+            }
         }
 
         private static void SetPacing(int pIndex)

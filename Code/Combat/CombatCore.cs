@@ -172,16 +172,17 @@ namespace TeyvatChronicle.Combat
 
         // ---------------------------------------------------------------- damage
 
-        /// <summary>Deals technique damage (past the Guard), feeds both God gauges and applies a status.</summary>
+        /// <summary>Deals technique damage (balanced, past the Guard), feeds both God gauges and applies a status.</summary>
         public static void Hit(Actor pCaster, Actor pVictim, float pPower, string pElement, string pStatus = null,
-            float pStatusTime = 3f)
+            float pStatusTime = 3f, bool pGod = false)
         {
             if (!Alive(pCaster) || !Alive(pVictim)) return;
-            float damage = Mathf.Max(1f, pCaster.stats["damage"]) * pPower * Settings.MoveDamage;
+            // Armour is already part of the balanced damage, so the game doesn't reduce it again.
+            float damage = Balance.Technique(pCaster, pVictim, pPower, pGod);
             Arts.Guard.Bypass = true;
             try
             {
-                pVictim.getHit(damage, true, AttackType.Other, pCaster, false);
+                pVictim.getHit(damage, true, AttackType.Other, pCaster, false, false, false);
             }
             finally
             {

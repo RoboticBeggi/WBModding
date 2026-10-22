@@ -4,7 +4,8 @@ A WorldBox mod that plays out Genshin Impact's history of Teyvat on your world, 
 Seven Dragon Sovereigns of the Old World to the Snezhnaya crisis of Version 7.1. Every power is a
 trait, so you can give a Vision, a Gnosis or a Shade's Authority to anyone.
 
-> **Status: v0.5.0, the combat rework.** Combat now works like the *Combat Gods* mod: 37 fighting
+> **Status: v0.5.1.** Balanced fights between powers (no more one-shots between equals) and a simpler
+> Chronicle tab built around a timeline slider. **v0.5.0 was the combat rework:** combat now works like the *Combat Gods* mod: 37 fighting
 > styles with **238 techniques and 23 God abilities**, each with its own choreography, art and sound.
 > It also brings a tactical mind, technique levels I–III, Guard, new duels, team arts, battle situations
 > and world-stopping God abilities. All the effects (80 new animated sets) and combat sounds (83) are new.
@@ -29,14 +30,15 @@ The full walkthrough is in **[GUIDE.md](GUIDE.md)**. You can also read it in the
 
 1. Make a world and let some kingdoms grow.
 2. Open the **Teyvat** tab, then **Teyvat Archive**.
-3. In the Chronicle tab, pick a pace and press **Begin**. Or click any event, then **Start here**.
+3. In the Chronicle tab, drag the timeline slider to any moment, set the pace slider and press **Begin here**.
 4. Click glowing units to open their **Resonance panel**: rank, Ascension, Trial, talents,
    Constellation, what they're doing, their techniques and God gauge.
 5. Use the god powers (second row of the Teyvat tab) to raise, crown and shape your heroes.
 
 **The interface**
 - **Teyvat Archive:** a draggable window with four tabs:
-  - **Chronicle:** status, pacing, controls, and every event with its story and a *Start here* button.
+  - **Chronicle:** a timeline slider across all 45 events, the chosen event's story, one button to begin or
+    jump there, and a pace slider.
   - **Legends:** the mightiest powers.
   - **Powers:** the tier codex and every fighting style with its techniques.
   - **Guide:** how to play.

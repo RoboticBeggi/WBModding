@@ -169,6 +169,18 @@
             "MaxFloatVal": 5.0
         },
         {
+            "Id": "BalancedCombat",
+            "Type": "SWITCH",
+            "BoolVal": true
+        },
+        {
+            "Id": "FightLength",
+            "Type": "SLIDER",
+            "FloatVal": 1.0,
+            "MinFloatVal": 0.25,
+            "MaxFloatVal": 4.0
+        },
+        {
             "Id": "CooldownScale",
             "Type": "SLIDER",
             "FloatVal": 1.0,

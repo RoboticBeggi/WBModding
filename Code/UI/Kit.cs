@@ -254,6 +254,40 @@ namespace TeyvatChronicle.UI
             return content;
         }
 
+        /// <summary>
+        /// A notched slider: click or drag anywhere along it to pick one of <paramref name="pCount"/> stops.
+        /// <paramref name="pOnChange"/> fires on every new stop while dragging.
+        /// </summary>
+        public static NotchSlider Slider(Transform pParent, float pX, float pY, float pW, int pCount, int pValue,
+            Action<int> pOnChange, bool pShowFill = true)
+        {
+            RectTransform area = Rect(pParent, "slider", pX, pY, pW, 16);
+            var hit = area.gameObject.AddComponent<Image>();
+            hit.color = new Color(0f, 0f, 0f, 0f);
+            hit.raycastTarget = true;
+            Image track = Image(area, "bar_bg", 0, 5, pW, 6);
+            Image fill = null;
+            if (pShowFill)
+            {
+                fill = Image(track.transform, "bar_fill", 1, 1, pW - 2, 4, GoldDim);
+                fill.type = UnityEngine.UI.Image.Type.Filled;
+                fill.fillMethod = UnityEngine.UI.Image.FillMethod.Horizontal;
+            }
+            Image handle = Image(area, "node_lit", 0, 1, 14, 14, Gold);
+            var slider = area.gameObject.AddComponent<NotchSlider>();
+            slider.Count = Mathf.Max(1, pCount);
+            slider.Area = area;
+            slider.Handle = handle.rectTransform;
+            slider.Fill = fill;
+            slider.OnChange = pOnChange;
+            slider.SetValue(pValue, false);
+            return slider;
+        }
+
+        /// <summary>X position (inside the slider) of a stop, for drawing ticks and markers.</summary>
+        public static float StopX(float pWidth, int pCount, int pIndex) =>
+            pCount <= 1 ? 0f : pWidth * pIndex / (pCount - 1f);
+
         public static void Clear(Transform pParent)
         {
             for (int i = pParent.childCount - 1; i >= 0; i--) Object.Destroy(pParent.GetChild(i).gameObject);
@@ -281,6 +315,38 @@ namespace TeyvatChronicle.UI
                 null, out Vector2 local);
             Target.anchoredPosition = local + _offset;
             if (Target.anchorMin == new Vector2(0.5f, 0.5f)) Kit.ClampToScreen(Target);
+        }
+    }
+
+    public class NotchSlider : MonoBehaviour, IPointerDownHandler, IDragHandler, IBeginDragHandler
+    {
+        public int Count = 2;
+        public int Value;
+        public RectTransform Area, Handle;
+        public Image Fill;
+        public Action<int> OnChange;
+
+        public void OnPointerDown(PointerEventData pData) => Pick(pData);
+        public void OnBeginDrag(PointerEventData pData) => Pick(pData);
+        public void OnDrag(PointerEventData pData) => Pick(pData);
+
+        private void Pick(PointerEventData pData)
+        {
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(Area, pData.position, pData.pressEventCamera,
+                out Vector2 local);
+            float width = Mathf.Max(1f, Area.rect.width);
+            int index = Mathf.RoundToInt(Mathf.Clamp01(local.x / width) * (Count - 1));
+            if (index != Value) SetValue(index, true);
+        }
+
+        public void SetValue(int pValue, bool pNotify)
+        {
+            Value = Mathf.Clamp(pValue, 0, Count - 1);
+            float width = Area.rect.width > 0f ? Area.rect.width : Area.sizeDelta.x;
+            float x = Kit.StopX(width, Count, Value);
+            Handle.anchoredPosition = new Vector2(x - Handle.sizeDelta.x / 2f, Handle.anchoredPosition.y);
+            if (Fill != null) Fill.fillAmount = Count <= 1 ? 1f : Value / (Count - 1f);
+            if (pNotify) OnChange?.Invoke(Value);
         }
     }
 }

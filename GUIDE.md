@@ -11,7 +11,8 @@ The same guide is in the game under **Teyvat tab → How to Play** (or **Teyvat 
    (see the README).
 2. **Make a world:** any size. Let it run until a few kingdoms exist (5–10 in-game years).
 3. **Open the Teyvat tab** (the book icon in the god-powers bar), then **Teyvat Archive**.
-4. **Chronicle tab:** pick a pace (Normal is a good first run), then press **Begin**.
+4. **Chronicle tab:** drag the timeline slider to where history should start (all the way left is
+   the Old World), set the pace slider (Normal is a good first run), then press **Begin here**.
 5. **Watch:** the Old World starts with seven element-coloured Dragon Sovereigns and a cutscene.
 6. **Click any unit** you see glowing. The **Resonance panel** opens beside its window.
 
@@ -53,7 +54,7 @@ heroes, or let the Chronicle run and only watch.
 | Button | What it does |
 |---|---|
 | Teyvat Archive | Opens the main window (Chronicle, Legends, Powers, Guide) |
-| Begin | Starts the Chronicle from the era chosen in Settings |
+| Begin | Starts the Chronicle from the era chosen in Settings (the Chronicle tab lets you pick any event) |
 | Timeline | Opens the Archive's Chronicle tab |
 | Advance | Makes the next event happen now |
 | Pause / Resume | Holds the Chronicle (the world keeps running) |
@@ -85,14 +86,20 @@ You can also give any power through WorldBox's own **trait editor**: open a unit
 
 A draggable window (drag its title bar) with four tabs.
 
-**Chronicle**
-- **Status card:** the current era, the next event and its countdown, and a progress bar across all 45 events.
-- **Pacing:** Lore (~910 years), Normal (~470), Fast (~160), or Custom (Normal × the time-scale setting).
-  Your choice is saved immediately.
-- **Begin, Advance, Pause, Stop, Settings.**
-- **Event list:** every event grouped by era. A green `+` means done, a gold `>` means next, `-` means upcoming.
-  ★ marks major events. **Click an event** to read its story, then **Start here** to begin the
-  Chronicle from that exact point.
+**Chronicle**: one slider, one story card, one button.
+- **Top line:** the current era and year, and the next event with its countdown (or *Paused*).
+- **Timeline slider:** all 45 events from the Old World to the present, coloured by era. Gold ticks
+  are major events. Drag the gold handle (or tap `<` `>`) to pick a moment. The small green mark
+  under the track is where the Chronicle is now.
+- **Story card:** the chosen event's title, when it happened and its story.
+- **The big button** does the obvious thing:
+  - *Begin here* when nothing is running;
+  - *Jump ahead to here* (skipped events play silently with catch-up on);
+  - *Go back to here* (only moves the clock, so later events happen again);
+  - *You are here* when you're already there.
+- **Pause / Resume, Next event now, Stop.**
+- **Pace slider:** Lore, Normal, Fast or Custom. Next to it is how many years the whole timeline will
+  take at that pace. **More settings** opens everything else.
 
 **Legends:** the 40 mightiest powers, ranked by tier, then rank, then Constellation. Click one to jump to them and open their window.
 
@@ -262,6 +269,12 @@ from their own style.
 - **God abilities:** Archons and every tier above fill a **God gauge** by landing and taking blows
   (shown in the Resonance panel). When it's full the world stops: letterbox bars, a title card, and
   their signature art plays out while everything else stands frozen.
+- **Balanced fights:** between two powered fighters, a blow takes a share of the victim's health
+  instead of raw damage. The share depends on its power and the tier gap (×1.6 per tier), and repeated
+  hits in quick succession land softer (combo decay, down to 40%). No single blow takes more than 22%
+  of an equal or stronger fighter's health (35% for a God ability), so equals trade many techniques
+  before one falls. A higher tier still crushes a lower one, and ordinary people still fall to a single
+  blow. *Fight length* in the settings makes duels longer or shorter.
 - **The land remembers:** craters, fissures and (with destructive effects on) burning ground.
 
 ---
@@ -285,7 +298,7 @@ Open them from **Archive → Chronicle → Settings**, or **Mods → Teyvat Chro
 
 ## 9. Recipes
 
-- **Epic fights right away:** Archive → Chronicle → click *The Traveler Awakens* → Start here. With
+- **Epic fights right away:** Archive → Chronicle → slide to *The Traveler Awakens* → Begin here. With
   catch-up, the Seven, the Harbingers and the Shades are already in place.
 - **Raise a champion:** mark a Training Ground in a capital, Grant Vision to a young warrior, and watch
   their panel climb. A higher-rank mentor in the same city helps.

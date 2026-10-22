@@ -150,6 +150,8 @@
     "Cinematics": "Cinematics",
     "Moves": "Powered units use their techniques",
     "MoveDamage": "Technique damage (×)",
+    "BalancedCombat": "Balanced fights between powers (no one-shots between equals)",
+    "FightLength": "Fight length between powers (× longer)",
     "CooldownScale": "Technique speed (× faster cooldowns)",
     "Duels": "Duels (locks, aerial clashes, chases, feints, catastrophes)",
     "DuelChance": "Duel chance when two powers meet",

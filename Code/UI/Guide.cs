@@ -11,16 +11,17 @@ namespace TeyvatChronicle.UI
             "bigger wars and better legends.\n\n" +
 
             "<b><color=#D9B56A>2. Begin the Chronicle</color></b>\n" +
-            "Open the <b>Teyvat</b> tab → <b>Teyvat Archive</b> → <b>Chronicle</b>. Press <b>Begin</b> to start at the " +
-            "Old World, or click any event and press <b>Start here</b>. Choose a pace: Lore (~900 years), Normal (~470), " +
-            "Fast (~160) or Custom. Each era is announced with a cutscene, a banner, a sound and a world-history entry. " +
+            "Open the <b>Teyvat</b> tab → <b>Teyvat Archive</b> → <b>Chronicle</b>. Drag the <b>timeline slider</b> to the " +
+            "moment history should start from (far left is the Old World), set the <b>pace slider</b> (Lore, Normal, " +
+            "Fast or Custom; it shows how many years the whole timeline takes), then press <b>Begin here</b>. Each era is announced with a cutscene, a banner, a sound and a world-history entry. " +
             "Countdown warnings appear 10 years and 1 year before major events.\n\n" +
 
             "<b><color=#D9B56A>3. Watch Teyvat's history happen</color></b>\n" +
             "Dragon Sovereigns rise, the Heavenly Principles descend with the Four Shades, the moons shatter, Celestial " +
             "Nails fall, Khaenri'ah is founded, the Archon War crowns the Seven, the Cataclysm strikes, the Fatui rise, " +
             "the Traveler awakens, Columbina takes the Trilunar Authority, and Snezhnaya's crisis unfolds. " +
-            "Use <b>Advance</b> to skip ahead, <b>Pause</b> to hold, or <b>Stop</b> to end it.\n\n" +
+            "Slide to any later or earlier event and press the big button to jump there. <b>Next event now</b> skips " +
+            "ahead, <b>Pause</b> holds, <b>Stop</b> ends it.\n\n" +
 
             "<b><color=#D9B56A>4. Follow your heroes</color></b>\n" +
             "Click any unit: the <b>Resonance panel</b> opens beside its window. It shows its power and tier, rank and XP, " +

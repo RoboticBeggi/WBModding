@@ -24,11 +24,14 @@ namespace TeyvatChronicle.Arts
                 prefix: new HarmonyMethod(typeof(Guard), nameof(Prefix)));
         }
 
-        private static bool Prefix(Actor __instance, float pDamage, AttackType pAttackType, BaseSimObject pAttacker)
+        private static bool Prefix(Actor __instance, ref float pDamage, AttackType pAttackType, BaseSimObject pAttacker)
         {
-            if (Bypass || !Settings.Guard) return true;
+            if (Bypass) return true;
             if (pAttackType != AttackType.Weapon && pAttackType != AttackType.Other) return true;
             if (!(pAttacker is Actor attacker) || attacker == __instance || !__instance.isAlive()) return true;
+            // Ordinary blows between powers are rescaled so fights between the mighty last.
+            pDamage = Balance.Blow(attacker, __instance, pDamage);
+            if (!Settings.Guard) return true;
 
             MoveSet mine = CombatCore.ResolveSet(__instance, out _);
             if (mine == null) return true;
@@ -49,7 +52,7 @@ namespace TeyvatChronicle.Arts
             {
                 // Turned back: half the damage goes home.
                 Bypass = true;
-                try { attacker.getHit(pDamage * 0.5f, true, AttackType.Other, __instance, false); }
+                try { attacker.getHit(Balance.Blow(__instance, attacker, pDamage * 0.5f), true, AttackType.Other, __instance, false); }
                 finally { Bypass = false; }
             }
             return false;

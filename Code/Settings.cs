@@ -55,6 +55,8 @@ namespace TeyvatChronicle
         // Combat
         public static bool Moves => Bool("Combat", "Moves");
         public static float MoveDamage => Float("Combat", "MoveDamage", 1f);
+        public static bool BalancedCombat => Bool("Combat", "BalancedCombat");
+        public static float FightLength => Float("Combat", "FightLength", 1f);
         public static float CooldownScale => Float("Combat", "CooldownScale", 1f);
         public static bool Duels => Bool("Combat", "Duels");
         public static float DuelChance => Float("Combat", "DuelChance", 0.25f);
