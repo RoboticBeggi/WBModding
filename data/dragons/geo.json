@@ -1,11 +1,1 @@
-{
-  "canvas": [
-    122,
-    98
-  ],
-  "mouth": [
-    114,
-    51
-  ],
-  "width_tiles": 8.58
-}
+{"canvas": [100, 98], "mouth": [96, 48], "width_tiles": 8.5}

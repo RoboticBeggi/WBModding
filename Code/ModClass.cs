@@ -36,6 +36,11 @@ namespace TeyvatChronicle
             Path.Patch(harmony);
         }
 
+        private void LateUpdate()
+        {
+            DragonModels.LateUpdate();
+        }
+
         private void Update()
         {
             MainThread.Drain();

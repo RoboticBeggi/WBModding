@@ -186,9 +186,29 @@ namespace TeyvatChronicle.Powers
 
         private static void SetVanillaVisible(Actor a, bool pVisible)
         {
+            // The game re-applies the dragon's sprite every frame, so hide it three ways: renderer off,
+            // rendering forced off, and fully transparent. This also runs in LateUpdate, after the game.
             foreach (SpriteRenderer r in a.avatar.GetComponentsInChildren<SpriteRenderer>(true))
             {
                 if (r.enabled != pVisible) r.enabled = pVisible;
+                if (r.forceRenderingOff == pVisible) r.forceRenderingOff = !pVisible;
+                Color c = r.color;
+                float alpha = pVisible ? 1f : 0f;
+                if (!Mathf.Approximately(c.a, alpha)) r.color = new Color(c.r, c.g, c.b, alpha);
+            }
+        }
+
+        /// <summary>Runs after every other update so nothing can show the WorldBox dragon again this frame.</summary>
+        public static void LateUpdate()
+        {
+            if (World.world?.units == null || _bodies.Count == 0) return;
+            foreach (KeyValuePair<long, Body> pair in _bodies)
+            {
+                Actor a = World.world.units.get(pair.Key);
+                if (a == null || a.avatar == null || pair.Value.Renderer == null || !pair.Value.Renderer.enabled) continue;
+                SetVanillaVisible(a, false);
+                SpriteRenderer vanilla = a.avatar.GetComponentInChildren<SpriteRenderer>(true);
+                if (vanilla != null) pair.Value.Go.transform.position = vanilla.transform.position;
             }
         }
 
