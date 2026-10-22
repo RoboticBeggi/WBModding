@@ -33,6 +33,7 @@ namespace TeyvatChronicle
             CharacterPanel.Patch(harmony);
             Guard.Patch(harmony);
             DragonRule.Patch(harmony);
+            DragonModels.Patch(harmony);
             Path.Patch(harmony);
         }
 

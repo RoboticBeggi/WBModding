@@ -198,6 +198,37 @@ namespace TeyvatChronicle.Powers
             }
         }
 
+        /// <summary>
+        /// WorldBox draws a dragon twice: through its avatar's SpriteRenderer and through the shared unit batch.
+        /// This postfix runs right after the batch decides what to draw this frame and takes Sovereigns out of it.
+        /// </summary>
+        public static void Patch(HarmonyLib.Harmony pHarmony)
+        {
+            try
+            {
+                pHarmony.Patch(HarmonyLib.AccessTools.Method(typeof(ActorManager), nameof(ActorManager.precalculateRenderDataNormal)),
+                    postfix: new HarmonyLib.HarmonyMethod(typeof(DragonModels), nameof(SkipBatch)));
+            }
+            catch (System.Exception e)
+            {
+                ModClass.LogWarning($"[Dragons] Could not patch the unit batch: {e.Message}");
+            }
+        }
+
+        private static void SkipBatch(ActorManager __instance)
+        {
+            if (_bodies.Count == 0) return;
+            ActorVisibleDataArray visible = __instance.visible_units;
+            bool[] draw = __instance.render_data.has_normal_render;
+            int count = Mathf.Min(visible.count, draw.Length);
+            for (int i = 0; i < count; i++)
+            {
+                Actor a = visible.array[i];
+                if (a != null && _bodies.TryGetValue(a.getID(), out Body body) && body.Renderer != null && body.Renderer.enabled)
+                    draw[i] = false;
+            }
+        }
+
         /// <summary>Runs after every other update so nothing can show the WorldBox dragon again this frame.</summary>
         public static void LateUpdate()
         {
