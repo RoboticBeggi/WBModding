@@ -69,7 +69,7 @@ namespace TeyvatChronicle.Arts
                 Director.Punch(0.8f, 0.5f);
                 ModClass.Instance.StartCoroutine(Director.Spotlight(p, 1.4f));
             }
-            a.restoreHealth(Mathf.CeilToInt(a.getMaxHealth() * 0.2f));
+            a.restoreHealth(Mathf.CeilToInt(a.getMaxHealth() * Path.LastStandHeal(a)));
             a.addStatusEffect("powerup", 12f);
             yield return CombatCore.Wait(0.7f);
             data.Casting = false;
@@ -80,11 +80,11 @@ namespace TeyvatChronicle.Arts
 
         public static void OnKill(Actor pKiller, Actor pVictim)
         {
-            if (!Settings.Situations || pVictim == null || !Resonance.IsPowered(pVictim)) return;
+            if (!Settings.Situations || pVictim == null || !Path.IsPowered(pVictim)) return;
             Vector3 p = pVictim.current_position;
             foreach (Actor ally in CombatCore.AlliesNear(pVictim, 12f))
             {
-                if (ally == pVictim || !Resonance.IsPowered(ally)) continue;
+                if (ally == pVictim || !Path.IsPowered(ally)) continue;
                 _grudges[ally.getID()] = new Grudge
                 {
                     Killer = pKiller.getID(), VictimName = pVictim.getName(), Until = CombatCore.Now + 40f
@@ -178,6 +178,7 @@ namespace TeyvatChronicle.Arts
             CombatCore.Sound("guard_tap", between, "gi/sfx/arts/");
             FloatingText.Show("PROTECT", between + new Vector3(0f, 1.6f), c, 13);
             ward.addStatusEffect("shield", 6f);
+            Path.OnRescue(a);
             yield return CombatCore.Wait(0.3f);
             data.Casting = false;
             if (CombatCore.Alive(a) && CombatCore.Alive(enemy)) Engine.Run(a, enemy, strike, set, 1.2f);
@@ -187,7 +188,7 @@ namespace TeyvatChronicle.Arts
 
         private static void RecordKill(Actor pKiller)
         {
-            if (pKiller == null || !Resonance.IsPowered(pKiller)) return;
+            if (pKiller == null || !Path.IsPowered(pKiller)) return;
             long id = pKiller.getID();
             if (!_kills.TryGetValue(id, out List<float> list)) _kills[id] = list = new List<float>();
             list.Add(CombatCore.Now);

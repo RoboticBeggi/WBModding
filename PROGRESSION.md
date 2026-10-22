@@ -1,113 +1,116 @@
-# Ley Line Resonance: levelling, training and ascension
+# The Crucible Path: levelling, training and ascension
 
-Every powered unit has its own **Resonance**, separate from WorldBox's unit level and saved with the world.
+Every powered unit walks its own **Path**, separate from WorldBox's unit level and saved with the world.
+It is the mod's own system. Heroes grow from what they actually do (facets), break through to new
+**Stages** only by surviving a **Crucible** in battle, and carry **marks** from their deeds.
+The code is `Code/Progression/Path.cs`.
 
-## Ranks and Breakthroughs
+## Facets: you become what you do
 
-- **Rank 1 → 90.** Rank multiplies move damage: rank 46 hits twice as hard as rank 1, and rank 90 nearly three times as hard.
-- **XP to the next rank** = 30 + 4 × rank + rank² / 4. That's 34 XP at rank 1, 210 at rank 20, 1,170 at rank 60 and 2,370 at rank 89.
-- **Breakthroughs** at ranks 20, 40, 50, 60, 70 and 80. XP stops counting until the unit passes a Trial:
+Four facets, each running from 0 to 40. They grow from use, not from a shared XP pool:
 
-| Breakthrough | Trial |
-|---|---|
-| 20 | Finish 3 training sessions (one session = a quarter year of training) |
-| 40 | Win a spar or a duel, or defeat 5 foes |
-| 50 | Defeat 10 foes |
-| 60 | Defeat an elite (a tier 2+ unit or a dragon), or win a duel |
-| 70 | Win 2 duels |
-| 80 | Earn 300 renown, or wait a year at the gate while your kingdom has an Archon (an Archon's blessing) |
-
-Each passed Trial raises the **Ascension phase** (★ to ★★★★★★). The unit gets the matching *Ascension*
-trait, with growing stats, plus an ascension celebration: a light pillar, a ring and a sound.
-
-**Higher tiers start further along.** The first time the mod sees a unit with a high-tier power, it
-starts at a fitting rank: Exalted 25, Archon 40, Sovereign 55, Shade 70, Moons and Nibelung 85,
-Heavenly Principles 90.
-
-## Training
-
-The mod checks every unit in the world in turn, about 250 units every half second. Rates below are XP per
-in-game year (60 seconds of world time), so game speed doesn't change how fast units progress.
-
-| Activity | XP / year | When |
+| Facet | Grows from | Effect per level |
 |---|---|---|
-| **Drills** | 400 | A powered unit in its own city, not fighting. Small slashes in its element's colour |
-| **Training dummy** | 800 | While doing WorldBox's own training-dummy task. Sparks fly |
-| **Sparring** | 35–45 per bout | Sometimes two powered units in the same city spar: real-looking exchanges, no damage, a "SPAR" label and a winner |
-| **Mentor** | ×1.5 | Someone at least 5 ranks higher trains in the same city |
-| **Training Ground** | ×2 | Inside an area you marked with the Training Ground power |
-| **Above rank 60** | ×0.5 | Training alone only goes so far; the top ranks need real fights |
-| Combat: using a move | +1.5 | |
-| Combat: a kill | 20 + 2 × victim rank + 30 × victim tier | |
-| Duel | win +80, loss +30 | |
+| **Vigor** | taking hits (1.5 per hit, at most every 0.4 s), drilling in the city (60/yr), kills (4) | +4% max health |
+| **Edge** | landing techniques (2, at most every 0.3 s), dummy training (90/yr), kills (8 + 10 × the victim's tier) | +3% technique power |
+| **Ward** | guarding a blow (3), being hit mid-technique (1.5), protecting an ally (15), sparring (15–20) | 1% less damage taken (up to 40%), +0.5% guard chance |
+| **Flow** | dashes, blinks and leaps (3), duels (15–30), sparring (15–25) | 1.2% shorter cooldowns (down to half), +0.5% speed |
 
-A dedicated trainer at a dummy on a Training Ground with a mentor reaches rank 40 in about 4 years and
-rank 60 in about 11. Someone who only drills takes a lifetime. Tune both rates with the **Training XP**
-and **Combat XP** sliders.
+The XP for the next level of a facet is `20 + 6 × level + level² / 2`: 20 at level 0, 202 at level 20 and
+1,000 at level 39. Training rates are per in-game year (60 seconds of world time), so game speed doesn't
+change how fast units progress. Training XP and battle XP each have a multiplier in the settings.
 
-## Talents
+**Training boosts.** A mentor in the same city (someone 10+ facet levels ahead) gives ×1.5, and a
+Training Ground (god power) gives ×2. Drilling and dummy work also drill a random known technique,
+which counts toward its mastery.
 
-Every powered unit has three talents: **Strike** (strikes and barrages), **Skill** (most other moves) and **Burst** (moves that cost energy, and ultimates).
+## Stages
 
-- One talent point every 3 ranks. The talent cap rises with Ascension: 2 at phase 0, 10 at phase 6.
-- Points are spent automatically by personality: **aggressive** units favour Burst, **rational** ones Skill, and Strike comes second for everyone.
-- Each level adds **+8% damage** and **3% shorter cooldowns** to moves of that category.
+| Stage | Name | Facet cap | Health | Damage | Techniques |
+|---|---|---|---|---|---|
+| I | Kindled | 8 | ×1 | ×1 | Level I |
+| II | Forged | 16 | ×1.6 | ×1.3 | Level II |
+| III | Tempered | 24 | ×2.5 | ×1.7 | Level II |
+| IV | Hallowed | 32 | ×4 | ×2.2 | Level III |
+| V | Paragon | 40 | ×6 | ×3 | Level III |
 
-## Constellations
+The health and damage multipliers (and Vigor's bonus) are applied to the unit's own stats whenever
+WorldBox recalculates them, so they show in the unit window. Together with Vigor, a Paragon with
+Vigor 40 has **15.6×** the health its traits give it.
 
-Constellations C1–C6 come from **fateful moments**. Each different moment lights one more star:
+**Higher tiers start further along.** The first time the mod sees a powered unit, it lifts it to its
+tier's Stage, with facets at the start of it: Visions Kindled, Exalted Forged, Archons Tempered, Dragon
+Sovereigns and Shades Hallowed, Moons, Nibelung and the Heavenly Principles Paragon. A unit whose tier
+rises (an Exalted, a new Archon) is lifted the same way.
 
-- Surviving at under 10% health in a fight
-- Slaying a king
-- Winning a duel
-- Defeating an elite
-- Defeating 50 foes
-- Earning 500 renown
-- Becoming a ruler
-- Reaching Ascension phase 3
-- Reaching Ascension phase 6
+## Primed, and the Crucible
 
-**C3** and **C5** each add +2 to every talent (up to 13). **C6** upgrades the unit's Burst: ×1.5 power,
-bigger effects, and an impact frame every time.
+When **two facets reach the Stage cap**, the unit is **primed** (a *PRIMED* label pops up and the panel
+shows it). From then on training alone can't take it further.
 
-## Vision awakening
+Its next serious fight becomes its **Crucible**:
+- it drops below 35% health;
+- it enters a duel; or
+- it faces five or more foes within four tiles.
 
-Ordinary people build **potential** by training (more at a dummy or on a Training Ground) and by fighting.
-At 100 potential, each year there's a chance the gods answer their wish and they awaken a Vision.
+A *CRUCIBLE* title, a moment of hit-stop and a spotlight. The unit flares with its element for 20 seconds.
+If it is **still alive when the time runs out**, or **wins the duel**, it **breaks through**: a ceremony
+(the world stops, rings close in, a pillar of light), a full heal, and the next Stage. If it dies, it dies.
 
-- **More likely for:** kings (×2), and units with traits like *ambitious*, *chosen one*, *strong*, *lucky*, *genius* or *miracle born*.
-- **Far more likely (×6) when the wish is desperate:** in the middle of a fight, below 25% health.
-- **Element:** half the time it's the element of the kingdom's Archon; otherwise fate decides.
+A unit that stays primed for **15 years** without a Crucible breaks through quietly, by meditation.
+Paragon is the summit: facets keep growing to 40, but there is no further Stage.
 
-Every awakening gets a celebration, a banner and a world-history entry.
+## Marks: deeds that leave a perk
 
-## Beyond: ascension paths
+| Mark | Earned by | Perk |
+|---|---|---|
+| Survivor | surviving below 10% health | last stands heal 40% instead of 20%; +5% health |
+| Kingslayer | slaying a ruler | +15% damage against rulers and powered units |
+| Duelist | winning 3 duels | +15% momentum in duels |
+| Giantslayer | slaying a unit of a higher tier | +20% damage against higher tiers |
+| Warden | protecting allies 3 times (bodyguard) | +10% guard chance |
+| Reaper | 100 kills | every kill heals 2% |
+| Unbowed | still standing after an enemy's God ability | 25% less damage from God abilities |
+| Crowned | becoming a king or city leader | +10% health |
 
-| Path | How |
+## Ordinary people and Visions
+
+Mortals have **potential** (0–100). Drilling gives 18 a year, dummies 40, each kill 6, and Training
+Grounds double training. At 100, a Vision may answer each year: base 8% a year, ×2 for kings, ×1.3–4 for
+traits like *ambitious*, *chosen one*, *lucky* or *miracle born*, and ×6 in a desperate battle (under
+25% health). The element follows the kingdom's Archon half the time.
+
+## Beyond your tier
+
+- **Exaltation:** a Vision bearer at Hallowed with 2 marks may become (10% a year):
+  - an Abyss Herald, if touched by the Abyss;
+  - a Fatui Harbinger, if it holds a Delusion or serves the Cryo Archon's kingdom (while fewer than 11 exist);
+  - a Hexenzirkel Witch, if its intelligence is 15+;
+  - otherwise an Adeptus.
+- **Godhood:** a Paragon Exalted with 4 marks may claim an empty Archon throne (5% a year).
+- **Succession:** when an Archon dies, the Gnosis passes to the best successor: a bearer of the same
+  element in the same kingdom, then any powered unit of the kingdom, then any bearer of the element anywhere.
+
+## God powers
+
+| Power | Effect |
 |---|---|
-| **Archon succession** | When an Archon dies, the Gnosis passes to the highest-rank Vision holder of that element in the same kingdom. If there's none, it goes to the strongest power in the kingdom, then to any Vision holder of the element anywhere |
-| **Exaltation** | A Vision holder at rank 70+, Ascension ★5+ and C4+ may become Exalted (about a 10% chance a year). They become an **Abyss Herald** if Abyss-touched, a **Fatui Harbinger** if they have a Delusion or serve the Cryo Archon (Harbingers are capped at 11), a **Hexenzirkel Witch** if very intelligent, otherwise an **Adeptus** |
-| **Godhood** | An Exalted at rank 90 and C6 may claim an **empty Archon throne** (about a 5% chance a year), with a cutscene: "A NEW ARCHON" |
-
-## God powers (Teyvat tab, second row)
-
-| Power | What it does |
-|---|---|
-| Teyvat Legends | Lists the 25 mightiest powers in the world. Click one to jump to them and open their card |
-| Inspect Resonance | Click a unit: its rank, XP, Breakthrough Trial, Ascension, talents, Constellation, record and moves |
-| Grant Vision | Awakens a Vision. On a Vision holder, +5 ranks |
-| Shift Element | Cycles a Vision holder's element |
+| Inspect | Opens the unit window with its Path panel |
+| Grant Vision | Awakens a Vision; on a bearer, +3 to every facet |
+| Shift Element | Cycles a bearer's element |
 | Grant Delusion | Gives a Fatui Delusion |
-| Ascend | +10 ranks (awakens a Vision first if needed) |
-| Bestow Constellation | +1 Constellation |
-| Crown Archon | Makes the unit Archon of its element. The Gnosis leaves its current holder |
-| Training Ground | Marks an area where units train twice as fast. Click it again to remove it. Saved with the world |
+| Temper | +5 to every facet, up to the Stage cap (can prime the unit) |
+| Grant Mark | A mark the unit hasn't earned yet |
+| Crown Archon | Crowns the unit Archon of its element, taking the Gnosis from its holder |
+| Training Ground | Marks a place where units train ×2 (click again to remove) |
 
-## Settings (mod settings → Resonance)
+## Settings (group *Path*)
 
-- Resonance on/off
-- Training XP and Combat XP multipliers
-- Sparring on/off
-- Vision awakening on/off and its rate
-- Succession, Exaltation and Godhood on/off
-- Announcements for awakenings and ascensions on/off
+On/off, facet growth from training, facet growth from battle, sparring, Vision awakening and its rate,
+succession, Exaltation, Godhood, legend announcements.
+
+## Saved data
+
+Everything lives in each unit's custom data, under `gi_p_*` keys: Stage, the four facet levels and XP,
+marks, when it was primed, kills, duels and spars won, rescues and training sessions. Mortal potential
+is `gi_potential`. A Crucible in progress is not saved: reloading ends it without a breakthrough.

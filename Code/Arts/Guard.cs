@@ -37,15 +37,17 @@ namespace TeyvatChronicle.Arts
             if (mine == null) return true;
             int my_tier = mine.Tier;
             int their_tier = CombatCore.ResolveSet(attacker, out _)?.Tier ?? 0;
-            int rank = Resonance.Rank(__instance);
-            if (my_tier <= their_tier && rank < 40) return true;
+            int stage = Path.Stage(__instance);
+            if (my_tier <= their_tier && stage < 3) return true;
 
             CombatData data = CombatCore.Data(__instance);
-            float chance = 0.18f * (my_tier - their_tier) + (rank >= 40 ? 0.12f : 0f) + (data.Casting ? 0.25f : 0f);
+            float chance = 0.18f * (my_tier - their_tier) + (stage >= 3 ? 0.12f : 0f) + (data.Casting ? 0.25f : 0f) +
+                           Path.GuardBonus(__instance);
             if (my_tier < 2 && their_tier >= my_tier) chance *= 0.5f;
             if (!Randy.randomChance(Mathf.Clamp(chance, 0f, 0.85f))) return true;
 
             data.Gauge = Mathf.Min(100f, data.Gauge + 0.5f);
+            Path.OnGuard(__instance);
             bool ranged = Vector2.Distance(__instance.current_position, attacker.current_position) > 2.2f;
             Show(__instance, attacker, mine, ranged);
             if (ranged && my_tier >= 2)

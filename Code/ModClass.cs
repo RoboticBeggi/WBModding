@@ -32,6 +32,8 @@ namespace TeyvatChronicle
             var harmony = new Harmony("RoboticBeggi.TeyvatChronicle");
             CharacterPanel.Patch(harmony);
             Guard.Patch(harmony);
+            DragonRule.Patch(harmony);
+            Path.Patch(harmony);
         }
 
         private void Update()
@@ -41,6 +43,8 @@ namespace TeyvatChronicle
             Kit.SyncScale();
             AuraSystem.Update();
             GodArts.Update();
+            DragonModels.Update();
+            DragonRule.Tick();
             CharacterPanel.Update();
             ArchiveWindow.Update();
             Hud.Update();

@@ -13,13 +13,15 @@ namespace TeyvatChronicle.Combat
     /// - a cap: no single blow takes more than 22% of an equal or stronger fighter's health
     ///   (35% for a God ability), so nobody of their own rank is one-shot.
     /// The raw damage still applies when it's lower, so a weak fighter can't steal a percentage of a god.
-    /// Ordinary weapon blows between powers follow the same rules at a smaller share.
+    /// Ordinary weapon blows between powers follow the same rules at a smaller share, and blows from mortals
+    /// are cut by 45% per tier of the victim (an Archon takes about a sixth, the Heavenly Principles almost nothing).
     /// </summary>
     public static class Balance
     {
         private const float TechniqueShare = 0.018f;
         private const float BlowShare = 0.008f;
         private const float ComboWindow = 1.5f;
+        private const float MortalBlow = 0.55f;
 
         private class Combo
         {
@@ -64,7 +66,8 @@ namespace TeyvatChronicle.Combat
             int victim_tier = TierOf(pVictim);
             if (victim_tier == 0) return pDamage;
             int attacker_tier = TierOf(pAttacker);
-            if (attacker_tier == 0) return pDamage;
+            // Mortals barely scratch the powered: each tier turns away 45% more of an ordinary blow.
+            if (attacker_tier == 0) return Mathf.Max(1f, pDamage * Mathf.Pow(MortalBlow, victim_tier));
             float share = BlowShare * TierFactor(attacker_tier, victim_tier) * ComboFactor(pVictim) /
                           Mathf.Max(0.1f, Settings.FightLength);
             if (attacker_tier <= victim_tier) share = Mathf.Min(share, 0.06f);

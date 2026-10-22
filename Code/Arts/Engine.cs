@@ -52,7 +52,7 @@ namespace TeyvatChronicle.Arts
             if (World.world == null || Config.worldLoading || !CombatCore.Alive(caster)) return false;
             if (!target.isAlive())
             {
-                Resonance.OnKill(caster, target);
+                Path.OnKill(caster, target);
                 return false;
             }
             if (!Settings.Moves || Director.WorldStopped) return false;
@@ -62,8 +62,10 @@ namespace TeyvatChronicle.Arts
 
             MoveSet set = CombatCore.ResolveSet(caster, out _);
             if (set == null) return false;
-            Resonance.EnsureInit(caster);
+            Path.EnsureInit(caster);
             data.Gauge = Mathf.Min(100f, data.Gauge + 0.6f * set.Tier);
+            // A primed fighter facing a horde enters its Crucible.
+            if (Path.IsPrimed(caster)) Path.OnOutnumbered(caster, CombatCore.EnemiesNear(caster, caster.current_position, 4f).Count);
 
             if (Situations.Check(caster, target, set)) return true;
             if (Duels.TryStart(caster, target, set)) return true;
@@ -78,15 +80,8 @@ namespace TeyvatChronicle.Arts
 
         // ---------------------------------------------------------------- levels
 
-        /// <summary>Level from Resonance rank and tier: what techniques a unit knows.</summary>
-        public static int RankLevel(Actor a, MoveSet pSet)
-        {
-            int rank = Resonance.Rank(a);
-            int level = rank >= 60 ? 3 : rank >= 30 ? 2 : 1;
-            if (pSet != null && pSet.Tier >= 5) level = 3;
-            else if (pSet != null && pSet.Tier >= 3) level = Mathf.Max(level, 2);
-            return level;
-        }
+        /// <summary>Level from the unit's Stage on the Path: what techniques it knows (Forged → II, Hallowed → III).</summary>
+        public static int StageLevel(Actor a) => Path.TechniqueLevel(a);
 
         private static string MasteryKey(Technique t) => "gi_m_" + t.Id;
 
@@ -103,9 +98,9 @@ namespace TeyvatChronicle.Arts
             return uses >= 35 ? 3 : uses >= 12 ? 2 : 1;
         }
 
-        public static int Level(Actor a, Technique t) => Mathf.Max(RankLevel(a, t.Style), Mastery(a, t));
+        public static int Level(Actor a, Technique t) => Mathf.Max(StageLevel(a), Mastery(a, t));
 
-        public static bool Knows(Actor a, Technique t) => RankLevel(a, t.Style) >= t.Unlock;
+        public static bool Knows(Actor a, Technique t) => StageLevel(a) >= t.Unlock;
 
         public static void AddUse(Actor a, Technique t, int pAmount = 1) =>
             a.data.set(MasteryKey(t), Uses(a, t) + pAmount);
@@ -119,13 +114,6 @@ namespace TeyvatChronicle.Arts
             if (t != null && Knows(a, t)) AddUse(a, t);
         }
 
-        public static Resonance.Category CategoryOf(Technique t)
-        {
-            if (t.Ultimate || t.God) return Resonance.Category.Burst;
-            if (t.Shape == Shape.Lone || t.Shape == Shape.Execute || t.Shape == Shape.Gap) return Resonance.Category.Strike;
-            return Resonance.Category.Skill;
-        }
-
         // ---------------------------------------------------------------- running
 
         /// <summary>Starts a technique. Returns the cast (null if it couldn't start).</summary>
@@ -135,21 +123,21 @@ namespace TeyvatChronicle.Arts
             CombatData data = CombatCore.Data(pCaster);
             if (data.Casting) return null;
             int level = Level(pCaster, pTech);
-            Resonance.Category category = CategoryOf(pTech);
             var cast = new Cast(pCaster, pTarget, pTech, pSet, level, CombatCore.ElementFor(pCaster, pSet))
             {
-                Pow = pPower * Resonance.MoveBoost(pCaster, category) * (level >= 3 ? 1.9f : level == 2 ? 1.4f : 1f),
+                Pow = pPower * Path.TechniquePower(pCaster) * (level >= 3 ? 1.9f : level == 2 ? 1.4f : 1f),
                 God = pTech.God
             };
 
             data.NextCast = CombatCore.Now + CastGap;
             if (pCountCooldown)
             {
-                float cooldown = pTech.Cooldown * Resonance.CooldownFactor(pCaster, category);
+                float cooldown = pTech.Cooldown * Path.CooldownFactor(pCaster);
                 data.ReadyAt[pTech.Id] = CombatCore.Now + cooldown / Mathf.Max(0.1f, Settings.CooldownScale);
             }
             AddUse(pCaster, pTech);
-            Resonance.AddXp(pCaster, 1.5f, false);
+            // Dashes, blinks and leaps temper Flow.
+            if (pTech.Shape == Shape.Gap || pTech.Shape == Shape.AntiAir) Path.OnDash(pCaster);
             ModClass.Instance.StartCoroutine(Exec(cast));
             return cast;
         }

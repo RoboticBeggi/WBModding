@@ -324,7 +324,7 @@ namespace TeyvatChronicle.UI
                 Kit.Label(row.transform, unit.getName(), 42, 1, 150, 11, 8, Kit.Cream, TextAnchor.MiddleLeft, true);
                 Kit.Label(row.transform, $"<color={Kit.Hex(Tiers.Color(set.Tier))}>{Tiers.Name(set.Tier)}</color> · {NeoModLoader.General.LM.Get("trait_" + trait)}",
                     42, 11, 190, 10, 6, Kit.Muted);
-                Kit.Label(row.transform, $"R{Resonance.Rank(unit)}  {Resonance.Stars(Resonance.Phase(unit))}  C{Resonance.Constellation(unit)}",
+                Kit.Label(row.transform, $"{Path.StageName(Path.Stage(unit))} {Path.Numeral(Path.Stage(unit))} · {Path.MarkCount(unit)} marks",
                     W - 140, 0, 104, 22, 6, Kit.Gold, TextAnchor.MiddleRight);
                 y += 24f;
             }
@@ -399,8 +399,8 @@ namespace TeyvatChronicle.UI
         public static List<Actor> Top(int pCount)
         {
             return World.world.units.getSimpleList()
-                .Where(u => u != null && u.isAlive() && Resonance.IsPowered(u))
-                .OrderByDescending(u => Resonance.Tier(u) * 100000 + Resonance.Rank(u) * 100 + Resonance.Constellation(u) * 10 + Resonance.Phase(u))
+                .Where(u => u != null && u.isAlive() && Path.IsPowered(u))
+                .OrderByDescending(Path.Score)
                 .Take(pCount).ToList();
         }
     }

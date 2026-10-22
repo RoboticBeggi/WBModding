@@ -252,6 +252,11 @@
             "Id": "DragonBodies",
             "Type": "SWITCH",
             "BoolVal": true
+        },
+        {
+            "Id": "DragonRivalry",
+            "Type": "SWITCH",
+            "BoolVal": true
         }
     ],
     "Cinematics": [
@@ -305,9 +310,9 @@
             "BoolVal": true
         }
     ],
-    "Resonance": [
+    "Path": [
         {
-            "Id": "Resonance",
+            "Id": "Path",
             "Type": "SWITCH",
             "BoolVal": true
         },

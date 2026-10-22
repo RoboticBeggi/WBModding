@@ -314,6 +314,30 @@ namespace TeyvatChronicle.Cinematics
             PopTime();
         }
 
+        private static float _last_flash = -999f;
+
+        /// <summary>A brief full-screen flash (heavy impacts). Rate-limited so big fights don't strobe.</summary>
+        public static void Flash(Color pColor, float pAlpha, float pSeconds = 0.08f)
+        {
+            if (!Settings.ImpactFrames || WorldStopped || Time.unscaledTime - _last_flash < 0.35f) return;
+            _last_flash = Time.unscaledTime;
+            ModClass.Instance.StartCoroutine(FlashRoutine(pColor, Mathf.Clamp01(pAlpha * Settings.ImpactIntensity), pSeconds));
+        }
+
+        private static IEnumerator FlashRoutine(Color pColor, float pAlpha, float pSeconds)
+        {
+            EnsureCanvas();
+            float t = 0f;
+            while (t < pSeconds + 0.12f)
+            {
+                t += Time.unscaledDeltaTime;
+                float k = t < pSeconds ? 1f : 1f - (t - pSeconds) / 0.12f;
+                if (!WorldStopped) _impact.color = new Color(pColor.r, pColor.g, pColor.b, pAlpha * Mathf.Clamp01(k));
+                yield return null;
+            }
+            if (!WorldStopped) SetImpact(Color.clear, 0f, false);
+        }
+
         /// <summary>Starts a camera zoom punch (factor below 1 zooms in).</summary>
         public static void Punch(float pFactor = 0.85f, float pSeconds = 0.3f)
         {

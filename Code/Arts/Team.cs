@@ -35,8 +35,8 @@ namespace TeyvatChronicle.Arts
 
             CombatData db = CombatCore.Data(partner);
             da.LastTeam = db.LastTeam = CombatCore.Now;
-            var ca = new Cast(a, target, null, set, Engine.RankLevel(a, set), CombatCore.ElementFor(a, set)) { Pow = 1.3f };
-            var cb = new Cast(partner, target, null, partner_set, Engine.RankLevel(partner, partner_set),
+            var ca = new Cast(a, target, null, set, Engine.StageLevel(a), CombatCore.ElementFor(a, set)) { Pow = 1.3f };
+            var cb = new Cast(partner, target, null, partner_set, Engine.StageLevel(partner),
                 CombatCore.ElementFor(partner, partner_set)) { Pow = 1.3f };
             ModClass.Instance.StartCoroutine(Run(ca, cb));
             return true;

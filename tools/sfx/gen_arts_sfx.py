@@ -1,7 +1,10 @@
-"""Synthesises every combat sound of the v0.5 Arts system.
+"""Synthesises every combat sound of the Arts system.
 
 Run from the repo root:  python tools/sfx/gen_arts_sfx.py
-Writes GameResources/gi/sfx/arts/<name>.wav plus the .json NML reads for volume and mode.
+Writes GameResources/gi/sfx/arts/<name>.wav, <name>_2.wav and <name>_3.wav (three takes with different
+noise, pitch and timbre, picked at random in game so repeated hits never sound identical), plus the .json
+NML reads for volume and mode. Heavy sounds get an extra weight layer: a sub-bass thump, a transient
+crack and a tail of falling debris.
 Needs numpy only. Every sound is built from oscillators, noise, FFT filters and a synthetic
 reverb, so all of it is original.
 """
@@ -953,16 +956,60 @@ def write(name, sig):
         w.setsampwidth(2)
         w.setframerate(RATE)
         w.writeframes(data.tobytes())
-    meta = {"Mode": 0, "Volume": VOLUME.get(name, 38), "Type": 1, "LoopCount": 0, "Ramp": False}
+    base = name.rsplit("_", 1)[0] if name[-2:] in ("_2", "_3") else name
+    meta = {"Mode": 0, "Volume": VOLUME.get(base, 38), "Type": 1, "LoopCount": 0, "Ramp": False}
     with open(os.path.join(OUT, name + ".json"), "w") as f:
         json.dump(meta, f, indent=4)
 
 
+# Heavy hits get a weight layer (0..1 = how much).
+WEIGHT = {"punch": 0.35, "kick": 0.4, "slam": 0.9, "crater_boom": 1.0, "explosion_big": 1.0, "explosion_small": 0.6,
+          "boulder_hit": 0.8, "shockwave": 0.7, "land": 0.35, "stone_crack": 0.6, "stone_rise": 0.5,
+          "thunder_crack": 0.7, "wave_crash": 0.6, "flame_burst": 0.5, "frost_shatter": 0.5, "nail_fall": 0.9,
+          "slash_heavy": 0.4, "launch": 0.4, "release": 0.5, "gunshot": 0.3, "dragon_roar": 0.6,
+          "mask_drum": 0.4, "rampage": 0.5, "last_stand": 0.4, "sword_clash": 0.25}
+
+# Variant takes: (pitch factor, brightness filter or None). Take 1 is the original.
+TAKES = [(1.0, None), (0.92, 5200), (1.08, None)]
+
+
+def weight_layer(length, strength):
+    """Sub thump + crack + debris tail, scaled by strength."""
+    s = length / RATE
+    sub = sweep(62, 26, min(s, 0.9)) * decay(min(s, 0.9), 4.5 - 1.5 * strength)
+    crack = hp(noise(0.03), 1200) * decay(0.03, 140)
+    debris = lp(crackle(min(s, 1.2), 45, 900), 3500) * decay(min(s, 1.2), 3.5)
+    out = mix(s, (sub, 0, 0.9 * strength), (crack, 0, 0.5 * strength), (debris, 0.05, 0.35 * strength))
+    return out
+
+
+def pitch(sig, factor):
+    """Resamples to shift pitch (and length) by a factor."""
+    if factor == 1.0:
+        return sig
+    n = int(len(sig) / factor)
+    return np.interp(np.arange(n) * factor, np.arange(len(sig)), sig)
+
+
 def main():
     os.makedirs(OUT, exist_ok=True)
+    count = 0
     for name, make in SOUNDS.items():
-        write(name, finish(make(), name))
-    print(f"{len(SOUNDS)} sounds -> {OUT}")
+        for take, (factor, bright) in enumerate(TAKES):
+            sig = np.asarray(make(), dtype=np.float64)
+            w = WEIGHT.get(name, 0.0)
+            if w > 0:
+                sig = sig / (np.max(np.abs(sig)) + 1e-9)
+                layer = weight_layer(len(sig), w)
+                n = min(len(sig), len(layer))
+                sig = sig.copy()
+                sig[:n] += layer[:n] * (0.9 + 0.2 * take)
+            sig = pitch(sig, factor)
+            if bright:
+                sig = lp(sig, bright)
+            write(name if take == 0 else f"{name}_{take + 1}", finish(sig, name))
+            count += 1
+    print(f"{len(SOUNDS)} sounds, {count} takes -> {OUT}")
 
 
 if __name__ == "__main__":

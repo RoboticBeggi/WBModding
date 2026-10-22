@@ -11,9 +11,9 @@ using UnityEngine.UI;
 namespace TeyvatChronicle.UI
 {
     /// <summary>
-    /// The Resonance character panel. It opens beside WorldBox's unit window whenever you inspect a unit
-    /// and updates live: power and tier, rank and XP, Ascension, the next Trial, talents, Constellation,
-    /// battle record, what the unit is doing, and every move with its cooldown.
+    /// The Path panel. It opens beside WorldBox's unit window whenever you inspect a unit and updates live:
+    /// power and tier, Stage on the Crucible Path (and whether it is primed or in its Crucible), the four
+    /// facets, marks, battle record, what the unit is doing, every technique and the God gauge.
     /// </summary>
     public static class CharacterPanel
     {
@@ -23,11 +23,12 @@ namespace TeyvatChronicle.UI
         private static float _refresh_at;
 
         // Widgets
-        private static Text _title, _name, _power, _tier, _rank, _xp, _trial, _activity, _record, _cons_note, _hint;
-        private static Image _emblem, _badge, _xp_fill;
-        private static Image[] _stars, _nodes;
-        private static Image[] _talent_fill = new Image[3];
-        private static Text[] _talent_text = new Text[3];
+        private static Text _title, _name, _power, _tier, _stage, _state, _state_note, _activity, _record, _marks_note, _hint;
+        private static Image _emblem, _badge;
+        private static readonly Image[] _facet_fill = new Image[4];
+        private static readonly Text[] _facet_text = new Text[4];
+        private static readonly Image[] _mark_chips = new Image[8];
+        private static readonly Text[] _mark_text = new Text[8];
         private static RectTransform _moves, _powered_group, _mortal_group, _actions;
         private static Text _style;
         private static Image _potential_fill;
@@ -90,7 +91,7 @@ namespace TeyvatChronicle.UI
 
         private static void Build()
         {
-            _root = Kit.Window("gi_character_panel", "Resonance", W, H, out _title, Hide);
+            _root = Kit.Window("gi_character_panel", "Path", W, H, out _title, Hide);
 
             // Identity
             _emblem = Kit.Icon(_root, Kit.Emblem("other"), 12, 30, 22);
@@ -103,38 +104,36 @@ namespace TeyvatChronicle.UI
             // Powered layout
             _powered_group = Kit.Rect(_root, "powered", 0, 70, W, H - 70);
             Transform p = _powered_group;
-            _rank = Kit.Label(p, "", 12, 0, 120, 12, 9, Kit.Cream, TextAnchor.MiddleLeft, true);
-            _stars = Kit.Stars(p, W - 76, 2, 6, 9);
-            _xp_fill = Kit.Bar(p, 12, 14, W - 24, 7, Color.white);
-            _xp = Kit.Label(p, "", 12, 21, W - 24, 10, 6, Kit.Muted);
-            _trial = Kit.Label(p, "", 12, 31, W - 24, 18, 6, Kit.Warn);
+            _stage = Kit.Label(p, "", 12, 0, W - 90, 13, 9, Kit.Cream, TextAnchor.MiddleLeft, true);
+            _state = Kit.Label(p, "", W - 90, 0, 78, 13, 8, Kit.Warn, TextAnchor.MiddleRight, true);
+            _state_note = Kit.Label(p, "", 12, 13, W - 24, 18, 6, Kit.Muted, TextAnchor.UpperLeft);
 
-            Kit.Label(p, "Talents", 12, 50, 80, 10, 7, Kit.GoldDim, TextAnchor.MiddleLeft, true);
-            string[] names = { "Strike", "Skill", "Burst" };
-            Color[] colors = { new Color32(236, 229, 216, 255), new Color32(127, 216, 255, 255), new Color32(255, 214, 120, 255) };
-            for (int i = 0; i < 3; i++)
+            Kit.Label(p, "Facets", 12, 31, 80, 10, 7, Kit.GoldDim, TextAnchor.MiddleLeft, true);
+            for (int i = 0; i < 4; i++)
             {
-                float y = 61 + i * 11;
-                Kit.Label(p, names[i], 12, y, 40, 10, 7);
-                _talent_fill[i] = Kit.Bar(p, 52, y + 2, W - 96, 6, colors[i]);
-                _talent_text[i] = Kit.Label(p, "", W - 42, y, 30, 10, 7, Kit.Cream, TextAnchor.MiddleRight);
+                Path.Facet f = Path.Facets[i];
+                float y = 42 + i * 11;
+                Kit.Label(p, f.ToString(), 12, y, 40, 10, 7, Path.FacetColor(f));
+                _facet_fill[i] = Kit.Bar(p, 52, y + 2, W - 110, 6, Path.FacetColor(f));
+                _facet_text[i] = Kit.Label(p, "", W - 56, y, 44, 10, 6, Kit.Cream, TextAnchor.MiddleRight);
             }
 
-            Kit.Label(p, "Constellation", 12, 96, 90, 10, 7, Kit.GoldDim, TextAnchor.MiddleLeft, true);
-            _nodes = new Image[6];
-            for (int i = 0; i < 6; i++)
+            Kit.Label(p, "Marks", 12, 88, 80, 10, 7, Kit.GoldDim, TextAnchor.MiddleLeft, true);
+            float cw = (W - 30) / 4f;
+            for (int i = 0; i < 8; i++)
             {
-                float x = 100 + i * 18, y = 95 + (i % 2 == 0 ? 0 : 4);
-                _nodes[i] = Kit.Image(p, "node_dim", x, y, 11, 11);
+                float x = 12 + (i % 4) * (cw + 2), y = 99 + (i / 4) * 12;
+                _mark_chips[i] = Kit.Image(p, "button", x, y, cw, 11);
+                _mark_text[i] = Kit.Label(_mark_chips[i].transform, "", 1, 0, cw - 2, 11, 6, Kit.Cream, TextAnchor.MiddleCenter, true);
             }
-            _cons_note = Kit.Label(p, "", 12, 108, W - 24, 10, 6, Kit.Muted);
+            _marks_note = Kit.Label(p, "", 12, 123, W - 24, 10, 6, Kit.Muted);
 
-            Kit.Divider(p, 10, 119, W - 20);
-            _activity = Kit.Label(p, "", 12, 123, W - 24, 10, 7);
-            _record = Kit.Label(p, "", 12, 134, W - 24, 20, 6, Kit.Muted);
+            Kit.Divider(p, 10, 134, W - 20);
+            _activity = Kit.Label(p, "", 12, 138, W - 24, 10, 7);
+            _record = Kit.Label(p, "", 12, 149, W - 24, 10, 6, Kit.Muted);
 
-            _style = Kit.Label(p, "Techniques", 12, 156, W - 24, 10, 7, Kit.GoldDim, TextAnchor.MiddleLeft, true);
-            _moves = Kit.Rect(p, "moves", 12, 167, W - 24, 90);
+            _style = Kit.Label(p, "Techniques", 12, 160, W - 24, 10, 7, Kit.GoldDim, TextAnchor.MiddleLeft, true);
+            _moves = Kit.Rect(p, "moves", 12, 171, W - 24, 86);
 
             // Mortal layout
             _mortal_group = Kit.Rect(_root, "mortal", 0, 70, W, H - 70);
@@ -149,8 +148,8 @@ namespace TeyvatChronicle.UI
             _actions = Kit.Rect(_root, "actions", 0, H - 58, W, 50);
             float bw = (W - 32) / 3f;
             Kit.Button(_actions, "Grant Vision", 12, 0, bw, 15, () => Act(TeyvatPowers.GrantVision));
-            Kit.Button(_actions, "Ascend +10", 16 + bw, 0, bw, 15, () => Act(TeyvatPowers.Ascend));
-            Kit.Button(_actions, "+ Constellation", 20 + bw * 2, 0, bw, 15, () => Act(TeyvatPowers.AddConstellation), "button", 6);
+            Kit.Button(_actions, "Temper +5", 16 + bw, 0, bw, 15, () => Act(TeyvatPowers.Temper));
+            Kit.Button(_actions, "Grant Mark", 20 + bw * 2, 0, bw, 15, () => Act(TeyvatPowers.GrantMark));
             Kit.Button(_actions, "Follow", 12, 19, bw, 15, () =>
             {
                 if (_actor != null) MoveCamera.setFocusUnit(_actor);
@@ -185,13 +184,13 @@ namespace TeyvatChronicle.UI
                 _badge.gameObject.SetActive(false);
                 _power.text = a.isSapient() ? "Mortal" : "Creature";
                 _tier.text = Tiers.Description(0);
-                float potential = Resonance.Potential(a);
+                float potential = Path.Potential(a);
                 _potential_fill.fillAmount = Mathf.Clamp01(potential / 100f);
                 _potential_text.text = $"{potential:0} / 100";
                 _wish_text.text = potential >= 100f
                     ? "Their wish burns bright. Each year a Vision may answer, more likely in desperate battle."
                     : "Training, fighting and danger build potential toward a Vision.\nOr use <b>Grant Vision</b> below.";
-                _title.text = "Resonance";
+                _title.text = "Path";
                 return;
             }
 
@@ -206,59 +205,63 @@ namespace TeyvatChronicle.UI
             _badge.color = tier_color;
             _power.text = $"<color={Kit.Hex(element)}>{LM.Get("trait_" + trait_id)}</color>";
             _tier.text = $"<color={Kit.Hex(tier_color)}>Tier {set.Tier} · {Tiers.Name(set.Tier)}</color>";
-            _title.text = $"Resonance · {Training.Capital(set.Element)}";
+            _title.text = $"Path · {Training.Capital(set.Element)}";
 
-            int rank = Resonance.Rank(a), phase = Resonance.Phase(a), cons = Resonance.Constellation(a);
-            _rank.text = $"Rank {rank} <size=7><color=#A0A8BE>/ {Resonance.MaxRank}</color></size>";
-            Kit.SetStars(_stars, phase);
-            int gate = Resonance.StuckAtGate(a);
-            if (rank >= Resonance.MaxRank)
+            int stage = Path.Stage(a), cap = Path.Cap(a);
+            _stage.text = stage > 0
+                ? $"Stage {Path.Numeral(stage)} · {Path.StageName(stage)}"
+                : "Unawakened";
+            if (Path.InCrucible(a))
             {
-                _xp_fill.fillAmount = 1f;
-                _xp.text = "Peak of Resonance";
+                _state.text = $"CRUCIBLE {Path.CrucibleLeft(a):0}s";
+                _state_note.text = $"Still standing when the time runs out, it breaks through to {Path.StageName(stage + 1)}. If it falls, it falls.";
+            }
+            else if (Path.IsPrimed(a))
+            {
+                _state.text = "PRIMED";
+                float years = Mathf.Max(0f, 15f - Path.PrimedYears(a));
+                _state_note.text = $"Its next serious fight is its Crucible (or {years:0} more years of meditation).";
             }
             else
             {
-                float need = Resonance.XpToNext(rank);
-                _xp_fill.fillAmount = Mathf.Clamp01(Resonance.Xp(a) / need);
-                _xp.text = $"XP {Resonance.Xp(a):0} / {need:0}";
+                _state.text = "";
+                _state_note.text = stage >= Path.MaxStage
+                    ? "The summit of the Path. Facets can still grow to 40."
+                    : $"Facets cap at {cap}. Reach it in two facets to become primed for the Crucible.";
             }
-            _xp_fill.color = element;
-            _trial.text = gate > 0 ? $"! Breakthrough {gate}: {Resonance.TrialText(gate)} — {TrialProgress(a, gate)}" : "";
 
-            var cats = new[] { Resonance.Category.Strike, Resonance.Category.Skill, Resonance.Category.Burst };
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 4; i++)
             {
-                int level = Resonance.EffectiveTalent(a, cats[i]);
-                _talent_fill[i].fillAmount = level / 13f;
-                _talent_text[i].text = $"Lv {level}";
+                Path.Facet f = Path.Facets[i];
+                int level = Path.Level(a, f);
+                float progress = level >= cap ? 1f : Path.FacetXp(a, f) / Path.XpToNext(level);
+                _facet_fill[i].fillAmount = (level + Mathf.Clamp01(progress)) / Path.MaxFacet;
+                _facet_text[i].text = level >= cap ? $"<color=#FFD678>{level}</color>/{cap}" : $"{level}/{cap}";
             }
-            for (int i = 0; i < 6; i++)
+
+            int shown = 0;
+            foreach (Path.Mark m in Path.AllMarks)
             {
-                _nodes[i].sprite = Kit.Sprite(i < cons ? "node_lit" : "node_dim");
-                _nodes[i].color = i < cons ? element : Color.white;
+                if (!Path.HasMark(a, m)) continue;
+                _mark_chips[shown].gameObject.SetActive(true);
+                _mark_chips[shown].color = Path.MarkColor(m);
+                _mark_text[shown].text = m.ToString();
+                _mark_text[shown].color = Kit.Ink;
+                shown++;
             }
-            _cons_note.text = cons >= 6 ? "C6 — Burst awakened (×1.5, impact frames)"
-                : cons >= 5 ? "C5 — +2 to every talent" : cons >= 3 ? "C3 — +2 to every talent"
-                : "Fateful moments light the stars.";
+            for (int i = shown; i < 8; i++) _mark_chips[i].gameObject.SetActive(false);
+            Path.Mark latest = Path.Mark.None;
+            foreach (Path.Mark m in Path.AllMarks) if (Path.HasMark(a, m)) latest = m;
+            _marks_note.text = shown == 0
+                ? "No marks yet. Deeds leave marks: surviving, slaying rulers, duels, rescues."
+                : $"{shown}/8 · {latest}: {Path.MarkText(latest)}";
 
             _activity.text = "Now: " + Training.Activity(a);
-            _record.text = $"Foes {Resonance.Kills(a)} · Elites {Resonance.Elites(a)} · Duels won {Resonance.DuelWins(a)} · " +
-                           $"Spars won {Resonance.SparWins(a)}\nTraining sessions {Resonance.Sessions(a)} · Talent cap {Resonance.TalentCap(a)}";
+            _record.text = $"Foes {Path.Kills(a)} · Duels won {Path.DuelWins(a)} · Spars won {Path.SparWins(a)} · " +
+                           $"Rescues {Path.Rescues(a)} · Sessions {Path.Sessions(a)}";
 
             RefreshMoves(a, set);
         }
-
-        private static string TrialProgress(Actor a, int pGate) => pGate switch
-        {
-            20 => $"{Mathf.Min(3, Resonance.Sessions(a))}/3 sessions",
-            40 => $"{Resonance.SparWins(a) + Resonance.DuelWins(a)} wins, {Mathf.Min(5, Resonance.Kills(a))}/5 foes",
-            50 => $"{Mathf.Min(10, Resonance.Kills(a))}/10 foes",
-            60 => $"{Resonance.Elites(a)} elites, {Resonance.DuelWins(a)} duels",
-            70 => $"{Mathf.Min(2, Resonance.DuelWins(a))}/2 duels",
-            80 => $"{a.data.renown}/300 renown",
-            _ => ""
-        };
 
         private static readonly string[] Numerals = { "I", "II", "III" };
 

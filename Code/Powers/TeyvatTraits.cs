@@ -51,41 +51,41 @@ namespace TeyvatChronicle.Powers
             {
                 Add("gi_vision_" + element, GroupElements, TraitType.Positive, new Dictionary<string, float>
                 {
-                    [S.health] = 60, [S.damage] = 10, [S.armor] = 3, [S.speed] = 2,
+                    [S.health] = 120, [S.damage] = 12, [S.armor] = 4, [S.speed] = 2,
                     [S.critical_chance] = 0.05f, [S.mana] = 20, [S.lifespan] = 10, [S.skill_spell] = 0.1f
                 });
             }
             Add("gi_delusion", GroupElements, TraitType.Positive, new Dictionary<string, float>
             {
-                [S.health] = 80, [S.damage] = 25, [S.attack_speed] = 10, [S.speed] = 3, [S.lifespan] = -15
+                [S.health] = 160, [S.damage] = 18, [S.attack_speed] = 10, [S.speed] = 3, [S.lifespan] = -15
             });
             Add("gi_allogene", GroupElements, TraitType.Positive, new Dictionary<string, float>
             {
-                [S.health] = 120, [S.damage] = 18, [S.armor] = 5, [S.speed] = 4,
+                [S.health] = 200, [S.damage] = 16, [S.armor] = 5, [S.speed] = 4,
                 [S.critical_chance] = 0.08f, [S.mana] = 40, [S.lifespan] = 500, [S.skill_spell] = 0.2f
             });
 
             // Tier 2: Exalted
             Add("gi_adeptus", GroupExalted, TraitType.Positive, new Dictionary<string, float>
             {
-                [S.health] = 350, [S.damage] = 45, [S.armor] = 12, [S.speed] = 6, [S.lifespan] = 2000, [S.mana] = 80
+                [S.health] = 4000, [S.damage] = 90, [S.armor] = 12, [S.speed] = 6, [S.lifespan] = 2000, [S.mana] = 80
             });
             Add("gi_harbinger", GroupExalted, TraitType.Positive, new Dictionary<string, float>
             {
-                [S.health] = 300, [S.damage] = 50, [S.armor] = 10, [S.speed] = 4, [S.warfare] = 5, [S.lifespan] = 80
+                [S.health] = 4000, [S.damage] = 95, [S.armor] = 10, [S.speed] = 4, [S.warfare] = 5, [S.lifespan] = 80
             });
             Add("gi_hexenzirkel", GroupExalted, TraitType.Positive, new Dictionary<string, float>
             {
-                [S.health] = 250, [S.damage] = 40, [S.armor] = 8, [S.mana] = 150, [S.lifespan] = 1500,
+                [S.health] = 3500, [S.damage] = 85, [S.armor] = 8, [S.mana] = 150, [S.lifespan] = 1500,
                 [S.skill_spell] = 0.5f, [S.intelligence] = 10
             });
             Add("gi_abyss_herald", GroupExalted, TraitType.Positive, new Dictionary<string, float>
             {
-                [S.health] = 320, [S.damage] = 48, [S.armor] = 10, [S.speed] = 5, [S.lifespan] = 300
+                [S.health] = 4200, [S.damage] = 95, [S.armor] = 10, [S.speed] = 5, [S.lifespan] = 300
             });
             Add("gi_demon_god", GroupExalted, TraitType.Positive, new Dictionary<string, float>
             {
-                [S.health] = 800, [S.damage] = 90, [S.armor] = 18, [S.lifespan] = 3000, [S.area_of_effect] = 1
+                [S.health] = 9000, [S.damage] = 160, [S.armor] = 18, [S.lifespan] = 3000, [S.area_of_effect] = 1
             });
 
             // Tier 3: Archons and Tier 4: Dragon Sovereigns
@@ -93,18 +93,18 @@ namespace TeyvatChronicle.Powers
             {
                 Add("gi_gnosis_" + element, GroupDivine, TraitType.Positive, new Dictionary<string, float>
                 {
-                    [S.health] = 2500, [S.damage] = 200, [S.armor] = 30, [S.speed] = 8, [S.mana] = 300,
+                    [S.health] = 60000, [S.damage] = 600, [S.armor] = 30, [S.speed] = 8, [S.mana] = 300,
                     [S.lifespan] = 1500, [S.area_of_effect] = 1, [S.diplomacy] = 10, [S.stewardship] = 10
                 });
                 Add("gi_sovereign_" + element, GroupDivine, TraitType.Positive, new Dictionary<string, float>
                 {
-                    [S.health] = 5000, [S.damage] = 350, [S.armor] = 40, [S.speed] = 6, [S.mana] = 400,
+                    [S.health] = 250000, [S.damage] = 1500, [S.armor] = 50, [S.speed] = 6, [S.mana] = 400,
                     [S.lifespan] = 3000, [S.area_of_effect] = 2
                 });
             }
             Add("gi_nibelung", GroupDivine, TraitType.Positive, new Dictionary<string, float>
             {
-                [S.health] = 18000, [S.damage] = 900, [S.armor] = 55, [S.speed] = 8, [S.mana] = 900,
+                [S.health] = 1200000, [S.damage] = 4000, [S.armor] = 55, [S.speed] = 8, [S.mana] = 900,
                 [S.lifespan] = 9000, [S.area_of_effect] = 3
             });
 
@@ -113,28 +113,28 @@ namespace TeyvatChronicle.Powers
             {
                 Add("gi_shade_" + shade, GroupPrimordial, TraitType.Positive, new Dictionary<string, float>
                 {
-                    [S.health] = 8000, [S.damage] = 500, [S.armor] = 50, [S.speed] = 10, [S.mana] = 600,
+                    [S.health] = 400000, [S.damage] = 2000, [S.armor] = 50, [S.speed] = 10, [S.mana] = 600,
                     [S.lifespan] = 6000, [S.area_of_effect] = 2
                 });
             }
             Add("gi_moon_goddess", GroupPrimordial, TraitType.Positive, new Dictionary<string, float>
             {
-                [S.health] = 7000, [S.damage] = 420, [S.armor] = 45, [S.speed] = 10, [S.mana] = 800,
+                [S.health] = 800000, [S.damage] = 3000, [S.armor] = 45, [S.speed] = 10, [S.mana] = 800,
                 [S.lifespan] = 6000, [S.area_of_effect] = 2
             });
             Add("gi_trilunar", GroupPrimordial, TraitType.Positive, new Dictionary<string, float>
             {
-                [S.health] = 10000, [S.damage] = 600, [S.armor] = 55, [S.speed] = 12, [S.mana] = 1200,
+                [S.health] = 900000, [S.damage] = 3200, [S.armor] = 55, [S.speed] = 12, [S.mana] = 1200,
                 [S.lifespan] = 8000, [S.area_of_effect] = 3
             });
             Add("gi_heavenly_principles", GroupPrimordial, TraitType.Positive, new Dictionary<string, float>
             {
-                [S.health] = 20000, [S.damage] = 1000, [S.armor] = 60, [S.speed] = 12, [S.mana] = 2000,
+                [S.health] = 2000000, [S.damage] = 5000, [S.armor] = 60, [S.speed] = 12, [S.mana] = 2000,
                 [S.lifespan] = 9999, [S.area_of_effect] = 4
             });
             Add("gi_dormant_principles", GroupPrimordial, TraitType.Other, new Dictionary<string, float>
             {
-                [S.health] = 6000, [S.damage] = 300, [S.armor] = 40, [S.speed] = -10, [S.lifespan] = 9999
+                [S.health] = 600000, [S.damage] = 1500, [S.armor] = 40, [S.speed] = -10, [S.lifespan] = 9999
             });
 
             // Curses
@@ -147,19 +147,6 @@ namespace TeyvatChronicle.Powers
                 [S.lifespan] = 5000, [S.health] = 50, [S.diplomacy] = -3
             });
 
-            // Progress markers: Ascension phases and Constellations (set by the Resonance system)
-            for (int i = 1; i <= 6; i++)
-            {
-                Add("gi_ascension_" + i, GroupProgress, TraitType.Positive, new Dictionary<string, float>
-                {
-                    [S.health] = 30 * i, [S.damage] = 4 * i, [S.armor] = i, [S.speed] = i, [S.mana] = 10 * i
-                });
-                Add("gi_constellation_" + i, GroupProgress, TraitType.Positive, new Dictionary<string, float>
-                {
-                    [S.critical_chance] = 0.02f * i, [S.damage] = 3 * i, [S.health] = 15 * i
-                });
-            }
-
             // When an Archon dies, the Gnosis passes to an heir.
             foreach (string element in Elements)
             {
@@ -167,10 +154,7 @@ namespace TeyvatChronicle.Powers
             }
         }
 
-        /// <summary>
-        /// Divine and primordial beings glow with their element, and Dragon Sovereigns that are dragons
-        /// wear an element-coloured body.
-        /// </summary>
+        /// <summary>Divine and primordial beings look for foes on their own every few seconds.</summary>
         private static bool DivinePresence(BaseSimObject pTarget, WorldTile pTile)
         {
             if (pTarget is Actor actor) MainThread.Enqueue(() => Presence(actor));
@@ -180,22 +164,25 @@ namespace TeyvatChronicle.Powers
         private static bool Presence(Actor actor)
         {
             if (actor == null || !actor.isAlive()) return false;
-            MoveSet set = CombatCore.ResolveSet(actor, out string trait_id);
+            MoveSet set = CombatCore.ResolveSet(actor, out _);
             if (set == null) return false;
-            if (trait_id.StartsWith("gi_sovereign_")) DragonBodies.Apply(actor, set.Element);
-            else if (trait_id == "gi_nibelung") DragonBodies.Apply(actor, "lunar");
 
-            // Dragons (and other units that skip normal fighting) never trigger the attack hook,
-            // so divine beings also look for a nearby enemy here and use a move on it.
-            Actor foe = actor.has_attack_target ? actor.attack_target as Actor : null;
-            if (foe == null && actor.asset.skip_fight_logic)
+            // Units that skip normal fighting (dragons) never trigger the attack hook, so they look for a
+            // foe here. Sovereigns pick their foes by their own rules (rivals, attackers, the mighty).
+            Actor foe;
+            if (DragonRule.IsSovereign(actor) && actor.avatar != null) foe = DragonRule.FoeFor(actor);
+            else
             {
-                float best = 100f;
-                foreach (Actor unit in World.world.units.getSimpleList())
+                foe = actor.has_attack_target ? actor.attack_target as Actor : null;
+                if (foe == null && actor.asset.skip_fight_logic)
                 {
-                    if (!CombatCore.IsEnemy(actor, unit)) continue;
-                    float d = ((Vector2)unit.current_position - actor.current_position).sqrMagnitude;
-                    if (d < best) { best = d; foe = unit; }
+                    float best = 100f;
+                    foreach (Actor unit in World.world.units.getSimpleList())
+                    {
+                        if (!CombatCore.IsEnemy(actor, unit)) continue;
+                        float d = ((Vector2)unit.current_position - actor.current_position).sqrMagnitude;
+                        if (d < best) { best = d; foe = unit; }
+                    }
                 }
             }
             if (foe != null) Arts.Engine.Decide(actor, foe);

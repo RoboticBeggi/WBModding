@@ -37,11 +37,11 @@ namespace TeyvatChronicle.Progression
             if (units.Any(u => u.hasTrait(trait))) return; // someone already holds it (e.g. the Chronicle passed it on)
 
             Actor heir = units.Where(u => u.kingdom == pKingdom && u.hasTrait("gi_vision_" + pElement))
-                             .OrderByDescending(Resonance.Rank).FirstOrDefault()
-                         ?? units.Where(u => u.kingdom == pKingdom && u.isSapient() && Resonance.Tier(u) >= 1)
-                             .OrderByDescending(Resonance.Rank).FirstOrDefault()
+                             .OrderByDescending(Path.Score).FirstOrDefault()
+                         ?? units.Where(u => u.kingdom == pKingdom && u.isSapient() && Path.Tier(u) >= 1)
+                             .OrderByDescending(Path.Score).FirstOrDefault()
                          ?? units.Where(u => u.hasTrait("gi_vision_" + pElement))
-                             .OrderByDescending(Resonance.Rank).FirstOrDefault();
+                             .OrderByDescending(Path.Score).FirstOrDefault();
             if (heir == null) return;
             Crown(heir, pElement, $"{heir.getName()} inherits the {Training.Capital(pElement)} Gnosis from {pPrevious}");
         }
@@ -55,25 +55,26 @@ namespace TeyvatChronicle.Progression
                 holder.removeTrait(trait);
             }
             pActor.addTrait(trait);
-            Resonance.Moment(pActor, Resonance.Moments.Crowned);
+            Path.EnsureInit(pActor);
             Color color = Elements.Color(pElement);
             string message = pMessage ?? $"{pActor.getName()} is crowned {Training.Capital(pElement)} Archon";
-            Resonance.Celebrate(pActor, "A NEW ARCHON", "boom", 1.4f, message);
+            Path.Celebrate(pActor, "A NEW ARCHON", "boom", 1.4f, message);
             Announcer.AnnounceLegend(message, color, pActor.current_tile, true);
         }
 
         // ---------------------------------------------------------------- yearly checks
 
+        /// <summary>Exaltation needs Hallowed (Stage IV) and 2 marks; claiming an empty throne needs Paragon and 4 marks.</summary>
         public static void YearlyChecks(Actor a, float pYears)
         {
-            int tier = Resonance.Tier(a);
-            if (tier == 1 && Settings.Exaltation && Resonance.Rank(a) >= 70 && Resonance.Phase(a) >= 5 &&
-                Resonance.Constellation(a) >= 4 && Randy.randomChance(0.1f * pYears))
+            int tier = Path.Tier(a);
+            if (tier == 1 && Settings.Exaltation && Path.Stage(a) >= 4 && Path.MarkCount(a) >= 2 &&
+                Randy.randomChance(0.1f * pYears))
             {
                 Exalt(a);
             }
-            else if (tier == 2 && Settings.Godhood && Resonance.Rank(a) >= Resonance.MaxRank &&
-                     Resonance.Constellation(a) >= 6 && Randy.randomChance(0.05f * pYears))
+            else if (tier == 2 && Settings.Godhood && Path.Stage(a) >= Path.MaxStage && Path.MarkCount(a) >= 4 &&
+                     Randy.randomChance(0.05f * pYears))
             {
                 ClaimThrone(a);
             }
@@ -88,6 +89,7 @@ namespace TeyvatChronicle.Progression
             else path = "gi_adeptus";
 
             a.addTrait(path);
+            Path.EnsureInit(a);
             string title = path switch
             {
                 "gi_abyss_herald" => "an Abyss Herald",
@@ -96,7 +98,7 @@ namespace TeyvatChronicle.Progression
                 _ => "an Adeptus"
             };
             Color color = Elements.Color(CombatCore.ResolveSet(a, out _)?.Element);
-            Resonance.Celebrate(a, "EXALTED", "boom", 1.2f, title);
+            Path.Celebrate(a, "EXALTED", "boom", 1.2f, title);
             Announcer.AnnounceLegend($"★ {a.getName()} has become {title}", color, a.current_tile, true);
         }
 

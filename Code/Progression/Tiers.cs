@@ -32,9 +32,9 @@ namespace TeyvatChronicle.Progression
         public static string Description(int pTier) => pTier switch
         {
             1 => "Mortals with a Vision, a Delusion, or (as an Allogene) no need for either. They rise by training and battle.",
-            2 => "Adepti, Fatui Harbingers, Hexenzirkel witches, Abyss Heralds and Demon Gods. Vision holders at rank 70, ★5, C4 may be Exalted.",
-            3 => "The Seven, each holding a Gnosis. When an Archon dies, the Gnosis passes on; an Exalted at rank 90, C6 may claim an empty throne.",
-            4 => "The Dragon Sovereigns of the Old World: real dragons in their element's colours, each holding an elemental Authority.",
+            2 => "Adepti, Fatui Harbingers, Hexenzirkel witches, Abyss Heralds and Demon Gods. Hallowed Vision holders with two marks may be Exalted.",
+            3 => "The Seven, each holding a Gnosis. When an Archon dies, the Gnosis passes on; a Paragon Exalted with four marks may claim an empty throne.",
+            4 => "The Dragon Sovereigns of the Old World: colossal dragons, each holding an elemental Authority.",
             5 => "The Four Shades of the Primordial One: Life, Death, Time and Space.",
             6 => "The Moon Goddesses, the Trilunar Authority and Nibelung, the Dragon King.",
             7 => "The Heavenly Principles themselves: the Primordial One, ruler of Celestia.",

@@ -27,7 +27,7 @@ namespace TeyvatChronicle.Arts
         /// <summary>Mastery level, 1–3.</summary>
         public int Lv = 1;
 
-        /// <summary>Damage multiplier from Resonance, mastery and team-ups (scripts multiply their own power by it).</summary>
+        /// <summary>Damage multiplier from the Path (Edge), mastery and team-ups (scripts multiply their own power by it).</summary>
         public float Pow = 1f;
 
         public string Element;
@@ -121,39 +121,120 @@ namespace TeyvatChronicle.Arts
 
         private static string SetName(string pSet) => pSet.StartsWith("fx:") ? pSet.Substring(3) : "arts/" + pSet;
 
+        /// <summary>A dragon caster's body acts out what it's casting: breathing, roaring, clawing, beating wings.</summary>
+        private void DragonPose(string pSet)
+        {
+            if (!Powers.DragonModels.Wears(A)) return;
+            switch (pSet)
+            {
+                case "breath":
+                case "abyss_flame":
+                    Powers.DragonModels.Pose(A, "breath", 0.9f);
+                    break;
+                case "roar":
+                case "wingbeat":
+                case "storm_eye":
+                    Powers.DragonModels.Pose(A, "roar", 0.8f);
+                    break;
+                case "claw":
+                case "x_cut":
+                case "cross_cut":
+                    Powers.DragonModels.Pose(A, "claw", 0.6f);
+                    break;
+            }
+        }
+
+        /// <summary>For dragons, where breath comes from (the model's mouth); for everyone else their position.</summary>
+        public Vector3 Mouth => Powers.DragonModels.Wears(A) ? Powers.DragonModels.Mouth(A) : P;
+
+        /// <summary>The white-hot centre of the style colour (cores, sparks, flashes).</summary>
+        public Color Core => Color.Lerp(Hot, Color.white, 0.6f);
+
+        /// <summary>The style colour, fully transparent (the end of a colour ramp).</summary>
+        public Color Clear => new Color(Hot.r, Hot.g, Hot.b, 0f);
+
+        // Sets that are ground marks, dust or smoke: they get no light of their own.
+        private static readonly HashSet<string> Unlit = new HashSet<string>
+        {
+            "dust", "debris", "fissure", "smoke", "rock_chunk", "corrosion", "sand", "cloud", "shadow_hand",
+            "glow", "ring_soft", "fx:speedlines"
+        };
+
+        /// <summary>A faint additive glow under a lit effect, so every technique carries its own light.</summary>
+        private void Underglow(string pSet, Vector3 pPos, float pSize, Color pColor, Fx.Instance pFx, bool pBack)
+        {
+            if (pFx == null || pBack || pSize < 0.9f || Unlit.Contains(pSet)) return;
+            Fx.Instance g = Fx.Glow(pPos, pSize * 1.35f, new Color(pColor.r, pColor.g, pColor.b, 0.32f), pFx.Life * 0.9f);
+            if (g != null && pFx.Follow != null) g.Follow = pFx.Follow;
+        }
+
         /// <summary>Plays an art set. Size is in tiles; life ≤ 0 plays it once.</summary>
         public Fx.Instance F(string pSet, Vector3 pPos, float pSize, float pRot = 0f, float pLife = 0f,
             bool pLoop = false, float pFps = 16f, bool tint = false, bool back = false)
         {
+            DragonPose(pSet);
             if (!Director.OnScreen(pPos)) return null;
-            return Fx.Play(SetName(pSet), pPos, pSize, tint ? Hot : Color.white, pRot, pLife, pLoop, pFps,
+            Fx.Instance fx = Fx.Play(SetName(pSet), pPos, pSize, tint ? Hot : Color.white, pRot, pLife, pLoop, pFps,
                 back ? "EffectsBack" : "EffectsTop");
+            Underglow(pSet, pPos, pSize, Hot, fx, back);
+            return fx;
         }
 
         /// <summary>Plays an art set in a chosen colour.</summary>
         public Fx.Instance Fc(string pSet, Vector3 pPos, float pSize, Color pColor, float pRot = 0f, float pLife = 0f,
             bool pLoop = false, float pFps = 16f, bool back = false)
         {
+            DragonPose(pSet);
             if (!Director.OnScreen(pPos)) return null;
-            return Fx.Play(SetName(pSet), pPos, pSize, pColor, pRot, pLife, pLoop, pFps,
+            Fx.Instance fx = Fx.Play(SetName(pSet), pPos, pSize, pColor, pRot, pLife, pLoop, pFps,
                 back ? "EffectsBack" : "EffectsTop");
-        }
-
-        /// <summary>A projectile from one point to another. Returns the effect; wait <paramref name="pTime"/> for it to land.</summary>
-        public Fx.Instance Shot(string pSet, Vector3 pFrom, Vector3 pTo, float pSize, float pTime, bool tint = false,
-            bool rotate = true, float pFps = 16f)
-        {
-            Fx.Instance fx = Fx.Play(SetName(pSet), pFrom, pSize, tint ? Hot : Color.white, 0f, pTime + 0.04f, true,
-                pFps);
-            Fx.MoveTo(fx, pTo, pTime, rotate);
+            Underglow(pSet, pPos, pSize, pColor, fx, back);
             return fx;
         }
 
-        /// <summary>Stretches an art set between two points (beams, cuts, whips, fissures).</summary>
+        /// <summary>
+        /// A projectile from one point to another, leaving a glowing particle trail. Returns the effect; wait
+        /// <paramref name="pTime"/> for it to land.
+        /// </summary>
+        public Fx.Instance Shot(string pSet, Vector3 pFrom, Vector3 pTo, float pSize, float pTime, bool tint = false,
+            bool rotate = true, float pFps = 16f)
+        {
+            DragonPose(pSet);
+            Fx.Instance fx = Fx.Play(SetName(pSet), pFrom, pSize, tint ? Hot : Color.white, 0f, pTime + 0.04f, true,
+                pFps);
+            Fx.MoveTo(fx, pTo, pTime, rotate);
+            if (fx != null && Director.OnScreen(pFrom))
+            {
+                Fx.Trail(fx, "mote", Core, Clear, 30f + 12f * pSize, Mathf.Clamp(pSize * 0.32f, 0.18f, 0.6f));
+                Fx.Glow(pFrom, pSize * 1.3f, new Color(Hot.r, Hot.g, Hot.b, 0.45f), 0.18f);
+            }
+            return fx;
+        }
+
+        /// <summary>Stretches an art set between two points (beams, cuts, whips, fissures), lit at both ends.</summary>
         public Fx.Instance Beam(string pSet, Vector3 pFrom, Vector3 pTo, float pThickness, float pLife,
             bool tint = false, bool loop = true)
         {
-            return Fx.Line(SetName(pSet), pFrom, pTo, pThickness, tint ? Hot : Color.white, pLife, loop);
+            DragonPose(pSet);
+            Fx.Instance fx = Fx.Line(SetName(pSet), pFrom, pTo, pThickness, tint ? Hot : Color.white, pLife, loop);
+            if (fx != null && !Unlit.Contains(pSet) && Director.OnScreen(pFrom))
+            {
+                float glow = Mathf.Clamp(pThickness * 2.2f, 0.8f, 4f);
+                Fx.Glow(pFrom, glow, new Color(Hot.r, Hot.g, Hot.b, 0.5f), pLife);
+                Fx.Glow(pTo, glow * 1.2f, new Color(Hot.r, Hot.g, Hot.b, 0.55f), pLife);
+                // Sparks thrown off along the beam.
+                Vector3 d = pTo - pFrom;
+                Vector3 n = new Vector3(-d.y, d.x).normalized;
+                int count = Mathf.Clamp((int)(d.magnitude * 1.2f), 3, 14);
+                for (int i = 0; i < count; i++)
+                {
+                    Vector3 at = pFrom + d * Random.value;
+                    float side = Random.value < 0.5f ? -1f : 1f;
+                    Fx.Particles("spark", at, 1, 2f, 5f, 0.3f, Core, Clear, 0f, 0.28f, 50f,
+                        AngleOf(n * side));
+                }
+            }
+            return fx;
         }
 
         /// <summary>Glues an effect to a unit.</summary>
@@ -161,22 +242,69 @@ namespace TeyvatChronicle.Arts
 
         public static void Grow(Fx.Instance pFx, float pFactor) => Fx.Grow(pFx, pFactor);
 
-        /// <summary>A ring of shock and dust: the basic "something heavy happened here".</summary>
+        private static readonly Color DustFrom = new Color(0.74f, 0.66f, 0.54f, 0.9f);
+        private static readonly Color DustTo = new Color(0.5f, 0.44f, 0.36f, 0f);
+        private static readonly Color RockFrom = new Color(0.62f, 0.5f, 0.36f, 1f);
+        private static readonly Color RockTo = new Color(0.4f, 0.32f, 0.24f, 0.8f);
+
+        /// <summary>
+        /// "Something heavy happened here": a shockwave, a soft expanding ring of light, flung dust and rock
+        /// chunks, rolling smoke and a flash of the style colour.
+        /// </summary>
         public void Burst(Vector3 pPos, float pSize)
         {
             Fx.Instance shock = F("shock", pPos, pSize, 0f, 0f, false, 22f, true);
             Fx.Grow(shock, 1.3f);
             F("dust", pPos, pSize * 0.8f, 0f, 0f, false, 16f);
+            if (!Director.OnScreen(pPos)) return;
+            Fx.Instance ring = Fx.Play("arts/ring_soft", pPos, pSize * 0.5f, new Color(Hot.r, Hot.g, Hot.b, 0.7f), 0f, 0.35f,
+                false, 1f);
+            Fx.SetAdditive(ring, true);
+            Fx.Grow(ring, 2.6f);
+            Fx.Glow(pPos, pSize * 1.4f, new Color(Hot.r, Hot.g, Hot.b, 0.55f), 0.3f);
+            int chunks = Mathf.Clamp((int)(4 + pSize * 2f), 4, 18);
+            Fx.Particles("rock_chunk", pPos, chunks, 2f, 4f + pSize, 0.8f, RockFrom, RockTo, 9f, 0.32f, 150f, 90f, false, 0.6f);
+            Fx.Particles("smoke", pPos, Mathf.Clamp((int)(2 + pSize), 2, 8), 0.5f, 1.6f + pSize * 0.3f, 1.1f, DustFrom,
+                DustTo, -0.4f, pSize * 0.35f, 360f, 0f, false, 1.5f);
+            Fx.Particles("spark", pPos, Mathf.Clamp((int)(4 + pSize * 2f), 4, 16), 3f, 7f + pSize, 0.35f, Core, Clear, 3f,
+                0.32f);
         }
 
-        public void Dust(Vector3 pPos, float pSize) => F("dust", pPos, pSize, 0f, 0f, false, 16f);
+        /// <summary>Dust that billows and settles.</summary>
+        public void Dust(Vector3 pPos, float pSize)
+        {
+            F("dust", pPos, pSize, 0f, 0f, false, 16f);
+            Fx.Particles("smoke", pPos, Mathf.Clamp((int)(1 + pSize * 1.2f), 1, 5), 0.4f, 1.2f, 0.9f, DustFrom, DustTo,
+                -0.3f, pSize * 0.3f, 360f, 0f, false, 1.5f);
+        }
 
-        /// <summary>A plain hit spark (tinted white-ish impact star).</summary>
+        /// <summary>A hit spark: an impact star with a white-hot core, a spray of sparks and a pop of light.</summary>
         public void Spark(Vector3 pPos, float pSize = 1.2f)
         {
             if (!Director.OnScreen(pPos)) return;
             Fx.Play("arts/impact", pPos, pSize, Color.Lerp(Hot, Color.white, 0.5f), Random.Range(0f, 360f), 0f,
                 false, 26f);
+            Fx.Glow(pPos, pSize * 1.6f, new Color(Hot.r, Hot.g, Hot.b, 0.6f), 0.22f);
+            Fx.Particles("spark", pPos, Mathf.Clamp((int)(5 + pSize * 3f), 5, 18), 3f, 7f + pSize * 2f, 0.32f, Core, Clear,
+                4f, 0.3f + pSize * 0.05f);
+        }
+
+        private static float _hit_spark_window;
+        private static int _hit_sparks;
+
+        /// <summary>A small element-coloured spark where a technique lands (at most ~30 a second).</summary>
+        private void HitSpark(Actor pVictim)
+        {
+            if (Time.unscaledTime - _hit_spark_window > 1f)
+            {
+                _hit_spark_window = Time.unscaledTime;
+                _hit_sparks = 0;
+            }
+            if (++_hit_sparks > 30) return;
+            Vector3 p = pVictim.current_position;
+            if (!Director.OnScreen(p)) return;
+            Fx.Particles("spark", p, 4, 2f, 5f, 0.25f, Core, Clear, 3f, 0.26f);
+            if (_hit_sparks % 3 == 0) Fx.Glow(p, 1f, new Color(Hot.r, Hot.g, Hot.b, 0.45f), 0.15f);
         }
 
         // ---------------------------------------------------------------- sound and text
@@ -216,6 +344,7 @@ namespace TeyvatChronicle.Arts
         public bool Hit(Actor pVictim, float pPower, string pStatus = null, float pStatusTime = 3f)
         {
             if (!Ok || !CombatCore.Alive(pVictim)) return false;
+            HitSpark(pVictim);
             CombatCore.Hit(A, pVictim, pPower * Pow, Element, pStatus, pStatusTime, God);
             return !pVictim.isAlive();
         }
@@ -262,8 +391,17 @@ namespace TeyvatChronicle.Arts
         }
 
         /// <summary>A fast slide with afterimages.</summary>
-        public IEnumerator Dash(Vector3 pTo, float pSeconds, bool pGhosts = true) =>
-            Move(A, pTo, pSeconds, pGhosts ? Hot : (Color?)null);
+        public IEnumerator Dash(Vector3 pTo, float pSeconds, bool pGhosts = true)
+        {
+            if (CanMove(A) && Director.OnScreen(P))
+            {
+                // Speed streaks peeling off behind the dash.
+                float back = AngleOf(P - pTo);
+                Fx.Particles("streak", P, 6, 3f, 7f, 0.3f, Core, Clear, 0f, 0.5f, 40f, back, true, 4f);
+                Fx.Particles("smoke", P, 2, 0.3f, 1f, 0.6f, DustFrom, DustTo, 0f, 0.35f, 360f, 0f, false);
+            }
+            return Move(A, pTo, pSeconds, pGhosts ? Hot : (Color?)null);
+        }
 
         public static IEnumerator Move(Actor pActor, Vector3 pTo, float pSeconds, Color? pGhost = null)
         {
@@ -278,8 +416,11 @@ namespace TeyvatChronicle.Arts
             if (!CanMove(A)) return;
             if (Settings.Afterimages) Fx.Ghost(A, Hot, 0.4f);
             F(pFx, P, 1.4f, 0f, 0f, false, 30f, pFx == "impact" || pFx == "shock");
+            Fx.Particles("mote", P, 10, 1.5f, 4f, 0.4f, Core, Clear, 0f, 0.25f);
             Place(A, pTo);
             F(pFx, P, 1.4f, 0f, 0f, false, 30f, pFx == "impact" || pFx == "shock");
+            Fx.Particles("mote", P, 8, 3f, 5f, 0.3f, Clear, Core, 0f, 0.22f);
+            Fx.Glow(P, 1.6f, new Color(Hot.r, Hot.g, Hot.b, 0.5f), 0.2f);
             Snd("blink");
         }
 
@@ -417,6 +558,7 @@ namespace TeyvatChronicle.Arts
         public void Launch(Actor pVictim, float pHeight, float pHang)
         {
             if (!CanMove(pVictim)) return;
+            Fx.Particles("streak", pVictim.current_position, 6, 4f, 8f, 0.3f, Core, Clear, 0f, 0.45f, 30f, 90f, true, 3f);
             ModClass.Instance.StartCoroutine(LaunchRoutine(pVictim, pHeight, pHang));
         }
 
@@ -428,6 +570,8 @@ namespace TeyvatChronicle.Arts
             yield return Fall(v, 0.22f);
             if (!CombatCore.Alive(v)) yield break;
             Dust(v.current_position, 1.2f);
+            Fx.Particles("rock_chunk", v.current_position, 5, 1.5f, 3.5f, 0.6f, RockFrom, RockTo, 8f, 0.28f, 140f, 90f,
+                false, 0.6f);
             Snd("land", v.current_position);
         }
 
@@ -442,6 +586,13 @@ namespace TeyvatChronicle.Arts
             if (!Director.OnScreen(pPos)) return;
             float s = Mathf.Clamp01(pStrength) * (Lv >= 3 ? 1.25f : 1f);
             World.world.startShake(0.15f + 0.35f * s, 0.01f, 1f + 4f * s, true, true);
+            // The light of the blow: a flash of the style colour scaled to strength, sparks, flung rock.
+            Fx.Glow(pPos, 2f + 5f * s, new Color(Core.r, Core.g, Core.b, 0.45f + 0.4f * Mathf.Min(1f, s)), 0.22f + 0.2f * s);
+            Fx.Particles("spark", pPos, (int)(8 + 16 * s), 3f, 8f + 6f * s, 0.4f, Core, Clear, 4f, 0.32f);
+            if (s >= 0.4f)
+                Fx.Particles("rock_chunk", pPos, (int)(4 + 10 * s), 2f, 5f + 4f * s, 0.9f, RockFrom, RockTo, 9f, 0.34f, 160f,
+                    90f, false, 0.5f);
+            if (s >= 0.6f) Director.Flash(Color.Lerp(Color.white, Hot, 0.25f), 0.16f + 0.2f * Mathf.Min(1f, s), 0.05f);
             if (s >= 0.5f) Director.Punch(1f - 0.1f * s, 0.25f);
             if (Lv >= 3 && s >= 0.6f) Director.HitStop(0.06f + 0.1f * s);
             if (s >= 0.95f) Director.Impact(pPos, Hot, s);
@@ -457,6 +608,11 @@ namespace TeyvatChronicle.Arts
             Fx.Play("crater", pPos, Mathf.Clamp(pRadius * 2f, 1.5f, 14f), new Color(0.16f, 0.12f, 0.1f, 0.85f), 0f,
                 6f, false, 1f, "EffectsBack");
             F("debris", pPos, pRadius * 1.4f, 0f, 0f, false, 16f);
+            // Rock chunks thrown up out of the crater, falling back down, and smoke rolling out.
+            Fx.Particles("rock_chunk", pPos, Mathf.Clamp((int)(8 + pRadius * 5f), 8, 30), 3f, 6f + pRadius * 1.5f, 1.1f,
+                RockFrom, RockTo, 10f, 0.4f, 120f, 90f, false, 0.4f);
+            Fx.Particles("smoke", pPos, Mathf.Clamp((int)(3 + pRadius * 2f), 3, 10), 0.6f, 1.5f + pRadius * 0.4f, 1.4f,
+                DustFrom, DustTo, -0.5f, Mathf.Clamp(pRadius * 0.5f, 0.4f, 2f), 360f, 0f, false, 1.2f);
         }
 
         /// <summary>A crack torn through the ground between two points.</summary>

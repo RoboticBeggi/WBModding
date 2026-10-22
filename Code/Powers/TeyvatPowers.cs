@@ -23,8 +23,8 @@ namespace TeyvatChronicle.Powers
             OnUnit("gi_power_vision", GrantVision);
             OnUnit("gi_power_element", ShiftElement);
             OnUnit("gi_power_delusion", GrantDelusion);
-            OnUnit("gi_power_ascend", Ascend);
-            OnUnit("gi_power_constellation", AddConstellation);
+            OnUnit("gi_power_ascend", Temper);
+            OnUnit("gi_power_constellation", GrantMark);
             OnUnit("gi_power_archon", CrownArchon);
 
             Add("gi_power_ground", (tile, id) =>
@@ -37,13 +37,13 @@ namespace TeyvatChronicle.Powers
 
         // ---------------------------------------------------------------- actions (also used by the character panel)
 
-        /// <summary>Awakens a Vision (element from the kingdom's Archon or fate); on a Vision holder, +5 ranks.</summary>
+        /// <summary>Awakens a Vision (element from the kingdom's Archon or fate); on a Vision holder, tempers every facet by 3.</summary>
         public static bool GrantVision(Actor a)
         {
             if (a.getTraits().Any(t => t.id.StartsWith("gi_vision_")))
             {
-                Resonance.SetRank(a, Resonance.Rank(a) + 5);
-                Resonance.Celebrate(a, $"RANK {Resonance.Rank(a)}", "heal", 0.7f);
+                Path.Temper(a, 3);
+                Path.Celebrate(a, "TEMPERED +3", "heal", 0.7f, Path.IsPrimed(a) ? "Primed for the Crucible" : null);
             }
             else Training.Awaken(a, null);
             return true;
@@ -61,23 +61,27 @@ namespace TeyvatChronicle.Powers
         public static bool GrantDelusion(Actor a)
         {
             a.addTrait("gi_delusion");
-            Resonance.Celebrate(a, "DELUSION", "dark", 0.8f);
+            Path.EnsureInit(a);
+            Path.Celebrate(a, "DELUSION", "dark", 0.8f);
             return true;
         }
 
-        public static bool Ascend(Actor a)
+        /// <summary>Temper: +5 to every facet (up to the Stage cap). Can prime the unit for its Crucible.</summary>
+        public static bool Temper(Actor a)
         {
-            if (!Resonance.IsPowered(a)) Training.Awaken(a, null);
-            Resonance.SetRank(a, Resonance.Rank(a) + 10);
-            Resonance.Celebrate(a, $"ASCEND → RANK {Resonance.Rank(a)}", "charge", 1f);
+            if (!Path.IsPowered(a)) Training.Awaken(a, null);
+            Path.Temper(a, 5);
+            Path.Celebrate(a, "TEMPERED +5", "charge", 1f, Path.IsPrimed(a) ? "Primed for the Crucible" : null);
             return true;
         }
 
-        public static bool AddConstellation(Actor a)
+        /// <summary>Grant Mark: a random mark the unit hasn't earned yet.</summary>
+        public static bool GrantMark(Actor a)
         {
-            if (!Resonance.IsPowered(a)) Training.Awaken(a, null);
-            Resonance.SetConstellation(a, Resonance.Constellation(a) + 1);
-            Resonance.Celebrate(a, $"CONSTELLATION C{Resonance.Constellation(a)}", "moon", 0.9f);
+            if (!Path.IsPowered(a)) Training.Awaken(a, null);
+            Path.EnsureInit(a);
+            if (Path.GrantRandomMark(a) == Path.Mark.None)
+                Cinematics.FloatingText.Show("Every mark earned", a.current_position, Color.white, 11);
             return true;
         }
 

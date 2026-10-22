@@ -39,12 +39,13 @@ namespace TeyvatChronicle.Arts
         private static IEnumerator Run(Actor a, Actor b, MoveSet sa, MoveSet sb)
         {
             _active++;
+            Path.OnDuelStart(a, b);
             CombatData da = CombatCore.Data(a), db = CombatCore.Data(b);
             da.InDuel = db.InDuel = true;
-            var x = new Side { C = new Cast(a, b, null, sa, Engine.RankLevel(a, sa), CombatCore.ElementFor(a, sa)), Set = sa };
-            var y = new Side { C = new Cast(b, a, null, sb, Engine.RankLevel(b, sb), CombatCore.ElementFor(b, sb)), Set = sb };
-            x.C.Pow = Resonance.MoveBoost(a, Resonance.Category.Strike);
-            y.C.Pow = Resonance.MoveBoost(b, Resonance.Category.Strike);
+            var x = new Side { C = new Cast(a, b, null, sa, Engine.StageLevel(a), CombatCore.ElementFor(a, sa)), Set = sa };
+            var y = new Side { C = new Cast(b, a, null, sb, Engine.StageLevel(b), CombatCore.ElementFor(b, sb)), Set = sb };
+            x.C.Pow = Path.TechniquePower(a);
+            y.C.Pow = Path.TechniquePower(b);
             bool gods = sa.Tier >= 3 && sb.Tier >= 3;
 
             yield return Engine.Safe(Body(x, y, gods), "duel");
@@ -96,13 +97,15 @@ namespace TeyvatChronicle.Arts
                 yield return Catastrophe(x, y);
             if (!Alive(x, y)) yield break;
             yield return Finisher(winner, loser);
-            if (winner.C.Ok) Resonance.OnDuel(winner.Me, loser.Me);
+            if (winner.C.Ok) Path.OnDuel(winner.Me, loser.Me);
         }
 
         private static float Momentum(Side x, Side y)
         {
-            float sx = x.Set.Tier * 25f + Resonance.Rank(x.Me) + 30f * x.Me.getHealth() / Mathf.Max(1f, x.Me.getMaxHealth());
-            float sy = y.Set.Tier * 25f + Resonance.Rank(y.Me) + 30f * y.Me.getHealth() / Mathf.Max(1f, y.Me.getMaxHealth());
+            float sx = (x.Set.Tier * 25f + Path.Stage(x.Me) * 12f + Path.FacetTotal(x.Me) * 0.4f +
+                        30f * x.Me.getHealth() / Mathf.Max(1f, x.Me.getMaxHealth())) * Path.DuelMomentum(x.Me);
+            float sy = (y.Set.Tier * 25f + Path.Stage(y.Me) * 12f + Path.FacetTotal(y.Me) * 0.4f +
+                        30f * y.Me.getHealth() / Mathf.Max(1f, y.Me.getMaxHealth())) * Path.DuelMomentum(y.Me);
             return Mathf.Clamp(sx / Mathf.Max(1f, sx + sy), 0.15f, 0.85f);
         }
 

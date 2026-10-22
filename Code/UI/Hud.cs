@@ -99,7 +99,7 @@ namespace TeyvatChronicle.UI
                 string name = a.getName();
                 if (name.Length > 16) name = name.Substring(0, 15) + "…";
                 _rows[i].text = $"{i + 1}. <color={Kit.Hex(Elements.Color(set?.Element))}>{name}</color>" +
-                                $"  <color={Kit.Hex(Tiers.Color(set?.Tier ?? 0))}>T{set?.Tier}</color> R{Resonance.Rank(a)}";
+                                $"  <color={Kit.Hex(Tiers.Color(set?.Tier ?? 0))}>T{set?.Tier}</color> {Path.Numeral(Path.Stage(a))}";
             }
         }
     }

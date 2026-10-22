@@ -8,22 +8,19 @@ using UnityEngine;
 namespace TeyvatChronicle.Progression
 {
     /// <summary>
-    /// Walks the world a slice at a time and lets units train. Powered units earn Resonance XP from drills,
-    /// training dummies and sparring, boosted by mentors and Training Grounds. Ordinary people build up
-    /// potential the same way, and a strong enough wish can awaken a Vision.
+    /// Walks the world a slice at a time and lets units train. Powered units temper their Path facets
+    /// (drilling → Vigor, dummies → Edge, sparring → Flow and Ward), boosted by mentors and Training Grounds.
+    /// Ordinary people build up potential the same way, and a strong enough wish can awaken a Vision.
     /// </summary>
     public static class Training
     {
         private const int SliceSize = 250;
         private const float YearSeconds = 60f;
 
-        private const float DrillXpPerYear = 400f;
-        private const float DummyXpPerYear = 800f;
-
         private static int _cursor;
         private static readonly Dictionary<long, double> _last_seen = new Dictionary<long, double>();
         private static readonly Dictionary<long, int> _last_kills = new Dictionary<long, int>();
-        private static readonly Dictionary<City, int> _city_best_rank = new Dictionary<City, int>();
+        private static readonly Dictionary<City, int> _city_best_score = new Dictionary<City, int>();
         private static readonly HashSet<long> _sparring = new HashSet<long>();
         private static object _world_marker;
 
@@ -36,13 +33,13 @@ namespace TeyvatChronicle.Progression
 
         public static void Tick()
         {
-            if (!Settings.Resonance || World.world?.units == null || Config.worldLoading) return;
+            if (!Settings.Path || World.world?.units == null || Config.worldLoading) return;
             if (!ReferenceEquals(_world_marker, World.world.map_stats))
             {
                 _world_marker = World.world.map_stats;
                 _last_seen.Clear();
                 _last_kills.Clear();
-                _city_best_rank.Clear();
+                _city_best_score.Clear();
                 _cursor = 0;
                 TrainingGrounds.Reload();
             }
@@ -52,7 +49,7 @@ namespace TeyvatChronicle.Progression
             if (_cursor >= units.Count)
             {
                 _cursor = 0;
-                _city_best_rank.Clear();
+                _city_best_score.Clear();
             }
             double now = World.world.getCurWorldTime();
             int end = Mathf.Min(units.Count, _cursor + SliceSize);
@@ -79,7 +76,7 @@ namespace TeyvatChronicle.Progression
             int new_kills = _last_kills.TryGetValue(id, out int old) ? Mathf.Max(0, kills - old) : 0;
             _last_kills[id] = kills;
 
-            if (Resonance.IsPowered(a)) ProcessPowered(a, years);
+            if (Path.IsPowered(a)) ProcessPowered(a, years);
             else if (a.isSapient()) ProcessMortal(a, years, new_kills);
         }
 
@@ -87,50 +84,42 @@ namespace TeyvatChronicle.Progression
 
         private static void ProcessPowered(Actor a, float pYears)
         {
-            Resonance.EnsureInit(a);
-            int rank = Resonance.Rank(a);
+            Path.EnsureInit(a);
+            int score = Path.FacetTotal(a);
             if (a.city != null)
             {
-                _city_best_rank.TryGetValue(a.city, out int best);
-                if (rank > best) _city_best_rank[a.city] = rank;
+                _city_best_score.TryGetValue(a.city, out int best);
+                if (score > best) _city_best_score[a.city] = score;
             }
-
-            // Fateful moments that can be seen from the outside
-            float health = a.getHealth() / (float)Mathf.Max(1, a.getMaxHealth());
-            if (health < 0.1f && a.has_attack_target) Resonance.Moment(a, Resonance.Moments.NearDeath);
-            if (a.data.renown >= 500) Resonance.Moment(a, Resonance.Moments.Renowned);
-            if (a.isKing()) Resonance.Moment(a, Resonance.Moments.Crowned);
 
             if (a.isSapient() && CanTrain(a))
             {
                 bool dummy = a.isTask("warrior_train_with_dummy");
-                float xp = (dummy ? DummyXpPerYear : DrillXpPerYear) * pYears * Multiplier(a, rank);
-                Resonance.AddXp(a, xp, true);
-                Resonance.AddTrainingTime(a, pYears);
+                Path.OnTraining(a, pYears, dummy, Multiplier(a, score));
                 if (Randy.randomChance(0.3f)) TrainingVisual(a, dummy);
                 // Drills sharpen techniques: practice counts toward Level II and III mastery.
-                if (Resonance.IsPowered(a) && Randy.randomChance(0.25f)) Arts.Engine.Drill(a);
+                if (Randy.randomChance(0.25f)) Arts.Engine.Drill(a);
                 if (Settings.Sparring && Randy.randomChance(0.05f)) TrySpar(a);
             }
 
-            Resonance.CheckBreakthrough(a);
+            Path.YearlyChecks(a);
             Ascension.YearlyChecks(a, pYears);
         }
 
-        /// <summary>What the unit is doing for its Resonance right now, for the character panel.</summary>
+        /// <summary>What the unit is doing on its Path right now, for the character panel.</summary>
         public static string Activity(Actor a)
         {
             if (CombatCore.Data(a).InDuel) return "<color=#FF8A6A>Locked in a duel</color>";
             if (_sparring.Contains(a.getID())) return "<color=#FFD27F>Sparring</color>";
             if (a.has_attack_target) return "<color=#FF8A6A>In battle</color>";
-            if (!Resonance.IsPowered(a)) return a.isSapient() ? "Living an ordinary life" : "—";
+            if (Path.InCrucible(a)) return $"<color=#FF9A6A>In the Crucible ({Path.CrucibleLeft(a):0}s)</color>";
+            if (!Path.IsPowered(a)) return a.isSapient() ? "Living an ordinary life" : "—";
             if (!a.isSapient() || !CanTrain(a)) return "Wandering (not training)";
-            string what = a.isTask("warrior_train_with_dummy") ? "Training at a dummy" : "Drilling";
-            int rank = Resonance.Rank(a);
+            string what = a.isTask("warrior_train_with_dummy") ? "Training at a dummy (Edge)" : "Drilling (Vigor)";
+            int score = Path.FacetTotal(a);
             var bonus = new List<string>();
-            if (a.city != null && _city_best_rank.TryGetValue(a.city, out int best) && best > rank + 5) bonus.Add("mentor ×1.5");
+            if (a.city != null && _city_best_score.TryGetValue(a.city, out int best) && best > score + 10) bonus.Add("mentor ×1.5");
             if (TrainingGrounds.Contains(a.current_position)) bonus.Add("Training Ground ×2");
-            if (rank > 60) bonus.Add("rank 60+ ×0.5");
             return bonus.Count > 0 ? $"{what} ({string.Join(", ", bonus)})" : what;
         }
 
@@ -141,11 +130,11 @@ namespace TeyvatChronicle.Progression
             return a.current_tile?.zone?.city == a.city || TrainingGrounds.Contains(a.current_position);
         }
 
-        /// <summary>Mentors (a higher rank in the same city) ×1.5; Training Grounds ×2.</summary>
-        private static float Multiplier(Actor a, int pRank)
+        /// <summary>Mentors (someone 10+ facet levels ahead in the same city) ×1.5; Training Grounds ×2.</summary>
+        private static float Multiplier(Actor a, int pScore)
         {
             float m = 1f;
-            if (a.city != null && _city_best_rank.TryGetValue(a.city, out int best) && best > pRank + 5) m *= 1.5f;
+            if (a.city != null && _city_best_score.TryGetValue(a.city, out int best) && best > pScore + 10) m *= 1.5f;
             if (TrainingGrounds.Contains(a.current_position)) m *= 2f;
             return m;
         }
@@ -170,7 +159,7 @@ namespace TeyvatChronicle.Progression
             foreach (Actor other in a.city.units)
             {
                 if (other == a || other == null || !other.isAlive() || !other.isSapient()) continue;
-                if (!Resonance.IsPowered(other) || !CanTrain(other)) continue;
+                if (!Path.IsPowered(other) || !CanTrain(other)) continue;
                 float d = ((Vector2)other.current_position - a.current_position).sqrMagnitude;
                 if (d < best) { best = d; partner = other; }
             }
@@ -209,12 +198,12 @@ namespace TeyvatChronicle.Progression
 
             if (CombatCore.Alive(a) && CombatCore.Alive(b))
             {
-                float score_a = Resonance.Rank(a) + Random.Range(0f, 25f);
-                float score_b = Resonance.Rank(b) + Random.Range(0f, 25f);
+                float score_a = Path.FacetTotal(a) + Random.Range(0f, 30f);
+                float score_b = Path.FacetTotal(b) + Random.Range(0f, 30f);
                 Actor winner = score_a >= score_b ? a : b;
                 Actor loser = winner == a ? b : a;
                 if (visible) FloatingText.Show("WIN", winner.current_position, winner == a ? ca : cb, 10);
-                Resonance.OnSpar(winner, loser);
+                Path.OnSpar(winner, loser);
                 a.finishStatusEffect(Arts.Engine.Held);
                 b.finishStatusEffect(Arts.Engine.Held);
             }
@@ -231,10 +220,10 @@ namespace TeyvatChronicle.Progression
             {
                 bool dummy = a.isTask("warrior_train_with_dummy");
                 float gain = (dummy ? 40f : 18f) * pYears * (TrainingGrounds.Contains(a.current_position) ? 2f : 1f);
-                Resonance.AddPotential(a, gain);
+                Path.AddPotential(a, gain);
             }
-            if (pNewKills > 0) Resonance.AddPotential(a, pNewKills * 6f);
-            if (!Settings.VisionAwakening || Resonance.Potential(a) < 100f) return;
+            if (pNewKills > 0) Path.AddPotential(a, pNewKills * 6f);
+            if (!Settings.VisionAwakening || Path.Potential(a) < 100f) return;
 
             float chance = 0.02f * Settings.AwakeningRate * pYears * 4f;
             foreach (KeyValuePair<string, float> wish in WishTraits)
@@ -254,8 +243,8 @@ namespace TeyvatChronicle.Progression
             string element = pElement ?? ElementFor(a);
             foreach (string e in Elements.All) a.removeTrait("gi_vision_" + e);
             a.addTrait("gi_vision_" + element);
-            Resonance.SetRank(a, Mathf.Max(1, Resonance.Rank(a)));
-            Resonance.Celebrate(a, "VISION AWAKENED", "charge", 0.9f, a.getName());
+            Path.EnsureInit(a);
+            Path.Celebrate(a, "VISION AWAKENED", "charge", 0.9f, a.getName());
             Chronicle.Announcer.AnnounceLegend($"{a.getName()} awakens a {Capital(element)} Vision", Elements.Color(element), a.current_tile, false);
             return element;
         }

@@ -57,7 +57,7 @@ namespace TeyvatChronicle.Arts
             var c = new Cast(a, target, god, set, 3, CombatCore.ElementFor(a, set))
             {
                 God = true,
-                Pow = Progression.Resonance.MoveBoost(a, Progression.Resonance.Category.Burst) * 2f
+                Pow = Progression.Path.TechniquePower(a) * 2f
             };
             Vector3 p = a.current_position;
             World.world.locatePosition(p);
@@ -70,6 +70,11 @@ namespace TeyvatChronicle.Arts
             // The ability runs while the world is frozen; its own effects keep full speed.
             _started = Time.unscaledTime;
             yield return Engine.Safe(god.Script(c), god.Id);
+            // Powers that stood in its path and still stand earn the Unbowed mark.
+            foreach (Actor foe in CombatCore.EnemiesNear(a, p, 25f))
+            {
+                if (CombatCore.Alive(foe)) Progression.Path.OnSurvivedGod(foe);
+            }
             yield return new WaitForSecondsRealtime(0.25f);
             Director.EndWorldStop();
             CombatCore.Sound("god_resume", p, "gi/sfx/arts/");

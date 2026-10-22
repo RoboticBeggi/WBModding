@@ -25,7 +25,7 @@ namespace TeyvatChronicle.Combat
         /// <summary>When set, a holder with a Vision fights in that Vision's element instead (Harbingers, Adepti).</summary>
         public bool TakesVisionElement;
 
-        /// <summary>Technique ids, in the order shown in the Resonance panel.</summary>
+        /// <summary>Technique ids, in the order shown in the Path panel.</summary>
         public readonly List<string> Moves = new List<string>();
 
         /// <summary>The style's God ability (Archons and above), or null.</summary>
@@ -84,7 +84,7 @@ namespace TeyvatChronicle.Arts
         /// <summary>A God ability: needs a full God gauge and stops the world.</summary>
         public bool God;
 
-        /// <summary>Damage multiplier used by the Resonance panel when listing techniques.</summary>
+        /// <summary>Damage multiplier used by the Path panel when listing techniques.</summary>
         public float Power = 1f;
 
         public Func<Cast, IEnumerator> Script;

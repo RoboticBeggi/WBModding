@@ -178,7 +178,11 @@ namespace TeyvatChronicle.Combat
         {
             if (!Alive(pCaster) || !Alive(pVictim)) return;
             // Armour is already part of the balanced damage, so the game doesn't reduce it again.
-            float damage = Balance.Technique(pCaster, pVictim, pPower, pGod);
+            float damage = Balance.Technique(pCaster, pVictim, pPower, pGod) *
+                           Progression.Path.DamageMultiplier(pCaster, pVictim) * Progression.Path.DamageTaken(pVictim, pGod);
+            damage = Powers.DragonRule.ClampRivalDamage(pCaster, pVictim, damage);
+            if (damage <= 0f) return;
+            Powers.DragonModels.Hurt(pVictim);
             Arts.Guard.Bypass = true;
             try
             {
@@ -191,11 +195,13 @@ namespace TeyvatChronicle.Combat
             Data(pCaster).Gauge = Mathf.Min(100f, Data(pCaster).Gauge + 1.5f + pPower * 0.5f);
             if (!pVictim.isAlive())
             {
-                Progression.Resonance.OnKill(pCaster, pVictim);
+                Progression.Path.OnKill(pCaster, pVictim);
                 Arts.Situations.OnKill(pCaster, pVictim);
                 return;
             }
             Data(pVictim).Gauge = Mathf.Min(100f, Data(pVictim).Gauge + 1f);
+            Progression.Path.OnTechniqueLanded(pCaster);
+            Progression.Path.OnHitTaken(pVictim);
             if (!string.IsNullOrEmpty(pStatus)) pVictim.addStatusEffect(pStatus, pStatusTime);
         }
 
@@ -255,7 +261,14 @@ namespace TeyvatChronicle.Combat
             }
             if (++_sound_count > 18) return;
             _sound_last[pSfx] = Now;
-            MusicBox.playSound(pFolder + pSfx, pPos.x, pPos.y);
+            // Every Arts sound has three takes (name, name_2, name_3); pick one so repeats never sound identical.
+            string take = pSfx;
+            if (pFolder == "gi/sfx/arts/")
+            {
+                int roll = UnityEngine.Random.Range(0, 3);
+                if (roll > 0) take = pSfx + "_" + (roll + 1);
+            }
+            MusicBox.playSound(pFolder + take, pPos.x, pPos.y);
         }
     }
 }

@@ -1,4 +1,4 @@
-"""Generates the bespoke VFX for every combat style (v0.5 "Arts" system).
+"""Generates the bespoke VFX for every combat style (the "Arts" system), plus the particle and glow sprites.
 
 Run from the repo root:  python tools/art/gen_arts.py
 Writes GameResources/gi/arts/<set>/<set>_NN.png. Needs Pillow and numpy.
@@ -1334,6 +1334,174 @@ def light_cross(size=56, n=6):
     return out
 
 
+
+# ------------------------------------------------------------------ v0.6: particles, glow and upgraded core sets
+# These come after the originals on purpose: the redefinitions below replace impact, shock, breath, claw and
+# lock_sparks with larger, longer, white-hot versions, keeping their names so every technique script still works.
+
+def img_soft(alpha, value=None):
+    """Smooth alpha (no quantising) for soft additive sprites. value: grey level 0..1 (default white)."""
+    a = np.clip(alpha, 0, 1)
+    v = np.ones_like(a) if value is None else np.clip(value, 0, 1)
+    g = (150 + 105 * v)
+    rgba = np.stack([g, g, g, a * 255], -1).astype(np.uint8)
+    return Image.fromarray(rgba, "RGBA")
+
+
+def glow(size=64):
+    """A soft radial glow that reaches zero well inside the canvas, so it can never show as a square."""
+    x, y = grid(size, size)
+    r = np.hypot(x, y) / (size * 0.5)
+    a = np.clip(1 - r / 0.86, 0, 1) ** 2.2
+    return [img_soft(a)]
+
+
+def ring_soft(size=64):
+    x, y = grid(size, size)
+    r = np.hypot(x, y) / (size * 0.5)
+    a = np.exp(-((r - 0.62) / 0.11) ** 2) * (r < 0.9)
+    return [img_soft(a)]
+
+
+def spark(w=14, h=4):
+    """A hot streak; particles rotate it to their velocity."""
+    x, y = grid(w, h)
+    along = np.clip((x + w / 2) / w, 0, 1)
+    a = np.clip(1 - np.abs(y) / (0.6 + along * 1.4), 0, 1) * along ** 0.7
+    return [img_soft(a, 0.6 + 0.4 * along)]
+
+
+def mote(size=8):
+    x, y = grid(size, size)
+    r = np.hypot(x, y) / (size * 0.5)
+    a = np.clip(1 - r / 0.95, 0, 1) ** 1.3
+    return [img_soft(a, 1 - r * 0.4)]
+
+
+def streak(w=28, h=4):
+    x, y = grid(w, h)
+    along = np.clip((x + w / 2) / w, 0, 1)
+    a = np.clip(1 - np.abs(y) / 1.6, 0, 1) * along ** 1.6
+    return [img_soft(a)]
+
+
+def smoke(size=28, n=4):
+    x, y = grid(size, size)
+    out = []
+    for i in range(n):
+        nz = noise(size, size, 300 + i)
+        r = np.hypot(x, y) / (size * 0.5)
+        lumps = np.zeros_like(r)
+        for k in range(5):
+            th = k / 5 * TAU + i
+            lumps = np.maximum(lumps, np.clip(1 - np.hypot(x - math.cos(th) * size * 0.16,
+                                                            y - math.sin(th) * size * 0.16) / (size * 0.24), 0, 1))
+        a = np.clip(lumps * (0.75 + 0.35 * nz) - r * 0.25, 0, 1) * (r < 0.92)
+        out.append(img_soft(a * 0.85, 0.55 + 0.35 * (y < 0)))
+    return out
+
+
+def rock_chunk(size=7):
+    x, y = grid(size, size)
+    pts = [(-3, -1), (-1, -3), (2, -2.5), (3, 0.5), (1, 3), (-2, 2.5)]
+    a = poly_mask(x, y, pts)
+    sh = 0.35 + 0.5 * (x - y > 0) + 0.15 * (y < -1)
+    return [img(a, sh)]
+
+
+def impact(size=64, n=10):
+    """An anime hit flash: a white-hot core that pops, a bold four-to-six point star, speed lines, a ring."""
+    x, y = grid(size, size)
+    r, ang = np.hypot(x, y), np.arctan2(y, x)
+    spikes = (np.cos(ang * 4 + 0.3) * 0.5 + 0.5) ** 2.5 * 0.75 + (np.cos(ang * 6 + 1.1) * 0.5 + 0.5) ** 4 * 0.45
+    lines = (np.cos(ang * 14 + 0.4) * 0.5 + 0.5) ** 30
+    out = []
+    for i in range(n):
+        t = i / (n - 1)
+        pop = 1 - t ** 1.3
+        reach = size * (0.18 + 0.32 * t ** 0.55)
+        star = np.clip(1.15 - r / (reach * (0.28 + 0.9 * spikes)), 0, 1) * pop
+        core = np.clip(1.2 - r / (size * (0.2 if i < 2 else 0.12) * (1 - t * 0.9) + 0.01), 0, 1)
+        rg = ring(r, reach * 1.15, 2.2 * (1 - t) + 0.6) * pop * (i >= 1)
+        sl = lines * (r > reach * 0.7) * (r < reach * 1.45) * (1 - t) * (1 <= i <= 6)
+        a = np.maximum.reduce([star, core * pop, rg, sl * 0.9])
+        out.append(img(a, np.maximum(core, star * 0.85 + sl * 0.4)))
+    return out
+
+
+def shock(size=80, n=10):
+    """A ground shockwave in perspective: a bright leading ring, a fainter inner one and flung grit."""
+    x, y = grid(size, size)
+    r = np.hypot(x, y / 0.6)
+    dots = RNG.uniform(0, TAU, 26)
+    out = []
+    for i in range(n):
+        t = i / (n - 1)
+        R = size * (0.05 + 0.45 * t ** 0.8)
+        lead = ring(r, R, 2.6 * (1 - t) + 0.6) * (1 - t * 0.75)
+        inner = ring(r, R * 0.72, 1.2) * (1 - t) * 0.55
+        fill = np.clip(1 - r / max(R, 1), 0, 1) * (1 - t) ** 3 * 0.45
+        a = np.maximum.reduce([lead, inner, fill])
+        for th in dots:
+            px, py = math.cos(th) * R * 1.12, math.sin(th) * R * 0.6 * 1.12
+            a = np.maximum(a, disc(x, y, px, py, 0.9) * (1 - t))
+        out.append(img(a, np.maximum(lead, fill * 1.5)))
+    return out
+
+
+def breath(w=80, h=36, n=8):
+    """A roaring cone pointing right (source at the left edge): white-hot core, turbulent body, ragged edges."""
+    x, y = grid(w, h)
+    out = []
+    for i in range(n):
+        nz = noise(w, h, 90 + i)
+        nz2 = noise(w, h, 140 + i)
+        along = np.clip((x + w / 2) / w, 0, 1)
+        width = 1.5 + along * h * 0.46
+        body = np.clip(1 - np.abs(y) / width, 0, 1)
+        turb = np.clip((nz * 0.6 + nz2 * 0.4) - 0.2 + (1 - along) * 0.5, 0, 1)
+        a = np.clip(body * 2.2 * turb, 0, 1) * (along < 0.98)
+        core = np.clip(1 - np.abs(y) / (0.8 + along * h * 0.13), 0, 1) * (along < 0.9)
+        mid = np.clip(1 - np.abs(y) / (1.2 + along * h * 0.27), 0, 1)
+        shade = 0.25 + 0.35 * mid + 0.4 * core
+        out.append(img(np.maximum(a, core), shade))
+    return out
+
+
+def claw(size=56, n=7):
+    """Three raking slashes with hot cores and a fading afterglow."""
+    x, y = grid(size, size)
+    out = []
+    for i in range(n):
+        t = i / (n - 1)
+        a = np.zeros((size, size), np.float32)
+        hot = np.zeros_like(a)
+        L = size * 0.46 * min(1, t * 3)
+        for k in range(3):
+            off = (k - 1) * 8
+            seg = [(-L + off, -L), (L * 0.35 + off, L)]
+            a = np.maximum(a, line(x, y, seg, 2.2 * (1 - t) + 0.7))
+            hot = np.maximum(hot, line(x, y, seg, 0.8 * (1 - t) + 0.2))
+        fade = 1 - max(0, t - 0.55) * 2.2
+        out.append(img(a * fade, 0.4 + 0.6 * hot))
+    return out
+
+
+def lock_sparks(size=40, n=8):
+    x, y = grid(size, size)
+    out = []
+    parts = [(RNG.uniform(-1.2, 1.2), RNG.uniform(-2.0, -0.4)) for _ in range(22)]
+    for i in range(n):
+        t = (i + 1) / n
+        a = np.zeros((size, size), np.float32)
+        for vx, vy in parts:
+            px, py = vx * size * 0.42 * t, vy * size * 0.42 * t + size * 0.55 * t * t
+            a = np.maximum(a, line(x, y, [(px, py), (px - vx * 2.6, py - vy * 2.6)], 0.5) * (1 - t * 0.55))
+        a = np.maximum(a, disc(x, y, 0, 0, 4.5 * (1 - t) ** 1.5))
+        out.append(img(a, a, P["spark"]))
+    return out
+
+
 SETS = {
     # generic
     "impact": impact, "shock": shock, "dust": dust, "debris": debris, "fissure": fissure, "lock_sparks": lock_sparks,
@@ -1360,6 +1528,9 @@ SETS = {
     "breath": breath, "claw": claw, "wingbeat": wingbeat, "roar": roar, "abyss_flame": abyss_flame, "moon_shard": moon_shard,
     # shades
     "clock": clock, "sand": sand, "cube": cube, "portal": portal, "vine_bloom": vine_bloom, "scythe": scythe, "skull": skull,
+    # v0.6 particles and glow
+    "glow": glow, "ring_soft": ring_soft, "spark": spark, "mote": mote, "streak": streak, "smoke": smoke,
+    "rock_chunk": rock_chunk,
     # moon / heaven
     "crescent_blade": crescent_blade, "moon_pillar": moon_pillar, "nail": nail, "halo": halo, "light_cross": light_cross,
 }

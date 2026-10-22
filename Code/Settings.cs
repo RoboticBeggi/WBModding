@@ -70,6 +70,7 @@ namespace TeyvatChronicle
         public static bool FloatingText => Bool("Combat", "FloatingText");
         public static bool Auras => Bool("Combat", "Auras");
         public static bool DragonBodies => Bool("Combat", "DragonBodies");
+        public static bool DragonRivalry => Bool("Combat", "DragonRivalry");
 
         // Cinematics
         public static bool ImpactFrames => Bool("Cinematics", "ImpactFrames");
@@ -82,17 +83,17 @@ namespace TeyvatChronicle
         public static bool Afterimages => Bool("Cinematics", "Afterimages");
         public static bool Craters => Bool("Cinematics", "Craters");
 
-        // Resonance (levelling)
-        public static bool Resonance => Bool("Resonance", "Resonance");
-        public static float TrainingXp => Float("Resonance", "TrainingXp", 1f);
-        public static float CombatXp => Float("Resonance", "CombatXp", 1f);
-        public static bool Sparring => Bool("Resonance", "Sparring");
-        public static bool VisionAwakening => Bool("Resonance", "VisionAwakening");
-        public static float AwakeningRate => Float("Resonance", "AwakeningRate", 1f);
-        public static bool Succession => Bool("Resonance", "Succession");
-        public static bool Exaltation => Bool("Resonance", "Exaltation");
-        public static bool Godhood => Bool("Resonance", "Godhood");
-        public static bool LegendAnnouncements => Bool("Resonance", "LegendAnnouncements");
+        // The Crucible Path (levelling)
+        public static bool Path => Bool("Path", "Path");
+        public static float TrainingXp => Float("Path", "TrainingXp", 1f);
+        public static float CombatXp => Float("Path", "CombatXp", 1f);
+        public static bool Sparring => Bool("Path", "Sparring");
+        public static bool VisionAwakening => Bool("Path", "VisionAwakening");
+        public static float AwakeningRate => Float("Path", "AwakeningRate", 1f);
+        public static bool Succession => Bool("Path", "Succession");
+        public static bool Exaltation => Bool("Path", "Exaltation");
+        public static bool Godhood => Bool("Path", "Godhood");
+        public static bool LegendAnnouncements => Bool("Path", "LegendAnnouncements");
 
         // Interface
         public static bool CharacterPanel => Bool("Interface", "CharacterPanel");

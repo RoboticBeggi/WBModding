@@ -14,7 +14,7 @@ The same guide is in the game under **Teyvat tab → How to Play** (or **Teyvat 
 4. **Chronicle tab:** drag the timeline slider to where history should start (all the way left is
    the Old World), set the pace slider (Normal is a good first run), then press **Begin here**.
 5. **Watch:** the Old World starts with seven element-coloured Dragon Sovereigns and a cutscene.
-6. **Click any unit** you see glowing. The **Resonance panel** opens beside its window.
+6. **Click any unit** you see glowing. The **Path panel** opens beside its window.
 
 That's it. Everything else is optional depth.
 
@@ -34,14 +34,14 @@ World grows ─► Begin the Chronicle ─► Eras unfold (cutscenes, effects on
              └──────────► Battles: techniques, duels, team arts ◄── Vision bearers drill, spar,
                                      │                          train at dummies
                                      ▼
-                     XP ─► Ranks ─► Breakthrough Trials ─► Ascension stars
-                                     │                ─► Talents, Constellations
-                                     ▼
-                     Exaltation (rank 70, ★5, C4) ─► Godhood (claim an empty Archon throne)
+               Facets grow (Vigor · Edge · Ward · Flow) ─► Primed ─► CRUCIBLE in battle
+                                     │                        ─► Breakthrough to the next Stage
+                                     ▼                        ─► Marks from deeds
+                     Exaltation (Hallowed, 2 marks) ─► Godhood (Paragon, 4 marks: an empty throne)
 ```
 
 The Chronicle supplies the **history**: who the gods are and when the great events happen. The
-Resonance system supplies the **heroes**: ordinary people rising through training and battle. The two
+Crucible Path supplies the **heroes**: ordinary people rising through training and battle. The two
 meet in battle. You can play with either one alone. Turn eras off, never press Begin and just raise
 heroes, or let the Chronicle run and only watch.
 
@@ -68,12 +68,12 @@ heroes, or let the Chronicle run and only watch.
 | Legends | Opens the Legends ranking |
 | How to Play | Opens this guide in the game |
 | Toggle HUD | Shows or hides the top-right panel |
-| Inspect | Opens the unit with its Resonance panel |
-| Grant Vision | Awakens a Vision; on a Vision bearer, +5 ranks |
+| Inspect | Opens the unit with its Path panel |
+| Grant Vision | Awakens a Vision; on a Vision bearer, tempers every facet by 3 |
 | Shift Element | Cycles a Vision bearer's element |
 | Grant Delusion | Gives a Fatui Delusion: strong, but it costs lifespan |
-| Ascend | +10 ranks (awakens a Vision first if needed) |
-| Bestow Constellation | +1 Constellation |
+| Temper | +5 to every facet, up to the Stage cap; can prime the unit (awakens a Vision first if needed) |
+| Grant Mark | A mark the unit hasn't earned yet |
 | Crown Archon | Makes the unit the Archon of its element |
 | Training Ground | Click a place to mark it: units train ×2 there. Click again to remove it |
 
@@ -101,7 +101,7 @@ A draggable window (drag its title bar) with four tabs.
 - **Pace slider:** Lore, Normal, Fast or Custom. Next to it is how many years the whole timeline will
   take at that pace. **More settings** opens everything else.
 
-**Legends:** the 40 mightiest powers, ranked by tier, then rank, then Constellation. Click one to jump to them and open their window.
+**Legends:** the 40 mightiest powers, ranked by tier, then Stage, facets and marks. Click one to jump to them and open their window.
 
 **Powers:** the tier codex (what each tier is and how to get it), how combat works, and every fighting style with its techniques.
 
@@ -112,23 +112,24 @@ a name to jump to them. Drag it by its title, or hide it with Toggle HUD.
 
 ---
 
-## 3. The Resonance panel
+## 3. The Path panel
 
 It opens automatically beside WorldBox's unit window whenever you click a unit, and updates twice a second.
 
 - **Identity:** element emblem, name, power, and the tier badge in that tier's colour.
-- **Rank:** Rank 1–90 with an XP bar in the element's colour, and the six **Ascension stars**.
-- **Breakthrough:** if the unit is stuck at a Breakthrough, the Trial it needs and its progress (for example "2/3 sessions").
-- **Talents:** Strike, Skill and Burst bars (up to Lv 13 with Constellations).
-- **Constellation:** six star nodes that light up in the element colour.
-- **Now:** what the unit is doing. For example: Training at a dummy (mentor ×1.5, Training Ground ×2),
-  Drilling, Sparring, In battle, Locked in a duel, or Wandering.
-- **Record:** foes, elites, duels won, spars won, training sessions.
+- **Stage:** for example *Stage III · Tempered*. On the right, **PRIMED** when two facets sit at the
+  cap, or **CRUCIBLE 14s** while its Crucible burns. Under it, what that means right now.
+- **Facets:** Vigor, Edge, Ward and Flow, each with a bar to 40 and its level over the Stage cap
+  (gold at the cap).
+- **Marks:** a coloured chip for each mark earned, and the perk of the latest one.
+- **Now:** what the unit is doing. For example: Training at a dummy (Edge), Drilling (Vigor), Sparring,
+  In battle, Locked in a duel, In the Crucible, or Wandering. Mentor ×1.5 and Training Ground ×2 show here.
+- **Record:** foes, duels won, spars won, rescues, training sessions.
 - **Techniques:** the style's name, then every technique with its level (I, II or III), its live state
   (seconds left to recharge, or what it's best against: *vs crowds*, *vs lines*, *duelist*, *execute*,
   *anti-air*, *closer*, *guard*, *support*) or the level that unlocks it. `*` marks an ultimate. From
   Archon up, the last line is the **God ability** with the gauge (READY at 100%).
-- **Buttons:** Grant Vision, Ascend +10, + Constellation, Follow (camera follows the unit), Legends, Archive.
+- **Buttons:** Grant Vision, Temper +5, Grant Mark, Follow (camera follows the unit), Legends, Archive.
 
 For an ordinary person, the panel shows their **potential** toward a Vision.
 
@@ -186,7 +187,10 @@ A unit fights with the **style** of its highest-tier power. Every style has 6–
 
 ---
 
-## 6. How heroes grow (Resonance)
+## 6. How heroes grow: the Crucible Path
+
+The mod's own levelling. Heroes grow from what they actually do, break through in battle, and carry
+the scars of their deeds. Full details are in [PROGRESSION.md](PROGRESSION.md).
 
 **Ordinary people**
 - They build **potential** by training in their city, at training dummies, and by fighting.
@@ -195,42 +199,46 @@ A unit fights with the **style** of its highest-tier power. Every style has 6–
   makes it six times as likely.
 - Awakening plays a ceremony: the world stops, rings close in, then a pillar of light.
 
-**Vision bearers gain XP from:**
+**Four facets**, each 0–40, grow from use:
 
-| Source | XP |
-|---|---|
-| Drilling in their city | 400 / year |
-| Training at a dummy | 800 / year |
-| Sparring with another bearer | 35–45 per bout |
-| Using techniques, kills | + |
-| Duels | win +80, loss +30 |
+| Facet | Grows from | Gives |
+|---|---|---|
+| **Vigor** | taking hits and surviving, drilling in the city | +4% max health per level |
+| **Edge** | landing techniques, training at dummies, kills | +3% technique power per level |
+| **Ward** | guarding blows, being hit mid-technique, protecting allies, sparring | 1% less damage taken per level (up to 40%), better guarding |
+| **Flow** | dashes, blinks and leaps, duels, sparring | 1.2% shorter cooldowns per level, a little speed |
 
-Multipliers: a mentor at least 5 ranks higher in the same city gives ×1.5, a Training Ground ×2, and
-above rank 60 training gives ×0.5.
+A mentor (someone 10+ facet levels ahead in the same city) gives ×1.5 training, a Training Ground ×2.
 
-**Breakthroughs** at ranks 20, 40, 50, 60, 70 and 80 need a **Trial**:
+**Five Stages:** I Kindled · II Forged · III Tempered · IV Hallowed · V Paragon. Facets cap at 8 per Stage
+(8, 16, 24, 32, 40). Each Stage multiplies health (×1, 1.6, 2.5, 4, 6) and damage (×1, 1.3, 1.7, 2.2, 3).
+New powers start at their tier's Stage: Visions Kindled, Exalted Forged, Archons Tempered, Sovereigns
+and Shades Hallowed, Moons and the Principles Paragon. Techniques reach Level II at Forged and Level III
+at Hallowed.
 
-| Rank | Trial |
-|---|---|
-| 20 | 3 training sessions |
-| 40 | Win a spar or duel, or defeat 5 foes |
-| 50 | Defeat 10 foes |
-| 60 | Defeat an elite, or win a duel |
-| 70 | Win 2 duels |
-| 80 | 300 renown, or an Archon's blessing |
+**Primed and the Crucible.** When two facets reach the cap, the hero is **primed**. Training alone can't
+take it further: its next serious fight becomes its **Crucible**, when it drops below 35% health, enters
+a duel, or faces five or more foes at once. A *CRUCIBLE* title, a slow-motion beat, and the hero burns
+with its element. Still standing 20 seconds later (or winning the duel), it **breaks through**: a
+ceremony, a full heal, the next Stage. If it dies, it dies. A hero primed for 15 years without a fight
+breaks through quietly, by meditation.
 
-Each passed Trial adds an **Ascension star** and plays a ceremony.
+**Marks** are deeds that leave a lasting perk:
 
-**Talents:** one point every 3 ranks, spent by personality. Each level gives +8% damage and 3% shorter cooldowns.
-
-**Constellations** come from fateful moments: surviving near death, slaying a king, winning a duel,
-defeating an elite, 50 foes, 500 renown, becoming a ruler, Ascension ★3 and ★6.
-- C3 and C5: +2 to all talents.
-- C6: the Burst is awakened (×1.5 power, impact frames).
+| Mark | Earned by | Perk |
+|---|---|---|
+| Survivor | surviving below 10% health | last stands heal 40% instead of 20%; +5% health |
+| Kingslayer | slaying a ruler | +15% damage against rulers and powers |
+| Duelist | winning 3 duels | +15% momentum in duels |
+| Giantslayer | slaying someone of a higher tier | +20% damage against higher tiers |
+| Warden | protecting allies 3 times | +10% guard chance |
+| Reaper | 100 kills | every kill heals 2% |
+| Unbowed | surviving a God ability | 25% less damage from God abilities |
+| Crowned | becoming a ruler | +10% health |
 
 **Beyond:**
-- **Exaltation:** at rank 70, ★5, C4 a bearer may become an Adeptus, a Harbinger, a Witch or an Abyss Herald.
-- **Godhood:** an Exalted at rank 90 and C6 may claim an **empty Archon throne**.
+- **Exaltation:** a Hallowed Vision bearer with 2 marks may become an Adeptus, a Harbinger, a Witch or an Abyss Herald.
+- **Godhood:** a Paragon Exalted with 4 marks may claim an **empty Archon throne**.
 - **Succession:** when an Archon dies, the Gnosis passes to the best successor.
 
 ---
@@ -247,8 +255,8 @@ from their own style.
   fields, enemies in a line draw fissures and beams, a lone foe draws a duelist's combo, a badly
   wounded foe draws an execution, fliers draw leaps and launches, far foes draw dashes and blinks, and
   a hurt fighter guards or heals (or heals allies).
-- **Levels I–III:** each technique has a level, set by rank (Level II from rank 30, III from 60;
-  Archons start at II, Shades and above at III) or by practice (12 uses for II, 35 for III; training
+- **Levels I–III:** each technique has a level, set by the fighter's Stage (Level II from Forged,
+  III from Hallowed) or by practice (12 uses for II, 35 for III; training
   drills count). Higher levels hit harder, reach further and add beats. **Level III** burns white-hot,
   cracks the land and freezes the world for an instant on impact. Ultimates at Level III open with a
   cutscene.
@@ -267,7 +275,7 @@ from their own style.
   A powered unit killed nearby sparks **vengeance** in its allies. Five kills in eight seconds is a
   **rampage**.
 - **God abilities:** Archons and every tier above fill a **God gauge** by landing and taking blows
-  (shown in the Resonance panel). When it's full the world stops: letterbox bars, a title card, and
+  (shown in the Path panel). When it's full the world stops: letterbox bars, a title card, and
   their signature art plays out while everything else stands frozen.
 - **Balanced fights:** between two powered fighters, a blow takes a share of the victim's health
   instead of raw damage. The share depends on its power and the tier gap (×1.6 per tier), and repeated
@@ -291,8 +299,8 @@ Open them from **Archive → Chronicle → Settings**, or **Mods → Teyvat Chro
 | Rules | Unique holders, destructive effects, wars |
 | Combat | Techniques on/off, technique damage, cooldown speed, duels (chance, how many at once), guard, team arts, situations, God abilities and their spacing, sounds, labels, tier auras, dragon designs |
 | Cinematics | Impact frames and their intensity, technique cutscenes and their spacing, Chronicle cutscenes, spotlight, ceremonies, afterimages, craters |
-| Resonance | On/off, training and combat XP, sparring, awakening and its rate, succession, Exaltation, Godhood, legend announcements |
-| Interface | Resonance panel, HUD, Teyvat UI size |
+| Path | On/off, facet growth from training and from battle, sparring, awakening and its rate, succession, Exaltation, Godhood, legend announcements |
+| Interface | Path panel, HUD, Teyvat UI size |
 
 ---
 
@@ -301,7 +309,7 @@ Open them from **Archive → Chronicle → Settings**, or **Mods → Teyvat Chro
 - **Epic fights right away:** Archive → Chronicle → slide to *The Traveler Awakens* → Begin here. With
   catch-up, the Seven, the Harbingers and the Shades are already in place.
 - **Raise a champion:** mark a Training Ground in a capital, Grant Vision to a young warrior, and watch
-  their panel climb. A higher-rank mentor in the same city helps.
+  their panel climb. A mentor further along the Path in the same city helps.
 - **A world of dragons:** start at the Old World on Lore pacing and turn off the eras after the War of
   Funerary Flame.
 - **Pure hero sim:** never press Begin. Visions awaken on their own as people train and fight.
@@ -318,5 +326,5 @@ Open them from **Archive → Chronicle → Settings**, or **Mods → Teyvat Chro
   directly in `Mods/TeyvatChronicle/`.
 - **The mod doesn't load after editing a file:** check the NML log. A broken `chronicle.custom.json` stops
   loading. Delete it to go back to the defaults.
-- **No Resonance panel:** check *Interface → Resonance panel*.
+- **No Path panel:** check *Interface → Path panel*.
 - **Something looks wrong:** send the NML log and say what you clicked.
