@@ -283,6 +283,12 @@ from their own style.
   of an equal or stronger fighter's health (35% for a God ability), so equals trade many techniques
   before one falls. A higher tier still crushes a lower one, and ordinary people still fall to a single
   blow. *Fight length* in the settings makes duels longer or shorter.
+- **Dragon Sovereigns** wear their own models, not the WorldBox dragon, and fight only with their style's
+  techniques: no WorldBox fire breath, swoops, burning tiles or city raids. Each keeps to a territory
+  around its lair and fights whoever attacks it or powerful beings that come close, but leaves ordinary
+  folk alone. That matches the lore, where the Sovereigns ruled the Old World rather than razing it.
+  Now and then two Sovereigns **clash**. It's a contest, not a death match: the one driven below 30%
+  health yields and flies home.
 - **The land remembers:** craters, fissures and (with destructive effects on) burning ground.
 
 ---

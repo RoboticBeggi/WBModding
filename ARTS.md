@@ -26,24 +26,24 @@ against what it sees:
 
 The best score (with some randomness) wins. Every technique has its own range and cooldown.
 
-**Levels I–III.** A technique's level is the higher of its rank level and its mastery:
-- Rank level: I below rank 30, II from 30, III from 60. Archons start at II; Shades and above at III.
-  A technique with an *unlock* of II or III stays locked until the rank level reaches it.
+**Levels I–III.** A technique's level is the higher of its Stage level and its mastery:
+- Stage level: I at Kindled, II from Forged, III from Hallowed (see PROGRESSION.md). A technique with an
+  *unlock* of II or III stays locked until the Stage level reaches it.
 - Mastery: 12 uses for II, 35 for III. Training drills a random known technique, so practice counts.
 
-Level II hits ×1.4 and Level III ×1.9 on top of Resonance (rank, talents, C6). Scripts also grow with
+Level II hits ×1.4 and Level III ×1.9 on top of the Path (Edge facet, Marks). Scripts also grow with
 level: more projectiles, wider areas, extra beats. Level III colours burn white-hot, heavy blows freeze
 the world for an instant, and ultimates open with a cutscene.
 
 **Guard.** Ordinary blows (weapons and plain attacks) from a weaker fighter can be waved off by a
-master, with a better chance the wider the tier gap, from rank 40, and while mid-technique. Exalted and
+master, with a better chance the wider the tier gap, from Stage III, with the Ward facet and Warden Mark, and while mid-technique. Exalted and
 above send arrows and spells back at the shooter for half damage. Techniques always land.
 
 **Duels.** Two powered fighters on screen may duel (chance and limit in the settings). A stare-down,
 then 3–7 beats: blade lock, aerial clash, chase, feint, technique trade. Gods also hurl each other
 14–24 tiles across the map and give chase. The mighty may finish in a **catastrophe** (their beams
 push against each other until the land explodes), then the winner's strongest technique as a
-**finisher**. Winning a duel counts for Resonance.
+**finisher**. Winning a duel counts toward the Duelist Mark, and a duel can trigger a Crucible.
 
 **Team arts.** Two powered allies near the same foe sometimes combine (25 s cooldown each):
 Sky Relay, Twin Meteors, Crossed Beams, Merged Aura Wave.
@@ -59,7 +59,7 @@ stops: letterbox bars, a title card, and the ability plays while everything else
 
 **Balance.** Between two powered fighters a blow takes a share of the victim's health:
 `1.8% × power^0.7 × 1.6^(tier gap) × combo decay ÷ fight length`. Power already includes the cast's level
-and Resonance boosts. Combo decay softens each hit on the same victim within 1.5 s by 8% (down to 40%).
+and Path boosts. Combo decay softens each hit on the same victim within 1.5 s by 8% (down to 40%).
 Equal or stronger victims lose at most 22% per blow (35% for a God ability). The raw WorldBox damage
 still applies when it is lower. Ordinary weapon blows between powers use 0.8% instead, capped at 6%.
 Mortals take raw damage. Turn it off with *Balanced fights* or tune it with *Fight length*.

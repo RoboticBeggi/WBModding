@@ -31,8 +31,8 @@ The full walkthrough is in **[GUIDE.md](GUIDE.md)**. You can also read it in the
 1. Make a world and let some kingdoms grow.
 2. Open the **Teyvat** tab, then **Teyvat Archive**.
 3. In the Chronicle tab, drag the timeline slider to any moment, set the pace slider and press **Begin here**.
-4. Click glowing units to open their **Resonance panel**: rank, Ascension, Trial, talents,
-   Constellation, what they're doing, their techniques and God gauge.
+4. Click glowing units to open their **Path panel**: Stage, facets, Marks, whether they're Primed or in
+   a Crucible, what they're doing, their techniques and God gauge.
 5. Use the god powers (second row of the Teyvat tab) to raise, crown and shape your heroes.
 
 **The interface**
@@ -42,7 +42,7 @@ The full walkthrough is in **[GUIDE.md](GUIDE.md)**. You can also read it in the
   - **Legends:** the mightiest powers.
   - **Powers:** the tier codex and every fighting style with its techniques.
   - **Guide:** how to play.
-- **Resonance panel:** opens beside WorldBox's unit window and updates live.
+- **Path panel:** opens beside WorldBox's unit window and updates live.
 - **HUD** (top right): the next Chronicle event with its countdown, and the top 5 legends.
 
 Each world remembers its own place in the timeline, because progress is saved with the world.
@@ -71,7 +71,7 @@ styles. A few examples:
 How fighting works:
 - **Tactical mind:** fighters pick techniques from what they see: slams for crowds, fissures and beams
   for lines, executions for the wounded, leaps for fliers, dashes for far foes, guards when hurt.
-- **Levels I–III:** techniques grow with rank and practice, and training drills them too. Level III
+- **Levels I–III:** techniques grow with Stage and practice, and training drills them too. Level III
   burns white-hot, cracks the land and freezes the world on impact.
 - **Guard:** masters wave off weak blows and turn arrows back.
 - **Duels:** stare-downs, blade locks, aerial clashes, chases, feints and technique trades. They end
@@ -96,13 +96,29 @@ The whole system and every technique are listed in **[ARTS.md](ARTS.md)**.
 
 ## Levelling and training
 
-Powered units grow through **Ley Line Resonance**: ranks 1–90, earned by drilling in their city,
-hitting training dummies, sparring with each other, learning from mentors and fighting. At ranks
-20/40/50/60/70/80 they must pass a **Trial** to break through. Talents sharpen their techniques and
-**Constellations** light up through fateful moments; C6 upgrades their Burst. Ordinary people who
-train can **awaken a Vision**. Legends can rise further: they become Adepti, Harbingers or Witches,
-inherit a dead Archon's Gnosis, or claim an empty throne. The Teyvat tab has god powers to inspect,
-grant, raise and crown units, and to mark Training Grounds. Details are in [PROGRESSION.md](PROGRESSION.md).
+Powered units grow along **the Crucible Path**, the mod's own levelling system:
+- **Four facets grow from what a unit actually does:**
+  - **Vigor:** taking hits and surviving, and drilling. It raises health.
+  - **Edge:** landing techniques, dummy training and kills. It raises technique power.
+  - **Ward:** guarding and protecting allies. It reduces damage taken.
+  - **Flow:** dashes, duels and sparring. It shortens cooldowns.
+- **Five Stages:** Kindled, Forged, Tempered, Hallowed and Paragon. Each one multiplies health (up to
+  ×6) and damage (up to ×3), and unlocks technique Levels II and III.
+- **The Crucible:** when a unit's facets hit the stage cap it becomes **Primed**. Its breakthrough has
+  to be forged in battle: the next serious fight becomes a **Crucible**, and if it survives it breaks
+  through. If it dies, it dies.
+- **Marks:** deeds earn Marks with unique perks: Survivor, Kingslayer, Duelist, Giantslayer, Warden,
+  Reaper, Unbowed and Crowned.
+
+Ordinary people who train can **awaken a Vision**. Legends can rise further: Exaltation at Stage IV
+with two Marks, and an empty Archon throne at Stage V with four. Details are in
+[PROGRESSION.md](PROGRESSION.md).
+
+**Power scale:** a fresh Vision bearer is worth two or three good soldiers. Exalted have thousands of
+health, Archons 60,000, Dragon Sovereigns 250,000, Shades 400,000, the Moons around 800,000, the
+Nibelung 1.2 million and the Heavenly Principles 2 million. Each tier above an ordinary soldier turns
+away 45% more of the soldier's blows, so no army of mortals can grind down an Archon. Between powered
+fighters, damage is a share of health, so fights stay long and fair.
 
 ## Customising
 
@@ -118,8 +134,8 @@ Open **Mods → Teyvat Chronicle → settings** in-game.
 - **Rules:** one holder per unique power (Gnosis, Shade…); destructive effects; wars.
 - **Combat:** techniques on/off, technique damage, cooldown speed, guard, team arts, situations,
   God abilities (and the time between them), duels (chance and how many at
-  once), combat sounds, floating labels, auras, dragon bodies.
-- **Resonance:** training and combat XP multipliers, sparring, Vision awakening (and its rate),
+  once), combat sounds, floating labels, auras, dragon models, Sovereign rivalry.
+- **Path:** training and combat XP multipliers, sparring, Vision awakening (and its rate),
   Archon succession, Exaltation, godhood, announcements.
 - **Cinematics:** impact frames on/off and their intensity, cutscenes for ultimates (with a cooldown),
   cutscenes for major Chronicle events.
